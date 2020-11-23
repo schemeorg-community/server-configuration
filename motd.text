@@ -1,0 +1,19 @@
+
+You have arrived. This server runs Debian and is managed by Ansible.
+
+Do not keep private information here. Everything is group readable.
+
+Production sites:
+* api.scheme.org            /production/api
+* comm.scheme.org           /production/comm
+* doc.scheme.org            /production/doc
+* lists.scheme.org          /production/lists
+* persist.scheme.org        /production/persist
+* registry.scheme.org       /production/registry
+* test.scheme.org           /production/test
+* www.scheme.org            /production/www
+
+Staging sites:
+* api.staging.scheme.org    /staging/api
+* doc.staging.scheme.org    /staging/doc
+* www.staging.scheme.org    /staging/www
