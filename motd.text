@@ -6,6 +6,7 @@ Do not keep private information here. Everything is group readable.
 Production sites:
 * api.scheme.org            /production/api
 * comm.scheme.org           /production/comm
+* containers.scheme.org     /production/containers
 * doc.scheme.org            /production/doc
 * files.scheme.org          /production/files
 * lists.scheme.org          /production/lists

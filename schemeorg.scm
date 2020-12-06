@@ -40,6 +40,7 @@
     make-production-test
     make-production-web
     make-production-files
+    make-production-containers
     make-production-lists
     make-production-servers
     make-production-alpha-servers
@@ -975,6 +976,62 @@
       (path "/production/files/log/nginx")
       (state "directory")
       (owner "prod-files")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-containers)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9020)
+      (name "prod-contain")))
+    (task
+     (title "make user")
+     (user
+      (uid 9020)
+      (name "prod-contain")
+      (group "prod-contain")
+      (groups ("users"))
+      (comment "prod-contain")
+      (home "/production/containers")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/containers")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/containers")
+      (state "directory")
+      (owner "prod-contain")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/containers/www dir")
+     (file
+      (path "/production/containers/www")
+      (state "directory")
+      (owner "prod-contain")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/containers/log/nginx dir")
+     (file
+      (path "/production/containers/log/nginx")
+      (state "directory")
+      (owner "prod-contain")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
