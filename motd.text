@@ -7,10 +7,13 @@ Production sites:
 * api.scheme.org            /production/api
 * comm.scheme.org           /production/comm
 * doc.scheme.org            /production/doc
+* files.scheme.org          /production/files
 * lists.scheme.org          /production/lists
 * persist.scheme.org        /production/persist
 * registry.scheme.org       /production/registry
+* servers.scheme.org        /production/servers
 * test.scheme.org           /production/test
+* web.scheme.org            /production/web-topic
 * www.scheme.org            /production/www
 
 Staging sites:
