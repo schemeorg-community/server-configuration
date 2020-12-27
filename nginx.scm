@@ -128,7 +128,7 @@
 ;;;;
 
 ;; sudo certbot renew
-;; sudo certbot certonly --nginx -d alpha.servers.scheme.org  -d api.scheme.org  -d api.staging.scheme.org  -d comm.scheme.org  -d containers.scheme.org -d doc.scheme.org  -d doc.staging.scheme.org  -d docs.scheme.org  -d files.scheme.org  -d list.scheme.org  -d lists.scheme.org  -d persist.scheme.org  -d r5rs.scheme.org  -d r6rs.scheme.org  -d r7rs.scheme.org  -d registry.scheme.org  -d scheme.org  -d servers.scheme.org  -d test.scheme.org  -d web.scheme.org  -d www.scheme.org  -d www.staging.scheme.org
+;; sudo certbot certonly --nginx -d alpha.servers.scheme.org -d api.scheme.org -d api.staging.scheme.org -d comm.scheme.org -d containers.scheme.org -d doc.scheme.org -d doc.staging.scheme.org -d docs.scheme.org -d files.scheme.org -d list.scheme.org -d lists.scheme.org -d persist.scheme.org -d r5rs.scheme.org -d r6rs.scheme.org -d r7rs.scheme.org -d registry.scheme.org -d scheme.org -d servers.scheme.org -d standards.scheme.org -d test.scheme.org -d web.scheme.org -d www.scheme.org -d www.staging.scheme.org
 
 (set! letsencrypt-etc "/etc/letsencrypt")
 (set! certificate-hostname "alpha.servers.scheme.org")
@@ -247,6 +247,12 @@
           "access_log /production/servers/log/nginx/access.log;"
           "error_log  /production/servers/log/nginx/error.log;"
           "root /production/servers/www;")
+
+         (https-server
+          '("standards.scheme.org")
+          "access_log /production/standards/log/nginx/access.log;"
+          "error_log  /production/standards/log/nginx/error.log;"
+          "root /production/standards/www;")
 
          (http-redirect-only-server
           "docs.scheme.org" "doc.scheme.org/")

@@ -1094,6 +1094,62 @@
       (recurse yes)))))
 
   (role
+   (name make-production-standards)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9014)
+      (name "prod-standards")))
+    (task
+     (title "make user")
+     (user
+      (uid 9014)
+      (name "prod-standards")
+      (group "prod-standards")
+      (groups ("users"))
+      (comment "prod-standards")
+      (home "/production/standards")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/standards")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/standards")
+      (state "directory")
+      (owner "prod-standards")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/standards/www dir")
+     (file
+      (path "/production/standards/www")
+      (state "directory")
+      (owner "prod-standards")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/standards/log/nginx dir")
+     (file
+      (path "/production/standards/log/nginx")
+      (state "directory")
+      (owner "prod-standards")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
    (name make-production-servers)
    (tasks
     (task
