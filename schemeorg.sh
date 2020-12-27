@@ -13,6 +13,6 @@ $R7RS ../nginx.scm >roles/configure_nginx/files/nginx.conf
 mkdir -p roles/make_production_api/files
 mkdir -p roles/make_staging_api/files
 mkdir -p roles/set_server_basics/files
-{ cat ../motd.text && echo; } >roles/set_server_basics/files/motd
+{ echo && cat ../motd.text && echo; } >roles/set_server_basics/files/motd
 $R7RS ../services.scm
 ansible-playbook schemeorg.yml "$@"

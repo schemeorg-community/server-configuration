@@ -1,4 +1,3 @@
-
 You have arrived. This server runs Debian and is managed by Ansible.
 
 Do not keep private information here. Everything is group readable.
@@ -13,6 +12,7 @@ Production sites:
 * persist.scheme.org        /production/persist
 * registry.scheme.org       /production/registry
 * servers.scheme.org        /production/servers
+* standards.scheme.org      /production/standards
 * test.scheme.org           /production/test
 * web.scheme.org            /production/web-topic
 * www.scheme.org            /production/www
