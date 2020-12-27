@@ -42,6 +42,7 @@
     make-production-files
     make-production-containers
     make-production-lists
+    make-production-standards
     make-production-servers
     make-production-alpha-servers
     setup-lets-encrypt
