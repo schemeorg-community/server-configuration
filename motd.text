@@ -7,6 +7,7 @@ Production sites:
 * comm.scheme.org           /production/comm
 * containers.scheme.org     /production/containers
 * doc.scheme.org            /production/doc
+* events.scheme.org         /production/events
 * files.scheme.org          /production/files
 * lists.scheme.org          /production/lists
 * persist.scheme.org        /production/persist

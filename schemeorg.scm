@@ -39,6 +39,7 @@
     make-production-comm
     make-production-test
     make-production-web
+    make-production-events
     make-production-files
     make-production-containers
     make-production-lists
@@ -921,6 +922,62 @@
       (path "/production/web-topic/log/nginx")
       (state "directory")
       (owner "prod-web")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-events)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9013)
+      (name "prod-events")))
+    (task
+     (title "make user")
+     (user
+      (uid 9013)
+      (name "prod-events")
+      (group "prod-events")
+      (groups ("users"))
+      (comment "prod-events")
+      (home "/production/events")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (tasknw
+     (title "chmod home dir")
+     (file
+      (path "/production/events")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/events")
+      (state "directory")
+      (owner "prod-events")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/events/www dir")
+     (file
+      (path "/production/events/www")
+      (state "directory")
+      (owner "prod-events")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/events/log/nginx dir")
+     (file
+      (path "/production/events/log/nginx")
+      (state "directory")
+      (owner "prod-events")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
