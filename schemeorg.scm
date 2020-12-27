@@ -43,6 +43,7 @@
     make-production-files
     make-production-containers
     make-production-lists
+    make-production-research
     make-production-standards
     make-production-servers
     make-production-alpha-servers
@@ -1146,6 +1147,62 @@
       (path "/production/lists/log/nginx")
       (state "directory")
       (owner "prod-lists")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-research)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9015)
+      (name "prod-research")))
+    (task
+     (title "make user")
+     (user
+      (uid 9015)
+      (name "prod-research")
+      (group "prod-research")
+      (groups ("users"))
+      (comment "prod-research")
+      (home "/production/research")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/research")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/research")
+      (state "directory")
+      (owner "prod-research")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/research/www dir")
+     (file
+      (path "/production/research/www")
+      (state "directory")
+      (owner "prod-research")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/research/log/nginx dir")
+     (file
+      (path "/production/research/log/nginx")
+      (state "directory")
+      (owner "prod-research")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)

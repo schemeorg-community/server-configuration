@@ -12,6 +12,7 @@ Production sites:
 * lists.scheme.org          /production/lists
 * persist.scheme.org        /production/persist
 * registry.scheme.org       /production/registry
+* research.scheme.org       /production/research
 * servers.scheme.org        /production/servers
 * standards.scheme.org      /production/standards
 * test.scheme.org           /production/test
