@@ -60,8 +60,8 @@
   (list
    (add-header-always "Content-Security-Policy"
                       "default-src 'self'"
-                      "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net"
-                      "script-src 'self' 'unsafe-inline' cdn.jsdelivr.net"
+                      "style-src 'self' 'unsafe-inline'"
+                      "script-src 'self' 'unsafe-inline'"
                       "upgrade-insecure-requests")
    (apply add-header-always "Feature-Policy"
           (map (lambda (feature) (string-append feature " 'none'"))
