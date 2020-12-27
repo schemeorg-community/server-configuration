@@ -934,12 +934,12 @@
     (task
      (title "make group")
      (group
-      (gid 9013)
+      (gid 9016)
       (name "prod-events")))
     (task
      (title "make user")
      (user
-      (uid 9013)
+      (uid 9016)
       (name "prod-events")
       (group "prod-events")
       (groups ("users"))
@@ -947,7 +947,7 @@
       (home "/production/events")
       (shell "/bin/bash")
       (move-home yes)))
-    (tasknw
+    (task
      (title "chmod home dir")
      (file
       (path "/production/events")
