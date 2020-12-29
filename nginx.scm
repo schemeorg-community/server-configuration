@@ -128,7 +128,7 @@
 ;;;;
 
 ;; sudo certbot renew
-;; sudo certbot certonly --nginx -d alpha.servers.scheme.org -d api.scheme.org -d api.staging.scheme.org -d comm.scheme.org -d containers.scheme.org -d doc.scheme.org -d doc.staging.scheme.org -d docs.scheme.org -d events.scheme.org -d files.scheme.org -d list.scheme.org -d lists.scheme.org -d persist.scheme.org -d r5rs.scheme.org -d r6rs.scheme.org -d r7rs.scheme.org -d registry.scheme.org -d research.scheme.org -d s7.scheme.org -d scheme.org -d servers.scheme.org -d standards.scheme.org -d test.scheme.org -d web.scheme.org -d www.scheme.org -d www.staging.scheme.org
+;; sudo certbot certonly --nginx -d alpha.servers.scheme.org -d api.scheme.org -d api.staging.scheme.org -d blog.scheme.org -d chat.scheme.org -d comm.scheme.org -d containers.scheme.org -d doc.scheme.org -d doc.staging.scheme.org -d docs.scheme.org -d events.scheme.org -d files.scheme.org -d list.scheme.org -d lists.scheme.org -d persist.scheme.org -d play.scheme.org -d r5rs.scheme.org -d r6rs.scheme.org -d r7rs.scheme.org -d registry.scheme.org -d research.scheme.org -d s7.scheme.org -d scheme.org -d servers.scheme.org -d standards.scheme.org -d test.scheme.org -d try.scheme.org -d web.scheme.org -d www.scheme.org -d www.staging.scheme.org
 
 (set! letsencrypt-etc "/etc/letsencrypt")
 (set! certificate-hostname "alpha.servers.scheme.org")
@@ -180,6 +180,18 @@
           "error_log  /staging/api/log/nginx/error.log;"
           (block "location /"
                  "proxy_pass http://127.0.0.1:9001;"))
+
+         (https-server
+          '("blog.scheme.org")
+          "access_log /production/blog/log/nginx/access.log;"
+          "error_log  /production/blog/log/nginx/error.log;"
+          "root /production/blog/www;")
+
+         (https-server
+          '("chat.scheme.org")
+          "access_log /production/chat/log/nginx/access.log;"
+          "error_log  /production/chat/log/nginx/error.log;"
+          "root /production/chat/www;")
 
          (https-server
           '("doc.scheme.org")
@@ -266,11 +278,20 @@
           "error_log  /production/standards/log/nginx/error.log;"
           "root /production/standards/www;")
 
+         (https-server
+          '("try.scheme.org")
+          "access_log /production/try/log/nginx/access.log;"
+          "error_log  /production/try/log/nginx/error.log;"
+          "root /production/try/www;")
+
          (http-redirect-only-server
           "docs.scheme.org" "doc.scheme.org/")
 
          (http-redirect-only-server
           "list.scheme.org" "lists.scheme.org/")
+
+         (http-redirect-only-server
+          "play.scheme.org" "try.scheme.org/")
 
          (http-redirect-only-server
           "r5rs.scheme.org" "schemers.org/Documents/Standards/R5RS/")

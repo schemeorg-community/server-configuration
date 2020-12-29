@@ -36,6 +36,8 @@
     make-staging-doc
     make-production-registry
     make-production-persist
+    make-production-blog
+    make-production-chat
     make-production-comm
     make-production-test
     make-production-web
@@ -47,6 +49,7 @@
     make-production-standards
     make-production-servers
     make-production-alpha-servers
+    make-production-try
     setup-lets-encrypt
     configure-nginx
     configure-ssh-server)))
@@ -761,6 +764,118 @@
       (recurse yes)))))
 
   (role
+   (name make-production-blog)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9018)
+      (name "prod-blog")))
+    (task
+     (title "make user")
+     (user
+      (uid 9018)
+      (name "prod-blog")
+      (group "prod-blog")
+      (groups ("users"))
+      (comment "prod-blog")
+      (home "/production/blog")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/blog")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/blog")
+      (state "directory")
+      (owner "prod-blog")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/blog/www dir")
+     (file
+      (path "/production/blog/www")
+      (state "directory")
+      (owner "prod-blog")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/blog/log/nginx dir")
+     (file
+      (path "/production/blog/log/nginx")
+      (state "directory")
+      (owner "prod-blog")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-chat)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9019)
+      (name "prod-chat")))
+    (task
+     (title "make user")
+     (user
+      (uid 9019)
+      (name "prod-chat")
+      (group "prod-chat")
+      (groups ("users"))
+      (comment "prod-chat")
+      (home "/production/chat")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/chat")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/chat")
+      (state "directory")
+      (owner "prod-chat")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/chat/www dir")
+     (file
+      (path "/production/chat/www")
+      (state "directory")
+      (owner "prod-chat")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/chat/log/nginx dir")
+     (file
+      (path "/production/chat/log/nginx")
+      (state "directory")
+      (owner "prod-chat")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
    (name make-production-comm)
    (tasks
     (task
@@ -1356,6 +1471,62 @@
       (path "/production/alpha.servers/log/nginx")
       (state "directory")
       (owner "prod-servers")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-try)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9017)
+      (name "prod-try")))
+    (task
+     (title "make user")
+     (user
+      (uid 9017)
+      (name "prod-try")
+      (group "prod-try")
+      (groups ("users"))
+      (comment "prod-try")
+      (home "/production/try")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/try")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/try")
+      (state "directory")
+      (owner "prod-try")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/try/www dir")
+     (file
+      (path "/production/try/www")
+      (state "directory")
+      (owner "prod-try")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/try/log/nginx dir")
+     (file
+      (path "/production/try/log/nginx")
+      (state "directory")
+      (owner "prod-try")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
