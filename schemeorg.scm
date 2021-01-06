@@ -43,6 +43,7 @@
     make-production-web
     make-production-events
     make-production-files
+    make-production-implementations
     make-production-containers
     make-production-lists
     make-production-research
@@ -1163,6 +1164,62 @@
       (path "/production/files/log/nginx")
       (state "directory")
       (owner "prod-files")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-implementations)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9021)
+      (name "prod-impls")))
+    (task
+     (title "make user")
+     (user
+      (uid 9021)
+      (name "prod-impls")
+      (group "prod-impls")
+      (groups ("users"))
+      (comment "prod-impls")
+      (home "/production/implementations")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/implementations")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/implementations")
+      (state "directory")
+      (owner "prod-impls")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/implementations/www dir")
+     (file
+      (path "/production/implementations/www")
+      (state "directory")
+      (owner "prod-impls")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/implementations/log/nginx dir")
+     (file
+      (path "/production/implementations/log/nginx")
+      (state "directory")
+      (owner "prod-impls")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)

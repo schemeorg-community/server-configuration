@@ -138,7 +138,7 @@
 ;;;;
 
 ;; sudo certbot renew
-;; sudo certbot certonly --nginx -d alpha.servers.scheme.org -d api.scheme.org -d api.staging.scheme.org -d blog.scheme.org -d chat.scheme.org -d comm.scheme.org -d containers.scheme.org -d doc.scheme.org -d doc.staging.scheme.org -d docs.scheme.org -d events.scheme.org -d files.scheme.org -d list.scheme.org -d lists.scheme.org -d persist.scheme.org -d play.scheme.org -d r5rs.scheme.org -d r6rs.scheme.org -d r7rs.scheme.org -d registry.scheme.org -d research.scheme.org -d s7.scheme.org -d scheme.org -d servers.scheme.org -d standards.scheme.org -d test.scheme.org -d try.scheme.org -d web.scheme.org -d www.scheme.org -d www.staging.scheme.org
+;; sudo certbot certonly --nginx -d alpha.servers.scheme.org -d api.scheme.org -d api.staging.scheme.org -d blog.scheme.org -d chat.scheme.org -d comm.scheme.org -d containers.scheme.org -d doc.scheme.org -d doc.staging.scheme.org -d docs.scheme.org -d events.scheme.org -d faq.scheme.org -d files.scheme.org -d implementations.scheme.org -d list.scheme.org -d lists.scheme.org -d persist.scheme.org -d play.scheme.org -d r5rs.scheme.org -d r6rs.scheme.org -d r7rs.scheme.org -d registry.scheme.org -d research.scheme.org -d s7.scheme.org -d scheme.org -d servers.scheme.org -d standards.scheme.org -d test.scheme.org -d try.scheme.org -d web.scheme.org -d www.scheme.org -d www.staging.scheme.org
 
 (set! letsencrypt-etc "/etc/letsencrypt")
 (set! certificate-hostname "alpha.servers.scheme.org")
@@ -265,6 +265,12 @@
           "root /production/events/www;")
 
          (https-server
+          '("implementations.scheme.org")
+          "access_log /production/implementations/log/nginx/access.log;"
+          "error_log  /production/implementations/log/nginx/error.log;"
+          "root /production/implementations/www;")
+
+         (https-server
           '("lists.scheme.org")
           "access_log /production/lists/log/nginx/access.log;"
           "error_log  /production/lists/log/nginx/error.log;"
@@ -306,6 +312,9 @@
 
          (http-redirect-only-server
           "docs.scheme.org" "doc.scheme.org/")
+
+         (http-redirect-only-server
+          "faq.scheme.org" "community.schemewiki.org/?scheme-faq")
 
          (http-redirect-only-server
           "list.scheme.org" "lists.scheme.org/")
