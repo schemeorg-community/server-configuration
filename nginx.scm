@@ -22,6 +22,10 @@
         (append (map indent (flatten-once body))
                 (list "}"))))
 
+(define (alist-change alist key val)
+  (map (lambda (pair) (if (equal? key (car pair)) (cons key val) pair))
+       alist))
+
 (define (add-header-always name . params)
   (string-join (list "add_header"
                      name
@@ -56,13 +60,19 @@
     "vibrate"
     "vr"))
 
-(define https-security-header-lines
+(define content-security-policy
+  (make-parameter
+   '(("default-src" "'self'")
+     ("style-src"   "'self'" "'unsafe-inline'")
+     ("script-src"  "'self'" "'unsafe-inline'")
+     ("upgrade-insecure-requests"))))
+
+(define (encode-csp-directive directive) (string-join directive " "))
+
+(define (https-security-header-lines)
   (list
-   (add-header-always "Content-Security-Policy"
-                      "default-src 'self'"
-                      "style-src 'self' 'unsafe-inline'"
-                      "script-src 'self' 'unsafe-inline'"
-                      "upgrade-insecure-requests")
+   (apply add-header-always "Content-Security-Policy"
+          (map encode-csp-directive (content-security-policy)))
    (apply add-header-always "Feature-Policy"
           (map (lambda (feature) (string-append feature " 'none'"))
                blocked-features))
@@ -88,7 +98,7 @@
          "listen [::]:443 ssl;"
          "listen 443 ssl;"
          (string-append "include " letsencrypt-etc "/options-ssl-nginx.conf;")
-         https-security-header-lines
+         (https-security-header-lines)
          (string-append "return 301 https://" primary "$request_uri;")))
 
 (define (https-only-server hostname . lines)
@@ -98,7 +108,7 @@
          "listen [::]:443 ssl;"
          "listen 443 ssl;"
          (string-append "include " letsencrypt-etc "/options-ssl-nginx.conf;")
-         https-security-header-lines
+         (https-security-header-lines)
          lines))
 
 (define (https-server hostnames . lines)
@@ -121,7 +131,7 @@
     "listen [::]:443 ssl;"
     "listen 443 ssl;"
     (string-append "include " letsencrypt-etc "/options-ssl-nginx.conf;")
-    https-security-header-lines
+    (https-security-header-lines)
     (block "location = /"
            (string-append "return 301 http://" redirect-to ";")))))
 
