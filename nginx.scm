@@ -143,6 +143,11 @@
 (set! letsencrypt-etc "/etc/letsencrypt")
 (set! certificate-hostname "alpha.servers.scheme.org")
 
+(define cors
+  (list "add_header 'Access-Control-Allow-Origin' '*';"
+        "add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';"
+        "add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';"))
+
 (display-lines
  (append
   (block "events")
@@ -182,7 +187,19 @@
           "access_log /production/api/log/nginx/access.log;"
           "error_log  /production/api/log/nginx/error.log;"
           (block "location /"
-                 "proxy_pass http://127.0.0.1:9000;"))
+                 "proxy_pass http://127.0.0.1:9000;"
+                 (apply block "if ($request_method = 'OPTIONS')"
+                        (append cors
+                                (list "add_header 'Access-Control-Max-Age' 1728000;"
+                                      "add_header 'Content-Type' 'text/plain; charset=utf-8';"
+                                      "add_header 'Content-Length' 0;"
+                                      "return 204;")))
+                 (apply block "if ($request_method = 'POST')"
+                        (append cors
+                                (list "add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';")))
+                 (apply block "if ($request_method = 'GET')"
+                        (append cors
+                                (list "add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';")))))
 
          (https-server
           '("api.staging.scheme.org")
