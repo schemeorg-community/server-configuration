@@ -269,7 +269,20 @@
      (title "add key for hga")
      (authorized-key
       (user "hga")
-      (key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFxF/9Gmg0vGsxasPdYWmgiN7kJGbfZfUt+hrINDQ/y/ hga")))))
+      (key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFxF/9Gmg0vGsxasPdYWmgiN7kJGbfZfUt+hrINDQ/y/ hga")))
+    (task
+     (title "make user feeley")
+     (user
+      (uid 1003)
+      (name "feeley")
+      (comment "Marc")
+      (group "users")
+      (shell "/bin/bash")))
+    (task
+     (title "add key for feeley")
+     (authorized-key
+      (user "feeley")
+      (key "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEA3A8iCdI/TzkcQOx2Uf4Z/kaIvVRtPTgB3d5VurlLWSmAL9akiFjKkNPIkk2VGvqTDcUOTygkIh5chtnVMhcuUvVWunOEBtrnKeFo1JLt4sg8T+EiuTqeIrjZDxKv82tAsahG6/rVVOL0sWeDydbgYX/thsHXQfOiTnhU/9PYm8s= feeley")))))
 
   (role
    (name make-production-doc)
