@@ -288,11 +288,21 @@
           "error_log  /production/standards/log/nginx/error.log;"
           "root /production/standards/www;")
 
-         (https-server
-          '("try.scheme.org")
-          "access_log /production/try/log/nginx/access.log;"
-          "error_log  /production/try/log/nginx/error.log;"
-          "root /production/try/www;")
+         (parameterize ((content-security-policy
+                         (alist-change (content-security-policy)
+                                       "script-src"
+                                       '("'self'"
+                                         "'unsafe-inline'"
+                                         "'unsafe-eval'"))))
+           (https-server
+            '("try.scheme.org")
+            "access_log /production/try/log/nginx/access.log;"
+            "error_log  /production/try/log/nginx/error.log;"
+            "root /production/try/www;"
+
+            "gzip on;"
+            "gzip_comp_level 6;"
+            "gzip_types application/javascript;"))
 
          (http-redirect-only-server
           "docs.scheme.org" "doc.scheme.org/")
