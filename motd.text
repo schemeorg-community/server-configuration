@@ -16,6 +16,7 @@ Production sites:
 * servers.scheme.org        /production/servers
 * standards.scheme.org      /production/standards
 * test.scheme.org           /production/test
+* try.scheme.org            /production/try
 * web.scheme.org            /production/web-topic
 * www.scheme.org            /production/www
 
