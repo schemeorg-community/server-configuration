@@ -781,6 +781,9 @@
    (name make-production-blog)
    (tasks
     (task
+     (title "install planet-venus")
+     (apt (name "planet-venus")))
+    (task
      (title "make group")
      (group
       (gid 9018)
