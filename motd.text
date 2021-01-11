@@ -4,7 +4,6 @@ Do not keep private information here. Everything is group readable.
 
 Production sites:
 * api.scheme.org            /production/api
-* blog.scheme.org           /production/blog
 * comm.scheme.org           /production/comm
 * containers.scheme.org     /production/containers
 * doc.scheme.org            /production/doc
@@ -12,6 +11,7 @@ Production sites:
 * files.scheme.org          /production/files
 * lists.scheme.org          /production/lists
 * persist.scheme.org        /production/persist
+* planet.scheme.org         /production/planet
 * registry.scheme.org       /production/registry
 * research.scheme.org       /production/research
 * servers.scheme.org        /production/servers

@@ -36,7 +36,7 @@
     make-staging-doc
     make-production-registry
     make-production-persist
-    make-production-blog
+    make-production-planet
     make-production-chat
     make-production-comm
     make-production-test
@@ -778,7 +778,7 @@
       (recurse yes)))))
 
   (role
-   (name make-production-blog)
+   (name make-production-planet)
    (tasks
     (task
      (title "install planet-venus")
@@ -787,50 +787,50 @@
      (title "make group")
      (group
       (gid 9018)
-      (name "prod-blog")))
+      (name "prod-planet")))
     (task
      (title "make user")
      (user
       (uid 9018)
-      (name "prod-blog")
-      (group "prod-blog")
+      (name "prod-planet")
+      (group "prod-planet")
       (groups ("users"))
-      (comment "prod-blog")
-      (home "/production/blog")
+      (comment "prod-planet")
+      (home "/production/planet")
       (shell "/bin/bash")
       (move-home yes)))
     (task
      (title "chmod home dir")
      (file
-      (path "/production/blog")
+      (path "/production/planet")
       (mode "u=rwX,g=rX,o=rX")
       (follow no)
       (recurse no)))
     (task
      (title "chown home dir")
      (file
-      (path "/production/blog")
+      (path "/production/planet")
       (state "directory")
-      (owner "prod-blog")
+      (owner "prod-planet")
       (group "users")
       (follow no)
       (recurse yes)))
     (task
-     (title "make /production/blog/www dir")
+     (title "make /production/planet/www dir")
      (file
-      (path "/production/blog/www")
+      (path "/production/planet/www")
       (state "directory")
-      (owner "prod-blog")
+      (owner "prod-planet")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
       (recurse yes)))
     (task
-     (title "make /production/blog/log/nginx dir")
+     (title "make /production/planet/log/nginx dir")
      (file
-      (path "/production/blog/log/nginx")
+      (path "/production/planet/log/nginx")
       (state "directory")
-      (owner "prod-blog")
+      (owner "prod-planet")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)

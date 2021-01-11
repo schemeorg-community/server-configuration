@@ -138,7 +138,7 @@
 ;;;;
 
 ;; sudo certbot renew
-;; sudo certbot certonly --nginx -d alpha.servers.scheme.org -d api.scheme.org -d api.staging.scheme.org -d blog.scheme.org -d chat.scheme.org -d comm.scheme.org -d containers.scheme.org -d doc.scheme.org -d doc.staging.scheme.org -d docs.scheme.org -d events.scheme.org -d faq.scheme.org -d files.scheme.org -d implementations.scheme.org -d list.scheme.org -d lists.scheme.org -d persist.scheme.org -d play.scheme.org -d r5rs.scheme.org -d r6rs.scheme.org -d r7rs.scheme.org -d registry.scheme.org -d research.scheme.org -d s7.scheme.org -d scheme.org -d servers.scheme.org -d standards.scheme.org -d test.scheme.org -d try.scheme.org -d web.scheme.org -d www.scheme.org -d www.staging.scheme.org
+;; sudo certbot certonly --nginx -d alpha.servers.scheme.org -d api.scheme.org -d api.staging.scheme.org -d blog.scheme.org -d chat.scheme.org -d comm.scheme.org -d containers.scheme.org -d doc.scheme.org -d doc.staging.scheme.org -d docs.scheme.org -d events.scheme.org -d faq.scheme.org -d files.scheme.org -d implementations.scheme.org -d list.scheme.org -d lists.scheme.org -d persist.scheme.org -d planet.scheme.org -d play.scheme.org -d r5rs.scheme.org -d r6rs.scheme.org -d r7rs.scheme.org -d registry.scheme.org -d research.scheme.org -d s7.scheme.org -d scheme.org -d servers.scheme.org -d standards.scheme.org -d test.scheme.org -d try.scheme.org -d web.scheme.org -d www.scheme.org -d www.staging.scheme.org
 
 (set! letsencrypt-etc "/etc/letsencrypt")
 (set! certificate-hostname "alpha.servers.scheme.org")
@@ -209,10 +209,10 @@
                  "proxy_pass http://127.0.0.1:9001;"))
 
          (https-server
-          '("blog.scheme.org")
-          "access_log /production/blog/log/nginx/access.log;"
-          "error_log  /production/blog/log/nginx/error.log;"
-          "root /production/blog/www;")
+          '("planet.scheme.org")
+          "access_log /production/planet/log/nginx/access.log;"
+          "error_log  /production/planet/log/nginx/error.log;"
+          "root /production/planet/www;")
 
          (https-server
           '("chat.scheme.org")
@@ -326,6 +326,9 @@
             "gzip on;"
             "gzip_comp_level 6;"
             "gzip_types application/javascript;"))
+
+         (http-redirect-only-server
+          "blog.scheme.org" "planet.scheme.org/")
 
          (http-redirect-only-server
           "docs.scheme.org" "doc.scheme.org/")
