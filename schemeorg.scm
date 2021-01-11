@@ -834,7 +834,15 @@
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
-      (recurse yes)))))
+      (recurse yes)))
+    (task
+     (title "add cron job to check the feeds")
+     (cron
+      (name "planet")
+      (job "/production/planet/planet/planet.sh")
+      (user "prod-planet")
+      (hour "8")
+      (minute "0")))))
 
   (role
    (name make-production-chat)
