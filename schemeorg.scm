@@ -193,7 +193,12 @@
        ("htop"
         "stow"
         "tmux"
-        "tree"))))))
+        "tree"))))
+    (task
+     (title "dependencies for building gauche")
+     (apt
+      (name
+       ("libmbedtls-dev"))))))
 
   (role
    (name install-nginx)
