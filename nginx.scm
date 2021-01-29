@@ -133,7 +133,7 @@
     (string-append "include " letsencrypt-etc "/options-ssl-nginx.conf;")
     (https-security-header-lines)
     (block "location = /"
-           (string-append "return 301 http://" redirect-to ";")))))
+           (string-append "return 301 " redirect-to ";")))))
 
 ;;;;
 
@@ -330,33 +330,33 @@
          ;;
 
          (http-redirect-only-server
-          "blog.scheme.org" "planet.scheme.org/")
+          "blog.scheme.org" "https://planet.scheme.org/")
 
          (http-redirect-only-server
-          "docs.scheme.org" "doc.scheme.org/")
+          "docs.scheme.org" "https://doc.scheme.org/")
 
          (http-redirect-only-server
-          "faq.scheme.org" "community.schemewiki.org/?scheme-faq")
+          "faq.scheme.org" "http://community.schemewiki.org/?scheme-faq")
 
          (http-redirect-only-server
-          "list.scheme.org" "lists.scheme.org/")
+          "list.scheme.org" "https://lists.scheme.org/")
 
          (http-redirect-only-server
-          "play.scheme.org" "try.scheme.org/")
+          "play.scheme.org" "https://try.scheme.org/")
 
          (http-redirect-only-server
-          "r5rs.scheme.org" "schemers.org/Documents/Standards/R5RS/")
+          "r5rs.scheme.org" "http://schemers.org/Documents/Standards/R5RS/")
 
          (http-redirect-only-server
-          "r6rs.scheme.org" "www.r6rs.org/")
+          "r6rs.scheme.org" "http://www.r6rs.org/")
 
          (http-redirect-only-server
-          "r7rs.scheme.org" "r7rs.org/")
+          "r7rs.scheme.org" "http://r7rs.org/")
 
          ;;
 
          (http-redirect-only-server
-          "mit.scheme.org" "www.gnu.org/software/mit-scheme/")
+          "mit.scheme.org" "https://www.gnu.org/software/mit-scheme/")
 
          (http-redirect-only-server
-          "s7.scheme.org" "ccrma.stanford.edu/software/s7/"))))
+          "s7.scheme.org" "https://ccrma.stanford.edu/software/s7/"))))
