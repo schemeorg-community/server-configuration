@@ -37,6 +37,7 @@
     make-production-registry
     make-production-persist
     make-production-planet
+    make-production-apps
     make-production-chat
     make-production-comm
     make-production-test
@@ -848,6 +849,62 @@
       (user "prod-planet")
       (hour "8")
       (minute "0")))))
+
+  (role
+   (name make-production-apps)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9022)
+      (name "prod-apps")))
+    (task
+     (title "make user")
+     (user
+      (uid 9022)
+      (name "prod-apps")
+      (group "prod-apps")
+      (groups ("users"))
+      (comment "prod-apps")
+      (home "/production/apps")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/apps")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/apps")
+      (state "directory")
+      (owner "prod-apps")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/apps/www dir")
+     (file
+      (path "/production/apps/www")
+      (state "directory")
+      (owner "prod-apps")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/apps/log/nginx dir")
+     (file
+      (path "/production/apps/log/nginx")
+      (state "directory")
+      (owner "prod-apps")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
 
   (role
    (name make-production-chat)
