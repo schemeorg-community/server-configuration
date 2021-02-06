@@ -46,6 +46,7 @@
     make-production-files
     make-production-implementations
     make-production-containers
+    make-production-learn
     make-production-lists
     make-production-research
     make-production-standards
@@ -1349,6 +1350,62 @@
       (path "/production/containers/log/nginx")
       (state "directory")
       (owner "prod-contain")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-learn)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9023)
+      (name "prod-learn")))
+    (task
+     (title "make user")
+     (user
+      (uid 9023)
+      (name "prod-learn")
+      (group "prod-learn")
+      (groups ("users"))
+      (comment "prod-learn")
+      (home "/production/learn")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/learn")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/learn")
+      (state "directory")
+      (owner "prod-learn")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/learn/www dir")
+     (file
+      (path "/production/learn/www")
+      (state "directory")
+      (owner "prod-learn")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/learn/log/nginx dir")
+     (file
+      (path "/production/learn/log/nginx")
+      (state "directory")
+      (owner "prod-learn")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)

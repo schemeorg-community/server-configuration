@@ -138,7 +138,7 @@
 ;;;;
 
 ;; sudo certbot renew
-;; sudo certbot certonly --nginx -d alpha.servers.scheme.org -d api.scheme.org -d api.staging.scheme.org -d apps.scheme.org -d bigloo.scheme.org -d blog.scheme.org -d chat.scheme.org -d chibi.scheme.org -d chicken.scheme.org -d comm.scheme.org -d containers.scheme.org -d cyclone.scheme.org -d doc.scheme.org -d doc.staging.scheme.org -d docs.scheme.org -d events.scheme.org -d faq.scheme.org -d files.scheme.org -d gauche.scheme.org -d implementations.scheme.org -d kawa.scheme.org -d list.scheme.org -d lists.scheme.org -d mit.scheme.org -d persist.scheme.org -d planet.scheme.org -d play.scheme.org -d r5rs.scheme.org -d r6rs.scheme.org -d r7rs.scheme.org -d registry.scheme.org -d research.scheme.org -d s7.scheme.org -d sagittarius.scheme.org -d scheme.org -d servers.scheme.org -d staging.scheme.org -d standards.scheme.org -d stklos.scheme.org -d test.scheme.org -d try.scheme.org -d web.scheme.org -d www.scheme.org -d www.staging.scheme.org
+;; sudo certbot certonly --nginx -d alpha.servers.scheme.org -d api.scheme.org -d api.staging.scheme.org -d apps.scheme.org -d bigloo.scheme.org -d blog.scheme.org -d chat.scheme.org -d chibi.scheme.org -d chicken.scheme.org -d comm.scheme.org -d containers.scheme.org -d cyclone.scheme.org -d doc.scheme.org -d doc.staging.scheme.org -d docs.scheme.org -d events.scheme.org -d faq.scheme.org -d files.scheme.org -d gauche.scheme.org -d implementations.scheme.org -d kawa.scheme.org -d learn.scheme.org -d list.scheme.org -d lists.scheme.org -d mit.scheme.org -d persist.scheme.org -d planet.scheme.org -d play.scheme.org -d r5rs.scheme.org -d r6rs.scheme.org -d r7rs.scheme.org -d registry.scheme.org -d research.scheme.org -d s7.scheme.org -d sagittarius.scheme.org -d scheme.org -d servers.scheme.org -d staging.scheme.org -d standards.scheme.org -d stklos.scheme.org -d test.scheme.org -d try.scheme.org -d web.scheme.org -d www.scheme.org -d www.staging.scheme.org
 
 (set! letsencrypt-etc "/etc/letsencrypt")
 (set! certificate-hostname "alpha.servers.scheme.org")
@@ -292,6 +292,12 @@
           "access_log /production/implementations/log/nginx/access.log;"
           "error_log  /production/implementations/log/nginx/error.log;"
           "root /production/implementations/www;")
+
+         (https-server
+          '("learn.scheme.org")
+          "access_log /production/learn/log/nginx/access.log;"
+          "error_log  /production/learn/log/nginx/error.log;"
+          "root /production/learn/www;")
 
          (https-server
           '("lists.scheme.org")
