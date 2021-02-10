@@ -844,12 +844,12 @@
       (recurse yes)))
     (task
      (title "add cron job to check the feeds")
-     (cron
-      (name "planet")
-      (job "/production/planet/planet/planet.sh")
-      (user "prod-planet")
-      (hour "8")
-      (minute "0")))))
+     (copy
+      (dest "/etc/cron.daily/scheme-prod-planet")
+      (content "#!/bin/sh\nexec sudo -iu prod-planet /production/planet/planet/planet.sh\n")
+      (mode "555")
+      (owner "0")
+      (group "0")))))
 
   (role
    (name make-production-apps)
@@ -1743,12 +1743,12 @@
         "python-certbot-nginx"))))
     (task
      (title "add cron job for certbot renewal")
-     (cron
-      (name "certbot automatic renewal")
-      (job "certbot renew --non-interactive --no-self-upgrade --quiet --nginx")
-      (user "root")
-      (hour "3")
-      (minute "30")))))
+     (copy
+      (dest "/etc/cron.daily/scheme-certbot")
+      (content "#!/bin/sh\nexec certbot renew --non-interactive --no-self-upgrade --quiet --nginx\n")
+      (mode "555")
+      (owner "0")
+      (group "0")))))
 
   (role
    (name configure-nginx)
