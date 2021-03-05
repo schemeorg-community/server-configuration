@@ -167,7 +167,7 @@
      (title "text editors")
      (apt
       (name
-       ("emacs"
+       ("emacs-nox"
         "mg"
         "nano"
         "vim"))))
