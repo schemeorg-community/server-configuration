@@ -285,6 +285,7 @@
       (name "feeley")
       (comment "Marc")
       (group "users")
+      (groups ("sudo"))
       (shell "/bin/bash")))
     (task
      (title "add key for feeley")
