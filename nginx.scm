@@ -335,10 +335,6 @@
             "error_log  /production/try/log/nginx/error.log;"
             "root /production/try/www;"
 
-            "include /etc/nginx/mime.types;"
-            (block "types"
-                   "application/javascript js o1;")
-
             "gzip on;"
             "gzip_comp_level 6;"
             "gzip_types application/javascript;"))
