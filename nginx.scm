@@ -155,6 +155,7 @@
          "include /etc/nginx/mime.types;"
          "default_type application/octet-stream;"
          "sendfile on;"
+         "gzip on;"
          "server_tokens off;"
          "ssl_stapling on;"
          "ssl_stapling_verify on;"
