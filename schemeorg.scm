@@ -40,6 +40,7 @@
     make-production-apps
     make-production-chat
     make-production-comm
+    make-production-cookbook
     make-production-test
     make-production-web
     make-production-events
@@ -1015,6 +1016,62 @@
       (path "/production/comm/log/nginx")
       (state "directory")
       (owner "prod-comm")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-cookbook)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9025)
+      (name "prod-cookbook")))
+    (task
+     (title "make user")
+     (user
+      (uid 9025)
+      (name "prod-cookbook")
+      (group "prod-cookbook")
+      (groups ("users"))
+      (comment "prod-cookbook")
+      (home "/production/cookbook")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/cookbook")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/cookbook")
+      (state "directory")
+      (owner "prod-cookbook")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/cookbook/www dir")
+     (file
+      (path "/production/cookbook/www")
+      (state "directory")
+      (owner "prod-cookbook")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/cookbook/log/nginx dir")
+     (file
+      (path "/production/cookbook/log/nginx")
+      (state "directory")
+      (owner "prod-cookbook")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
