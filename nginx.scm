@@ -156,6 +156,7 @@
          "default_type application/octet-stream;"
          "sendfile on;"
          "gzip on;"
+         "expires 1M;"
          "server_tokens off;"
          "ssl_stapling on;"
          "ssl_stapling_verify on;"
