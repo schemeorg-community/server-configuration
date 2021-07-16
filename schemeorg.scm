@@ -38,8 +38,8 @@
     make-production-persist
     make-production-planet
     make-production-apps
-    make-production-chat
     make-production-comm
+    make-production-community
     make-production-cookbook
     make-production-test
     make-production-web
@@ -910,62 +910,6 @@
       (recurse yes)))))
 
   (role
-   (name make-production-chat)
-   (tasks
-    (task
-     (title "make group")
-     (group
-      (gid 9019)
-      (name "prod-chat")))
-    (task
-     (title "make user")
-     (user
-      (uid 9019)
-      (name "prod-chat")
-      (group "prod-chat")
-      (groups ("users"))
-      (comment "prod-chat")
-      (home "/production/chat")
-      (shell "/bin/bash")
-      (move-home yes)))
-    (task
-     (title "chmod home dir")
-     (file
-      (path "/production/chat")
-      (mode "u=rwX,g=rX,o=rX")
-      (follow no)
-      (recurse no)))
-    (task
-     (title "chown home dir")
-     (file
-      (path "/production/chat")
-      (state "directory")
-      (owner "prod-chat")
-      (group "users")
-      (follow no)
-      (recurse yes)))
-    (task
-     (title "make /production/chat/www dir")
-     (file
-      (path "/production/chat/www")
-      (state "directory")
-      (owner "prod-chat")
-      (group "users")
-      (mode "u=rwX,g=rwX,o=rX")
-      (follow no)
-      (recurse yes)))
-    (task
-     (title "make /production/chat/log/nginx dir")
-     (file
-      (path "/production/chat/log/nginx")
-      (state "directory")
-      (owner "prod-chat")
-      (group "users")
-      (mode "u=rwX,g=rwX,o=rX")
-      (follow no)
-      (recurse yes)))))
-
-  (role
    (name make-production-comm)
    (tasks
     (task
@@ -1016,6 +960,62 @@
       (path "/production/comm/log/nginx")
       (state "directory")
       (owner "prod-comm")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-community)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9026)
+      (name "prod-community")))
+    (task
+     (title "make user")
+     (user
+      (uid 9026)
+      (name "prod-community")
+      (group "prod-community")
+      (groups ("users"))
+      (comment "prod-community")
+      (home "/production/community")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/community")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/community")
+      (state "directory")
+      (owner "prod-community")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/community/www dir")
+     (file
+      (path "/production/community/www")
+      (state "directory")
+      (owner "prod-community")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/community/log/nginx dir")
+     (file
+      (path "/production/community/log/nginx")
+      (state "directory")
+      (owner "prod-community")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
