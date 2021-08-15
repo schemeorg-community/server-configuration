@@ -55,6 +55,7 @@
     make-production-servers
     make-production-alpha-servers
     make-production-try
+    make-production-video
     setup-lets-encrypt
     configure-nginx
     configure-ssh-server)))
@@ -1842,6 +1843,62 @@
       (path "/production/try/log/nginx")
       (state "directory")
       (owner "prod-try")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-video)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9028)
+      (name "prod-video")))
+    (task
+     (title "make user")
+     (user
+      (uid 9028)
+      (name "prod-video")
+      (group "prod-video")
+      (groups ("users"))
+      (comment "prod-video")
+      (home "/production/video")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/video")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/video")
+      (state "directory")
+      (owner "prod-video")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/video/www dir")
+     (file
+      (path "/production/video/www")
+      (state "directory")
+      (owner "prod-video")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/video/log/nginx dir")
+     (file
+      (path "/production/video/log/nginx")
+      (state "directory")
+      (owner "prod-video")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
