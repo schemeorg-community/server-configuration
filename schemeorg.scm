@@ -44,6 +44,7 @@
     make-production-man
     make-production-test
     make-production-web
+    make-production-wiki
     make-production-events
     make-production-files
     make-production-implementations
@@ -1242,6 +1243,52 @@
       (path "/production/web-topic/log/nginx")
       (state "directory")
       (owner "prod-web")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-wiki)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9024)
+      (name "prod-wiki")))
+    (task
+     (title "make user")
+     (user
+      (uid 9024)
+      (name "prod-wiki")
+      (group "prod-wiki")
+      (groups ("users"))
+      (comment "prod-wiki")
+      (home "/production/wiki")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/wiki")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/wiki")
+      (state "directory")
+      (owner "prod-wiki")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/wiki/log/nginx dir")
+     (file
+      (path "/production/wiki/log/nginx")
+      (state "directory")
+      (owner "prod-wiki")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
