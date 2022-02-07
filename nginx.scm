@@ -26,12 +26,15 @@
   (map (lambda (pair) (if (equal? key (car pair)) (cons key val) pair))
        alist))
 
-(define (add-header-always name . params)
-  (string-join (list "add_header"
-                     name
-                     (string-append "\"" (string-join params "; ") "\"")
-                     "always;")
-               " "))
+(define (add-header name . params)
+  (if (null? params)
+      '()
+      (list
+       (string-join (list "add_header"
+			  name
+			  (string-append "\"" (string-join params "; ") "\"")
+			  "always;")
+		    " "))))
 
 ;;;;
 
@@ -70,20 +73,20 @@
 (define (encode-csp-directive directive) (string-join directive " "))
 
 (define (https-security-header-lines)
-  (list
-   (apply add-header-always "Content-Security-Policy"
-          (map encode-csp-directive (content-security-policy)))
-   (apply add-header-always "Feature-Policy"
+  (append
+   (apply add-header "Content-Security-Policy"
+	  (map encode-csp-directive (content-security-policy)))
+   (apply add-header "Feature-Policy"
           (map (lambda (feature) (string-append feature " 'none'"))
                blocked-features))
-   (add-header-always "Referrer-Policy" "no-referrer")
-   (add-header-always "Strict-Transport-Security"
-                      "max-age=31536000"
-                      "includeSubDomains")
-   (add-header-always "X-Content-Type-Options" "nosniff")
-   (add-header-always "X-Frame-Options" "DENY")
-   (add-header-always "X-Permitted-Cross-Domain-Policies" "none")
-   (add-header-always "X-Xss-Protection" "1" "mode=block")))
+   (add-header "Referrer-Policy" "no-referrer")
+   (add-header "Strict-Transport-Security"
+               "max-age=31536000"
+               "includeSubDomains")
+   (add-header "X-Content-Type-Options" "nosniff")
+   (add-header "X-Frame-Options" "DENY")
+   (add-header "X-Permitted-Cross-Domain-Policies" "none")
+   (add-header "X-Xss-Protection" "1" "mode=block")))
 
 (define (http->https-redirect-server primary alias)
   (block "server"
@@ -337,12 +340,7 @@
           "error_log  /production/standards/log/nginx/error.log;"
           "root /production/standards/www;")
 
-         (parameterize ((content-security-policy
-                         (alist-change (content-security-policy)
-                                       "script-src"
-                                       '("'self'"
-                                         "'unsafe-inline'"
-                                         "'unsafe-eval'"))))
+         (parameterize ((content-security-policy '()))
            (https-server
             '("try.scheme.org")
             "access_log /production/try/log/nginx/access.log;"
