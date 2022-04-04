@@ -413,4 +413,8 @@
           "sagittarius.scheme.org" "https://ktakashi.github.io/")
 
          (http-redirect-only-server
-          "stklos.scheme.org" "https://stklos.net/"))))
+          "stklos.scheme.org" "https://stklos.net/")
+
+         (http-redirect-only-server
+          "ypsilon.scheme.org"
+          "http://www.littlewingpinball.com/doc/en/ypsilon/"))))
