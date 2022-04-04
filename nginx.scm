@@ -238,16 +238,16 @@
           "root /production/cookbook/www;")
 
          (https-server
-          '("doc.scheme.org")
-          "access_log /production/doc/log/nginx/access.log;"
-          "error_log  /production/doc/log/nginx/error.log;"
-          "root /production/doc/www;")
+          '("docs.scheme.org")
+          "access_log /production/docs/log/nginx/access.log;"
+          "error_log  /production/docs/log/nginx/error.log;"
+          "root /production/docs/www;")
 
          (https-server
-          '("doc.staging.scheme.org")
-          "access_log /staging/doc/log/nginx/access.log;"
-          "error_log  /staging/doc/log/nginx/error.log;"
-          "root /staging/doc/www;")
+          '("docs.staging.scheme.org")
+          "access_log /staging/docs/log/nginx/access.log;"
+          "error_log  /staging/docs/log/nginx/error.log;"
+          "root /staging/docs/www;")
 
          (https-server
           '("man.scheme.org")
@@ -363,7 +363,7 @@
           "blog.scheme.org" "https://planet.scheme.org/")
 
          (http-redirect-only-server
-          "docs.scheme.org" "https://doc.scheme.org/")
+          "doc.scheme.org" "https://docs.scheme.org/")
 
          (http-redirect-only-server
           "faq.scheme.org" "http://community.schemewiki.org/?scheme-faq")

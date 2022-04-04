@@ -32,8 +32,8 @@
     make-staging-www
     make-production-api
     make-staging-api
-    make-production-doc
-    make-staging-doc
+    make-production-docs
+    make-staging-docs
     make-production-registry
     make-production-persist
     make-production-planet
@@ -298,112 +298,112 @@
       (key "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEA3A8iCdI/TzkcQOx2Uf4Z/kaIvVRtPTgB3d5VurlLWSmAL9akiFjKkNPIkk2VGvqTDcUOTygkIh5chtnVMhcuUvVWunOEBtrnKeFo1JLt4sg8T+EiuTqeIrjZDxKv82tAsahG6/rVVOL0sWeDydbgYX/thsHXQfOiTnhU/9PYm8s= feeley")))))
 
   (role
-   (name make-production-doc)
+   (name make-production-docs)
    (tasks
     (task
      (title "make group")
      (group
       (gid 9002)
-      (name "prod-doc")))
+      (name "prod-docs")))
     (task
      (title "make user")
      (user
       (uid 9002)
-      (name "prod-doc")
-      (group "prod-doc")
+      (name "prod-docs")
+      (group "prod-docs")
       (groups ("users"))
-      (comment "prod-doc")
-      (home "/production/doc")
+      (comment "prod-docs")
+      (home "/production/docs")
       (shell "/bin/bash")
       (move-home yes)))
     (task
      (title "chmod home dir")
      (file
-      (path "/production/doc")
+      (path "/production/docs")
       (mode "u=rwX,g=rX,o=rX")
       (follow no)
       (recurse no)))
     (task
      (title "chown home dir")
      (file
-      (path "/production/doc")
+      (path "/production/docs")
       (state "directory")
-      (owner "prod-doc")
+      (owner "prod-docs")
       (group "users")
       (follow no)
       (recurse yes)))
     (task
-     (title "make /production/doc/www dir")
+     (title "make /production/docs/www dir")
      (file
-      (path "/production/doc/www")
+      (path "/production/docs/www")
       (state "directory")
-      (owner "prod-doc")
+      (owner "prod-docs")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
       (recurse yes)))
     (task
-     (title "make /production/doc/log/nginx dir")
+     (title "make /production/docs/log/nginx dir")
      (file
-      (path "/production/doc/log/nginx")
+      (path "/production/docs/log/nginx")
       (state "directory")
-      (owner "prod-doc")
+      (owner "prod-docs")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
       (recurse yes)))))
 
   (role
-   (name make-staging-doc)
+   (name make-staging-docs)
    (tasks
     (task
      (title "make group")
      (group
       (gid 9003)
-      (name "stag-doc")))
+      (name "stag-docs")))
     (task
      (title "make user")
      (user
       (uid 9003)
-      (name "stag-doc")
-      (group "stag-doc")
+      (name "stag-docs")
+      (group "stag-docs")
       (groups ("users"))
-      (comment "stag-doc")
-      (home "/staging/doc")
+      (comment "stag-docs")
+      (home "/staging/docs")
       (shell "/bin/bash")
       (move-home yes)))
     (task
      (title "chmod home dir")
      (file
-      (path "/staging/doc")
+      (path "/staging/docs")
       (mode "u=rwX,g=rX,o=rX")
       (follow no)
       (recurse no)))
     (task
      (title "chown home dir")
      (file
-      (path "/staging/doc")
+      (path "/staging/docs")
       (state "directory")
-      (owner "stag-doc")
+      (owner "stag-docs")
       (group "users")
       (follow no)
       (recurse yes)))
     (task
-     (title "make /staging/doc/www dir")
+     (title "make /staging/docs/www dir")
      (file
-      (path "/staging/doc/www")
+      (path "/staging/docs/www")
       (state "directory")
-      (owner "stag-doc")
+      (owner "stag-docs")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
       (recurse yes)))
     (task
-     (title "make /staging/doc/log/nginx dir")
+     (title "make /staging/docs/log/nginx dir")
      (file
-      (path "/staging/doc/log/nginx")
+      (path "/staging/docs/log/nginx")
       (state "directory")
-      (owner "stag-doc")
+      (owner "stag-docs")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
