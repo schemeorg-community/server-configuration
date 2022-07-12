@@ -57,6 +57,7 @@
     make-production-alpha-servers
     make-production-try
     make-production-video
+    make-production-gitea
     setup-lets-encrypt
     configure-nginx
     configure-ssh-server)))
@@ -1075,6 +1076,52 @@
       (path "/production/cookbook/log/nginx")
       (state "directory")
       (owner "prod-cookbook")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-gitea)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9030)
+      (name "prod-gitea")))
+    (task
+     (title "make user")
+     (user
+      (uid 9030)
+      (name "prod-gitea")
+      (group "prod-gitea")
+      (groups ("users"))
+      (comment "prod-gitea")
+      (home "/production/gitea")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/gitea")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/gitea")
+      (state "directory")
+      (owner "prod-gitea")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/gitea/log/nginx dir")
+     (file
+      (path "/production/gitea/log/nginx")
+      (state "directory")
+      (owner "prod-gitea")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
