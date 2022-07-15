@@ -1449,12 +1449,12 @@
      (title "make /production/files/www dir")
      (file
       (path "/production/files/www")
-      (state "directory")
+      (state "link")
+      (src "/blockstorage/prod-files/www")
       (owner "prod-files")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
-      (follow no)
-      (recurse yes)))
+      (follow no)))
     (task
      (title "make /production/files/log/nginx dir")
      (file
