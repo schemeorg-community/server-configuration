@@ -296,7 +296,21 @@
      (title "add key for feeley")
      (authorized-key
       (user "feeley")
-      (key "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEA3A8iCdI/TzkcQOx2Uf4Z/kaIvVRtPTgB3d5VurlLWSmAL9akiFjKkNPIkk2VGvqTDcUOTygkIh5chtnVMhcuUvVWunOEBtrnKeFo1JLt4sg8T+EiuTqeIrjZDxKv82tAsahG6/rVVOL0sWeDydbgYX/thsHXQfOiTnhU/9PYm8s= feeley")))))
+      (key "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEA3A8iCdI/TzkcQOx2Uf4Z/kaIvVRtPTgB3d5VurlLWSmAL9akiFjKkNPIkk2VGvqTDcUOTygkIh5chtnVMhcuUvVWunOEBtrnKeFo1JLt4sg8T+EiuTqeIrjZDxKv82tAsahG6/rVVOL0sWeDydbgYX/thsHXQfOiTnhU/9PYm8s= feeley")))
+    (task
+     (title "make user jeronimo")
+     (user
+      (uid 1004)
+      (name "jeronimo")
+      (comment "Jeronimo")
+      (group "users")
+      (groups ("sudo"))
+      (shell "/bin/bash")))
+    (task
+     (title "add key for jeronimo")
+     (authorized-key
+      (user "jeronimo")
+      (key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJIeZEkHcnKHJxAKfpGAW3Ud6fIPkEO6KOkXyEhvCzPw jeronimo")))))
 
   (role
    (name make-production-docs)
