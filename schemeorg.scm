@@ -48,7 +48,7 @@
     make-production-wiki
     make-production-events
     make-production-files
-    make-production-implementations
+    make-production-get
     make-production-containers
     make-production-learn
     make-production-lists
@@ -1454,7 +1454,7 @@
       (recurse yes)))))
 
   (role
-   (name make-production-implementations)
+   (name make-production-get)
    (tasks
     (task
      (title "make group")
@@ -1469,29 +1469,29 @@
       (group "prod-impls")
       (groups ("users"))
       (comment "prod-impls")
-      (home "/production/implementations")
+      (home "/production/get")
       (shell "/bin/bash")
       (move-home yes)))
     (task
      (title "chmod home dir")
      (file
-      (path "/production/implementations")
+      (path "/production/get")
       (mode "u=rwX,g=rX,o=rX")
       (follow no)
       (recurse no)))
     (task
      (title "chown home dir")
      (file
-      (path "/production/implementations")
+      (path "/production/get")
       (state "directory")
       (owner "prod-impls")
       (group "users")
       (follow no)
       (recurse yes)))
     (task
-     (title "make /production/implementations/www dir")
+     (title "make /production/get/www dir")
      (file
-      (path "/production/implementations/www")
+      (path "/production/get/www")
       (state "directory")
       (owner "prod-impls")
       (group "users")
@@ -1499,9 +1499,9 @@
       (follow no)
       (recurse yes)))
     (task
-     (title "make /production/implementations/log/nginx dir")
+     (title "make /production/get/log/nginx dir")
      (file
-      (path "/production/implementations/log/nginx")
+      (path "/production/get/log/nginx")
       (state "directory")
       (owner "prod-impls")
       (group "users")
