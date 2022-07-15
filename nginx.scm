@@ -141,7 +141,7 @@
 ;;;;
 
 ;; sudo certbot renew
-;; sudo certbot certonly --nginx --cert-name alpha.servers.scheme.org -d alpha.servers.scheme.org -d api.scheme.org -d api.staging.scheme.org -d apps.scheme.org -d bigloo.scheme.org -d blog.scheme.org -d chez.scheme.org -d chibi.scheme.org -d chicken.scheme.org -d comm.scheme.org -d community.scheme.org -d cookbook.scheme.org -d cyclone.scheme.org -d doc.scheme.org -d docs.scheme.org -d docs.staging.scheme.org -d events.scheme.org -d faq.scheme.org -d files.scheme.org -d gauche.scheme.org -d get.scheme.org -d gitea.scheme.org -d kawa.scheme.org -d learn.scheme.org -d list.scheme.org -d lists.scheme.org -d man.scheme.org -d mit.scheme.org -d persist.scheme.org -d planet.scheme.org -d play.scheme.org -d r5rs.scheme.org -d r6rs.scheme.org -d r7rs.scheme.org -d registry.scheme.org -d research.scheme.org -d s7.scheme.org -d sagittarius.scheme.org -d scheme.org -d scm.scheme.org -d servers.scheme.org -d staging.scheme.org -d standards.scheme.org -d stklos.scheme.org -d test.scheme.org -d try.scheme.org -d video.scheme.org -d web.scheme.org -d wiki.scheme.org -d www.scheme.org -d www.staging.scheme.org -d ypsilon.scheme.org
+;; sudo certbot certonly --nginx --cert-name alpha.servers.scheme.org -d alpha.servers.scheme.org -d api.scheme.org -d api.staging.scheme.org -d apps.scheme.org -d bigloo.scheme.org -d blog.scheme.org -d chez.scheme.org -d chibi.scheme.org -d chicken.scheme.org -d comm.scheme.org -d community.scheme.org -d cookbook.scheme.org -d cyclone.scheme.org -d doc.scheme.org -d docs.scheme.org -d docs.staging.scheme.org -d events.scheme.org -d faq.scheme.org -d files.scheme.org -d gauche.scheme.org -d get.scheme.org -d gitea.scheme.org -d jazz.scheme.org -d kawa.scheme.org -d learn.scheme.org -d list.scheme.org -d lists.scheme.org -d man.scheme.org -d mit.scheme.org -d persist.scheme.org -d planet.scheme.org -d play.scheme.org -d r5rs.scheme.org -d r6rs.scheme.org -d r7rs.scheme.org -d registry.scheme.org -d research.scheme.org -d s7.scheme.org -d sagittarius.scheme.org -d scheme.org -d scm.scheme.org -d servers.scheme.org -d staging.scheme.org -d standards.scheme.org -d stklos.scheme.org -d test.scheme.org -d try.scheme.org -d video.scheme.org -d web.scheme.org -d wiki.scheme.org -d www.scheme.org -d www.staging.scheme.org -d ypsilon.scheme.org
 
 (set! letsencrypt-etc "/etc/letsencrypt")
 (set! certificate-hostname "alpha.servers.scheme.org")
@@ -436,6 +436,11 @@
 
          (http-redirect-only-server
           "gauche.scheme.org" "https://practical-scheme.net/gauche/")
+
+         (http-redirect-only-server
+          "jazz.scheme.org"
+          ;; The "www." and "index.htm" are mandatory.
+          "http://www.jazzscheme.org/index.htm")
 
          (http-redirect-only-server
           "kawa.scheme.org" "https://www.gnu.org/software/kawa/")
