@@ -253,7 +253,13 @@
           '("man.scheme.org")
           "access_log /production/man/log/nginx/access.log;"
           "error_log  /production/man/log/nginx/error.log;"
-          "root /production/man/www;")
+          "root /production/man/www;"
+
+          "include /etc/nginx/mime.types;"
+          (block "types"
+                 "text/html 3scheme;"
+                 "text/html 7scheme;"
+                 "text/plain text;"))
 
          (https-server
           '("registry.scheme.org")
