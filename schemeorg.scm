@@ -653,11 +653,10 @@
       (group "users")
       (follow no)
       (recurse yes)))
-    #;
-    (task
-    (title "install packages based on package.json")
-    (npm
-    (path "/staging/api")))
+    ;;(task
+    ;; (title "install packages based on package.json")
+    ;; (npm
+    ;;  (path "/staging/api")))
     (task
      (title "make run script")
      (copy
