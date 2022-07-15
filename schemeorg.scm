@@ -30,13 +30,13 @@
     make-build-user
     make-production-www
     make-staging-www
-    make-production-api
-    make-staging-api
-    make-production-docs
-    make-staging-docs
+    ;;make-production-api
+    ;;make-staging-api
+    ;;make-production-docs
+    ;;make-staging-docs
     make-production-registry
     make-production-persist
-    make-production-planet
+    ;;make-production-planet
     make-production-apps
     make-production-comm
     make-production-community
