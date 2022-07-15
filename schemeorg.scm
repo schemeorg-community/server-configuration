@@ -577,7 +577,7 @@
       (dest "/production/api/run")
       (src "run")
       (mode "u=rwx,g=rx,o=rx"))
-     #;(notify "restart services"))
+     (notify "restart services"))
     (task
      (title "make log dir")
      (file
@@ -593,7 +593,7 @@
       (dest "/production/api/log/run")
       (src "log-run")
       (mode "u=rwx,g=rx,o=rx"))
-     #;(notify "restart services"))
+     (notify "restart services"))
     (task
      (title "make log/nginx dir")
      (file
@@ -650,7 +650,7 @@
       (dest "/staging/api/run")
       (src "run")
       (mode "u=rwx,g=rx,o=rx"))
-     #;(notify "restart services"))
+     (notify "restart services"))
     (task
      (title "make log dir")
      (file
@@ -666,7 +666,7 @@
       (dest "/staging/api/log/run")
       (src "log-run")
       (mode "u=rwx,g=rx,o=rx"))
-     #;(notify "restart services"))
+     (notify "restart services"))
     (task
      (title "make log/nginx dir")
      (file
