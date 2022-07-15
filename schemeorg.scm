@@ -41,6 +41,7 @@
     make-production-comm
     make-production-community
     make-production-cookbook
+    make-production-gitea
     make-production-man
     make-production-test
     make-production-web
@@ -57,7 +58,6 @@
     make-production-alpha-servers
     make-production-try
     make-production-video
-    make-production-gitea
     setup-lets-encrypt
     configure-nginx
     configure-ssh-server)))
