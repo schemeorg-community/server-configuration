@@ -374,6 +374,17 @@
                  "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"
                  "client_max_body_size 1G;"))
 
+         (https-server
+          '("wiki.scheme.org")
+          "access_log /production/wiki/log/nginx/access.log;"
+          "error_log  /production/wiki/log/nginx/error.log;"
+
+          (block "location /"
+                 "proxy_pass http://localhost:9024;"
+                 "proxy_set_header Host $host;"
+                 "proxy_set_header X-Real-IP  $remote_addr;"
+                 "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"))
+
          ;;
 
          (http-redirect-only-server
