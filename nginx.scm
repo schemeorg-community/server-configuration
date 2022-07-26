@@ -223,35 +223,15 @@
           (block "location /"
                  "proxy_pass http://127.0.0.1:9001;"))
 
-         (https-server
-          '("apps.scheme.org")
-          "access_log /production/apps/log/nginx/access.log;"
-          "error_log  /production/apps/log/nginx/error.log;"
-          "root /production/apps/www;")
+         (static-site "apps")
 
-         (https-server
-          '("planet.scheme.org")
-          "access_log /production/planet/log/nginx/access.log;"
-          "error_log  /production/planet/log/nginx/error.log;"
-          "root /production/planet/www;")
+         (static-site "planet")
 
-         (https-server
-          '("community.scheme.org")
-          "access_log /production/community/log/nginx/access.log;"
-          "error_log  /production/community/log/nginx/error.log;"
-          "root /production/community/www;")
+         (static-site "community")
 
-         (https-server
-          '("cookbook.scheme.org")
-          "access_log /production/cookbook/log/nginx/access.log;"
-          "error_log  /production/cookbook/log/nginx/error.log;"
-          "root /production/cookbook/www;")
+         (static-site "cookbook")
 
-         (https-server
-          '("docs.scheme.org")
-          "access_log /production/docs/log/nginx/access.log;"
-          "error_log  /production/docs/log/nginx/error.log;"
-          "root /production/docs/www;")
+         (static-site "docs")
 
          (https-server
           '("docs.staging.scheme.org")
@@ -271,29 +251,13 @@
                  "text/html 7scheme;"
                  "text/plain text;"))
 
-         (https-server
-          '("registry.scheme.org")
-          "access_log /production/registry/log/nginx/access.log;"
-          "error_log  /production/registry/log/nginx/error.log;"
-          "root /production/registry/www;")
+         (static-site "registry")
 
-         (https-server
-          '("persist.scheme.org")
-          "access_log /production/persist/log/nginx/access.log;"
-          "error_log  /production/persist/log/nginx/error.log;"
-          "root /production/persist/www;")
+         (static-site "persist")
 
-         (https-server
-          '("comm.scheme.org")
-          "access_log /production/comm/log/nginx/access.log;"
-          "error_log  /production/comm/log/nginx/error.log;"
-          "root /production/comm/www;")
+         (static-site "comm")
 
-         (https-server
-          '("test.scheme.org")
-          "access_log /production/test/log/nginx/access.log;"
-          "error_log  /production/test/log/nginx/error.log;"
-          "root /production/test/www;")
+         (static-site "test")
 
          ;; Named "web-topic" instead of "web" to avoid confusion with "www".
          (https-server
@@ -302,23 +266,11 @@
           "error_log  /production/web-topic/log/nginx/error.log;"
           "root /production/web-topic/www;")
 
-         (https-server
-          '("files.scheme.org")
-          "access_log /production/files/log/nginx/access.log;"
-          "error_log  /production/files/log/nginx/error.log;"
-          "root /production/files/www;")
+         (static-site "files")
 
-         (https-server
-          '("containers.scheme.org")
-          "access_log /production/containers/log/nginx/access.log;"
-          "error_log  /production/containers/log/nginx/error.log;"
-          "root /production/containers/www;")
+         (static-site "containers")
 
-         (https-server
-          '("events.scheme.org")
-          "access_log /production/events/log/nginx/access.log;"
-          "error_log  /production/events/log/nginx/error.log;"
-          "root /production/events/www;")
+         (static-site "events")
 
          (https-server
           '("get.scheme.org")
@@ -334,35 +286,15 @@
 
          (static-site "groups")
 
-         (https-server
-          '("learn.scheme.org")
-          "access_log /production/learn/log/nginx/access.log;"
-          "error_log  /production/learn/log/nginx/error.log;"
-          "root /production/learn/www;")
+         (static-site "learn")
 
-         (https-server
-          '("lists.scheme.org")
-          "access_log /production/lists/log/nginx/access.log;"
-          "error_log  /production/lists/log/nginx/error.log;"
-          "root /production/lists/www;")
+         (static-site "lists")
 
-         (https-server
-          '("research.scheme.org")
-          "access_log /production/research/log/nginx/access.log;"
-          "error_log  /production/research/log/nginx/error.log;"
-          "root /production/research/www;")
+         (static-site "research")
 
-         (https-server
-          '("servers.scheme.org")
-          "access_log /production/servers/log/nginx/access.log;"
-          "error_log  /production/servers/log/nginx/error.log;"
-          "root /production/servers/www;")
+         (static-site "servers")
 
-         (https-server
-          '("standards.scheme.org")
-          "access_log /production/standards/log/nginx/access.log;"
-          "error_log  /production/standards/log/nginx/error.log;"
-          "root /production/standards/www;")
+         (static-site "standards")
 
          (parameterize ((content-security-policy '()))
            (https-server
@@ -375,11 +307,7 @@
             "gzip_comp_level 6;"
             "gzip_types application/javascript;"))
 
-         (https-server
-          '("video.scheme.org")
-          "access_log /production/video/log/nginx/access.log;"
-          "error_log  /production/video/log/nginx/error.log;"
-          "root /production/video/www;")
+         (static-site "video")
 
          (https-server
           '("gitea.scheme.org")
