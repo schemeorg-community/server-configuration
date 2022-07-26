@@ -1,27 +1,11 @@
-You have arrived. This server runs Debian and is managed by Ansible.
+This server runs most (but not all) subdomains of Scheme.org.
+
+Managed by Ansible via https://github.com/schemeorg/linux-configurations
+
+Docker can be operated by all users who are in the `docker` group.
 
 Do not keep private information here. Everything is group readable.
 
-Production sites:
-* api.scheme.org            /production/api
-* comm.scheme.org           /production/comm
-* containers.scheme.org     /production/containers
-* doc.scheme.org            /production/doc
-* events.scheme.org         /production/events
-* files.scheme.org          /production/files
-* lists.scheme.org          /production/lists
-* persist.scheme.org        /production/persist
-* planet.scheme.org         /production/planet
-* registry.scheme.org       /production/registry
-* research.scheme.org       /production/research
-* servers.scheme.org        /production/servers
-* standards.scheme.org      /production/standards
-* test.scheme.org           /production/test
-* try.scheme.org            /production/try
-* web.scheme.org            /production/web-topic
-* www.scheme.org            /production/www
+Production sites (*.scheme.org) are in /production/*
 
-Staging sites:
-* api.staging.scheme.org    /staging/api
-* doc.staging.scheme.org    /staging/doc
-* www.staging.scheme.org    /staging/www
+Staging sites (*..staging.scheme.org) are in /staging/*
