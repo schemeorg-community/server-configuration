@@ -8,4 +8,4 @@ Do not keep private information here. Everything is group readable.
 
 Production sites (*.scheme.org) are in /production/*
 
-Staging sites (*..staging.scheme.org) are in /staging/*
+Staging sites (*.staging.scheme.org) are in /staging/*
