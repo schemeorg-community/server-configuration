@@ -42,6 +42,7 @@
     make-production-community
     make-production-cookbook
     make-production-gitea
+    make-production-groups
     make-production-man
     make-production-test
     make-production-web
@@ -1517,6 +1518,62 @@
       (path "/production/get/log/nginx")
       (state "directory")
       (owner "prod-impls")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-groups)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9032)
+      (name "prod-groups")))
+    (task
+     (title "make user")
+     (user
+      (uid 9032)
+      (name "prod-groups")
+      (group "prod-groups")
+      (groups ("users"))
+      (comment "prod-groups")
+      (home "/production/groups")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/groups")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/groups")
+      (state "directory")
+      (owner "prod-groups")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/groups/www dir")
+     (file
+      (path "/production/groups/www")
+      (state "directory")
+      (owner "prod-groups")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/groups/log/nginx dir")
+     (file
+      (path "/production/groups/log/nginx")
+      (state "directory")
+      (owner "prod-groups")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
