@@ -47,6 +47,7 @@
     make-production-test
     make-production-web
     make-production-wiki
+    make-staging-wiki
     make-production-events
     make-production-files
     make-production-get
@@ -1350,6 +1351,52 @@
       (path "/production/wiki/log/nginx")
       (state "directory")
       (owner "prod-wiki")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-staging-wiki)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9033)
+      (name "stag-wiki")))
+    (task
+     (title "make user")
+     (user
+      (uid 9033)
+      (name "stag-wiki")
+      (group "stag-wiki")
+      (groups ("users"))
+      (comment "stag-wiki")
+      (home "/staging/wiki")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/staging/wiki")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/staging/wiki")
+      (state "directory")
+      (owner "stag-wiki")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /staging/wiki/log/nginx dir")
+     (file
+      (path "/staging/wiki/log/nginx")
+      (state "directory")
+      (owner "stag-wiki")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
