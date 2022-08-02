@@ -51,6 +51,7 @@
     make-production-events
     make-production-files
     make-production-get
+    make-production-conservatory
     make-production-containers
     make-production-learn
     make-production-lists
@@ -1621,6 +1622,62 @@
       (path "/production/groups/log/nginx")
       (state "directory")
       (owner "prod-groups")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-conservatory)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9034)
+      (name "prod-conservat")))
+    (task
+     (title "make user")
+     (user
+      (uid 9034)
+      (name "prod-conservat")
+      (group "prod-conservat")
+      (groups ("users"))
+      (comment "prod-conservat")
+      (home "/production/conservatory")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/conservatory")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/conservatory")
+      (state "directory")
+      (owner "prod-conservat")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/conservatory/www dir")
+     (file
+      (path "/production/conservatory/www")
+      (state "directory")
+      (owner "prod-conservat")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/conservatory/log/nginx dir")
+     (file
+      (path "/production/conservatory/log/nginx")
+      (state "directory")
+      (owner "prod-conservat")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
