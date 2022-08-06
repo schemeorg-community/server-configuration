@@ -166,6 +166,8 @@
   (block "events")
   (block "http"
          "include /etc/nginx/mime.types;"
+         (block "types"
+                "text/plain text;")
          "default_type application/octet-stream;"
          "sendfile on;"
          "gzip on;"
