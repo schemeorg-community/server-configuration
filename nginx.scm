@@ -171,7 +171,14 @@
          "default_type application/octet-stream;"
          "sendfile on;"
          "gzip on;"
-         "expires 1M;"
+
+         ;; An "expires" time of one month is way too long for some
+         ;; things, especially planet and gitea.
+
+         ;; TODO: Perhaps we should specify "expires" per subdomain?
+
+         ;;"expires 1M;"
+
          "server_tokens off;"
          "ssl_stapling on;"
          "ssl_stapling_verify on;"
