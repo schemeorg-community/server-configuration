@@ -247,7 +247,7 @@
       (name "lassi")
       (comment "Lassi")
       (group "users")
-      (groups ("sudo"))
+      (groups ("sudo" "docker"))
       (shell "/bin/bash")))
     (task
      (title "add key for lassi")
@@ -261,7 +261,7 @@
       (name "arthur")
       (comment "Arthur")
       (group "users")
-      (groups ("sudo"))
+      (groups ("sudo" "docker"))
       (shell "/bin/bash")))
     (task
      (title "add key for arthur")
@@ -280,7 +280,7 @@
       (name "hga")
       (comment "Harold")
       (group "users")
-      (groups ("sudo"))
+      (groups ("sudo" "docker"))
       (shell "/bin/bash")))
     (task
      (title "add key for hga")
@@ -294,7 +294,7 @@
       (name "feeley")
       (comment "Marc")
       (group "users")
-      (groups ("sudo"))
+      (groups ("sudo" "docker"))
       (shell "/bin/bash")))
     (task
      (title "add key for feeley")
@@ -308,7 +308,7 @@
       (name "jeronimo")
       (comment "Jeronimo")
       (group "users")
-      (groups ("sudo"))
+      (groups ("sudo" "docker"))
       (shell "/bin/bash")))
     (task
      (title "add key for jeronimo")
