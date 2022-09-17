@@ -253,7 +253,7 @@
      (title "add key for lassi")
      (authorized-key
       (user "lassi")
-      (key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDpF8XYY5U09bxaKaXkzUaocLM3sOd2m/zptC+fIeb2S1971tIi057pZClqapfNwkCdQpPs5LJebAYlNeAK1Lhuv8PAy+6kO3zrmiyTEdz+6DmM6m6EYdGNhb1rMA5cSRb4hE72u5GdmylCzbE/YGnZuClwXeK+3g85G6CzmwRw3tFrh8r+OdiEtaaQZymFGXt0hwCVyIfGL/7eNoXgGlXq11tPp8YX3UGw2rn0GJwwD13XoWaG84S14cl4ufTFLJ+Av/QwHnEJDXcMTaPqDXIL1u+8t28QqWzdVwbhKMBjE8rzu71mg/cAW7NrEJ6PJf000B3/ATPdmtpKbFy5DCtZ lassi")))
+      (key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCpM/+u5VCcY42aR654U4BB1pYXAOMAwiwLUBMDztoPsf/i1PNK3j0ouiY1o8S13E0aNvn4Bg0D7/E/aRdnWgDc/diJt3q5KMp1ECFA6hJx/feEbQwTIro0pQeAplOX1vIBPPc6RAMITLlcTm91jMaKH/j8PZvz1vW/LApxXUdEPd2cnn467kpAnBVQtha0hWU/4PdHCfVPm9DYWD01MKE4GtdifHFdKVvezvuXX6m589qSaLV3BxmwTsDO+1RBUfBg1apohzr7UVfiugIzHOCxD07vdMxkg5+x270k76Ahizvk3Y4BmqmkKFVE6W7Sp7kKXpcAwVWtP1k6gjYiwxd+Fnq0eOjTNdyFZmd19ubC84YoH3dWGESUzH67OROa70QAREocT1F/4mCyyuOLZvJioSPH/lK7eww90xCIaERr0jSHsRCV9xk/lY6waNyAKSdg9jiQdp8RUYWirL+YPTSagvfW9RjUYdiHizM7+BvnwKU1UiHqyF7ojrEdZ0NmIgfb4cVIp2XfvXFXkux1InQitc99fHUAPXAzQwXuZ+bCdvNUu1NdgrZ2xUv7hd7WDEfS+vsb5LBKv7LCFoVymCSTkOyrvOZ2lRkkf/B9ZjkwllN3EL1fq9+rinsZQDZV3UJWiD2Dcw26c6YnkinbPZfj8aev1PM6/gEpgm9CXxh5+w== lassi")))
     (task
      (title "make user arthur")
      (user
@@ -533,7 +533,7 @@
      (title "add key for lassi")
      (authorized-key
       (user "stag-www")
-      (key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDpF8XYY5U09bxaKaXkzUaocLM3sOd2m/zptC+fIeb2S1971tIi057pZClqapfNwkCdQpPs5LJebAYlNeAK1Lhuv8PAy+6kO3zrmiyTEdz+6DmM6m6EYdGNhb1rMA5cSRb4hE72u5GdmylCzbE/YGnZuClwXeK+3g85G6CzmwRw3tFrh8r+OdiEtaaQZymFGXt0hwCVyIfGL/7eNoXgGlXq11tPp8YX3UGw2rn0GJwwD13XoWaG84S14cl4ufTFLJ+Av/QwHnEJDXcMTaPqDXIL1u+8t28QqWzdVwbhKMBjE8rzu71mg/cAW7NrEJ6PJf000B3/ATPdmtpKbFy5DCtZ lassi")))
+      (key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCpM/+u5VCcY42aR654U4BB1pYXAOMAwiwLUBMDztoPsf/i1PNK3j0ouiY1o8S13E0aNvn4Bg0D7/E/aRdnWgDc/diJt3q5KMp1ECFA6hJx/feEbQwTIro0pQeAplOX1vIBPPc6RAMITLlcTm91jMaKH/j8PZvz1vW/LApxXUdEPd2cnn467kpAnBVQtha0hWU/4PdHCfVPm9DYWD01MKE4GtdifHFdKVvezvuXX6m589qSaLV3BxmwTsDO+1RBUfBg1apohzr7UVfiugIzHOCxD07vdMxkg5+x270k76Ahizvk3Y4BmqmkKFVE6W7Sp7kKXpcAwVWtP1k6gjYiwxd+Fnq0eOjTNdyFZmd19ubC84YoH3dWGESUzH67OROa70QAREocT1F/4mCyyuOLZvJioSPH/lK7eww90xCIaERr0jSHsRCV9xk/lY6waNyAKSdg9jiQdp8RUYWirL+YPTSagvfW9RjUYdiHizM7+BvnwKU1UiHqyF7ojrEdZ0NmIgfb4cVIp2XfvXFXkux1InQitc99fHUAPXAzQwXuZ+bCdvNUu1NdgrZ2xUv7hd7WDEfS+vsb5LBKv7LCFoVymCSTkOyrvOZ2lRkkf/B9ZjkwllN3EL1fq9+rinsZQDZV3UJWiD2Dcw26c6YnkinbPZfj8aev1PM6/gEpgm9CXxh5+w== lassi")))
     (task
      (title "make /staging/www/www dir")
      (file
