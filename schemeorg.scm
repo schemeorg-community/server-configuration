@@ -38,6 +38,7 @@
     make-production-persist
     ;;make-production-planet
     make-production-apps
+    make-production-chat
     make-production-comm
     make-production-community
     make-production-cookbook
@@ -925,6 +926,62 @@
       (path "/production/apps/log/nginx")
       (state "directory")
       (owner "prod-apps")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-chat)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9038)
+      (name "prod-chat")))
+    (task
+     (title "make user")
+     (user
+      (uid 9038)
+      (name "prod-chat")
+      (group "prod-chat")
+      (groups ("users"))
+      (comment "prod-chat")
+      (home "/production/chat")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/chat")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/chat")
+      (state "directory")
+      (owner "prod-chat")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/chat/www dir")
+     (file
+      (path "/production/chat/www")
+      (state "directory")
+      (owner "prod-chat")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/chat/log/nginx dir")
+     (file
+      (path "/production/chat/log/nginx")
+      (state "directory")
+      (owner "prod-chat")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
