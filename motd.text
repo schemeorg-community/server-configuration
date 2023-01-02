@@ -1,6 +1,6 @@
 This server runs most (but not all) subdomains of Scheme.org.
 
-Managed by Ansible via https://github.com/schemeorg/linux-configurations
+Managed by Ansible (https://github.com/schemeorg-community/linux-configuration)
 
 Docker can be operated by all users who are in the `docker` group.
 
