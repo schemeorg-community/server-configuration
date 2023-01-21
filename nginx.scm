@@ -152,6 +152,9 @@
 
 ;; sudo certbot renew
 ;; sudo certbot certonly --nginx --cert-name alpha.servers.scheme.org \
+;;   -d schemers.org \
+;;   -d www.schemers.org \
+;;   \
 ;;   -d alpha.servers.scheme.org \
 ;;   -d api.scheme.org \
 ;;   -d api.staging.scheme.org \
@@ -266,6 +269,14 @@
           "access_log /staging/www/log/nginx/access.log;"
           "error_log  /staging/www/log/nginx/error.log;"
           "root /staging/www/www;")
+
+         (https-server
+          '("www.schemers.org" "schemers.org")
+          "access_log /production/www/log/nginx/access.log;"
+          "error_log  /production/www/log/nginx/error.log;"
+          "root /production/www/www;"
+          "rewrite ^/$ https://www.scheme.org/schemers.html;"
+          "rewrite ^/ https://conservatory.scheme.org/schemers/$request_uri;")
 
          (https-server
           '("api.scheme.org")
