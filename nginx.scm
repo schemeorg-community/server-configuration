@@ -152,9 +152,6 @@
 
 ;; sudo certbot renew
 ;; sudo certbot certonly --nginx --cert-name alpha.servers.scheme.org \
-;;   -d schemers.org \
-;;   -d www.schemers.org \
-;;   \
 ;;   -d alpha.servers.scheme.org \
 ;;   -d api.scheme.org \
 ;;   -d api.staging.scheme.org \
@@ -201,6 +198,7 @@
 ;;   -d s7.scheme.org \
 ;;   -d sagittarius.scheme.org \
 ;;   -d scheme.org \
+;;   -d schemers.org \
 ;;   -d scm.scheme.org \
 ;;   -d servers.scheme.org \
 ;;   -d staging.scheme.org \
@@ -213,6 +211,7 @@
 ;;   -d wiki.scheme.org \
 ;;   -d wiki.staging.scheme.org \
 ;;   -d www.scheme.org \
+;;   -d www.schemers.org \
 ;;   -d www.staging.scheme.org \
 ;;   -d ypsilon.scheme.org
 
