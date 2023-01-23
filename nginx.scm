@@ -271,11 +271,12 @@
 
          (https-server
           '("www.schemers.org" "schemers.org")
-          "access_log /production/www/log/nginx/access.log;"
-          "error_log  /production/www/log/nginx/error.log;"
-          "root /production/www/www;"
-          "rewrite ^/$ https://www.scheme.org/schemers.html;"
-          "rewrite ^/ https://conservatory.scheme.org/schemers/$request_uri;")
+          "access_log /production/schemers/log/nginx/access.log;"
+          "error_log  /production/schemers/log/nginx/error.log;"
+          "root /production/schemers/www;"
+
+          (block "if (!-e $request_filename)"
+                 "rewrite ^/ https://conservatory.scheme.org/schemers$request_uri;"))
 
          (https-server
           '("api.scheme.org")
