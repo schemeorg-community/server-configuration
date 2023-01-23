@@ -46,6 +46,7 @@
     make-production-go
     make-production-groups
     make-production-man
+    make-production-schemers
     make-production-test
     make-production-web
     make-production-wiki
@@ -1252,6 +1253,62 @@
       (path "/production/man/log/nginx")
       (state "directory")
       (owner "prod-man")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))))
+
+  (role
+   (name make-production-schemers)
+   (tasks
+    (task
+     (title "make group")
+     (group
+      (gid 9040)
+      (name "prod-schemers")))
+    (task
+     (title "make user")
+     (user
+      (uid 9040)
+      (name "prod-schemers")
+      (group "prod-schemers")
+      (groups ("users"))
+      (comment "prod-schemers")
+      (home "/production/schemers")
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path "/production/schemers")
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path "/production/schemers")
+      (state "directory")
+      (owner "prod-schemers")
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/schemers/www dir")
+     (file
+      (path "/production/schemers/www")
+      (state "directory")
+      (owner "prod-schemers")
+      (group "users")
+      (mode "u=rwX,g=rwX,o=rX")
+      (follow no)
+      (recurse yes)))
+    (task
+     (title "make /production/schemers/log/nginx dir")
+     (file
+      (path "/production/schemers/log/nginx")
+      (state "directory")
+      (owner "prod-schemers")
       (group "users")
       (mode "u=rwX,g=rwX,o=rX")
       (follow no)
