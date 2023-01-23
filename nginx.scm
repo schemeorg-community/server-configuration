@@ -275,8 +275,8 @@
           "error_log  /production/schemers/log/nginx/error.log;"
           "root /production/schemers/www;"
 
-          (block "if (!-e $request_filename)"
-                 "rewrite ^/ https://conservatory.scheme.org/schemers$request_uri;"))
+          "rewrite ^/$ https://www.scheme.org/schemers/ permanent;"
+          "rewrite ^/ https://conservatory.scheme.org/schemers$request_uri permanent;")
 
          (https-server
           '("api.scheme.org")
