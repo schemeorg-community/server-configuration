@@ -276,6 +276,7 @@
           "root /production/schemers/www;"
 
           "rewrite ^/$ https://www.scheme.org/schemers/ permanent;"
+          "rewrite ^/welcome.shtml$ https://conservatory.scheme.org/schemers/Welcome/ permanent;"
           "rewrite ^/ https://conservatory.scheme.org/schemers$request_uri permanent;")
 
          (https-server
