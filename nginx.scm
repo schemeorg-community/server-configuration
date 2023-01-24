@@ -84,7 +84,7 @@
                "max-age=31536000"
                "includeSubDomains")
    (add-header "X-Content-Type-Options" "nosniff")
-   (add-header "X-Frame-Options" "DENY")
+   (add-header "X-Frame-Options" "SAMEORIGIN")
    (add-header "X-Permitted-Cross-Domain-Policies" "none")
    (add-header "X-Xss-Protection" "1" "mode=block")))
 
