@@ -395,16 +395,22 @@
 
          (static-site "video")
 
-         (https-server
-          '("gitea.scheme.org")
-          "access_log /production/gitea/log/nginx/access.log;"
-          "error_log  /production/gitea/log/nginx/error.log;"
-          (block "location /"
-                 "proxy_pass http://localhost:9030;"
-                 "proxy_set_header Host $host;"
-                 "proxy_set_header X-Real-IP  $remote_addr;"
-                 "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"
-                 "client_max_body_size 1G;"))
+         (parameterize ((content-security-policy
+                         (alist-change (content-security-policy)
+                                       "script-src"
+                                       '("'self'"
+                                         "'unsafe-inline'"
+                                         "'unsafe-eval'"))))
+           (https-server
+            '("gitea.scheme.org")
+            "access_log /production/gitea/log/nginx/access.log;"
+            "error_log  /production/gitea/log/nginx/error.log;"
+            (block "location /"
+                   "proxy_pass http://localhost:9030;"
+                   "proxy_set_header Host $host;"
+                   "proxy_set_header X-Real-IP  $remote_addr;"
+                   "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"
+                   "client_max_body_size 1G;")))
 
          (block "map $go_scheme_source $go_scheme_target"
                 "include /production/go/nginx/map.conf;")
