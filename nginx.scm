@@ -331,9 +331,8 @@
 
           "include /etc/nginx/mime.types;"
           (block "types"
-                 "text/html 3scheme;"
-                 "text/html 7scheme;"
-                 "text/plain text;"))
+                 "text/html 3scm;"
+                 "text/html 7scm;"))
 
          (static-site "registry")
 
