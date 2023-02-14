@@ -230,6 +230,17 @@
          "include /etc/nginx/mime.types;"
          (block "types"
 
+                ;; Unix manual pages in troff format.
+                "text/plain 1;"
+                "text/plain 2;"
+                "text/plain 3;"
+                "text/plain 4;"
+                "text/plain 5;"
+                "text/plain 6;"
+                "text/plain 7;"
+                "text/plain 8;"
+                "text/plain 9;"
+
                 "text/plain diff;"
                 "text/plain patch;"
 
