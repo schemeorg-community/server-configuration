@@ -229,7 +229,12 @@
   (block "http"
          "include /etc/nginx/mime.types;"
          (block "types"
+
+                "text/plain diff;"
+                "text/plain patch;"
+
                 "text/plain pose;"  ; Portable S-expressions
+
                 "text/plain text;")
          "default_type application/octet-stream;"
          "sendfile on;"
