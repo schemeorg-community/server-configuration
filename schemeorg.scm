@@ -1,5 +1,3 @@
-(ansible
-
 (options
  (var pipelining true))
 
@@ -2401,4 +2399,4 @@
   (handlers
    (handler
     (title "restart nginx")
-    (service (name "nginx") (state "restarted")))))))
+    (service (name "nginx") (state "restarted"))))))
