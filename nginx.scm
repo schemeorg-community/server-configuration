@@ -348,7 +348,14 @@
           "include /etc/nginx/mime.types;"
           (block "types"
                  "text/html 3scm;"
-                 "text/html 7scm;"))
+                 "text/html 7scm;")
+
+          (block "location /raw"
+
+                 "include /etc/nginx/mime.types;"
+                 (block "types"
+                        "text/plain 3scm;"
+                        "text/plain 7scm;")))
 
          (static-site "registry")
 
