@@ -347,6 +347,7 @@
 
           "include /etc/nginx/mime.types;"
           (block "types"
+                 "text/html 1;"
                  "text/html 3scm;"
                  "text/html 7scm;")
 
@@ -354,6 +355,7 @@
 
                  "include /etc/nginx/mime.types;"
                  (block "types"
+                        "text/plain 1;"
                         "text/plain 3scm;"
                         "text/plain 7scm;")))
 
