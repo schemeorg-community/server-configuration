@@ -314,7 +314,21 @@
     (title "add key for jeronimo")
     (authorized-key
      (user "jeronimo")
-     (key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJIeZEkHcnKHJxAKfpGAW3Ud6fIPkEO6KOkXyEhvCzPw jeronimo")))))
+     (key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJIeZEkHcnKHJxAKfpGAW3Ud6fIPkEO6KOkXyEhvCzPw jeronimo")))
+   (task
+    (title "make user graywolf")
+    (user
+     (uid 1005)
+     (name "graywolf")
+     (comment "wolfsden.cz")
+     (group "users")
+     (groups ("sudo" "docker"))
+     (shell "/bin/bash")))
+   (task
+    (title "add key for graywolf")
+    (authorized-key
+     (user "graywolf")
+     (key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICAdYTnnOM6HWMF+CiatIHy7bbUerC0Tyonot+mN4gp+ graywolf")))))
 
  (role
   (name make-production-docs)
