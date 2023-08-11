@@ -34,7 +34,7 @@
    ;;make-staging-docs
    make-production-registry
    make-production-persist
-   ;;make-production-planet
+   make-production-planet
    make-production-apps
    make-production-chat
    make-production-comm
