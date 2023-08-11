@@ -1841,16 +1841,16 @@
      (group "users")
      (follow no)
      (recurse yes)))
-   (task
-    (title "make /production/conservatory/www dir")
-    (file
-     (path "/production/conservatory/www")
-     (state "directory")
-     (owner "prod-conservat")
-     (group "users")
-     (mode "u=rwX,g=rwX,o=rX")
-     (follow no)
-     (recurse yes)))
+;;   (task
+;;    (title "make /production/conservatory/www dir")
+;;    (file
+;;     (path "/production/conservatory/www")
+;;     (state "directory")
+;;     (owner "prod-conservat")
+;;     (group "users")
+;;     (mode "u=rwX,g=rwX,o=rX")
+;;     (follow no)
+;;     (recurse yes)))
    (task
     (title "make /production/conservatory/log/nginx dir")
     (file
