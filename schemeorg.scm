@@ -849,7 +849,8 @@
       (title "add cron job to check the feeds")
       (copy
        (dest "/etc/cron.d/scheme-prod-planet")
-       (content "0 0-23/6 * * * prod-planet /production/planet/planet/planet.sh\n")
+       (content
+        "0 0-23/6 * * * prod-planet /production/planet/planet/planet.sh\n")
        (mode "644")
        (owner "0")
        (group "0")))))
