@@ -682,15 +682,15 @@
       (title "make group")
       (group
        (gid 9006)
-       (name "prod-reg")))
+       (name "prod-registry")))
      (task
       (title "make user")
       (user
        (uid 9006)
-       (name "prod-reg")
-       (group "prod-reg")
+       (name "prod-registry")
+       (group "prod-registry")
        (groups ("users"))
-       (comment "prod-reg")
+       (comment "prod-registry")
        (home "/production/registry")
        (shell "/bin/bash")
        (move-home yes)))
@@ -706,7 +706,7 @@
       (file
        (path "/production/registry")
        (state "directory")
-       (owner "prod-reg")
+       (owner "prod-registry")
        (group "users")
        (follow no)
        (recurse yes)))
@@ -715,7 +715,7 @@
       (file
        (path "/production/registry/www")
        (state "directory")
-       (owner "prod-reg")
+       (owner "prod-registry")
        (group "users")
        (mode "u=rwX,g=rwX,o=rX")
        (follow no)
@@ -725,7 +725,7 @@
       (file
        (path "/production/registry/log/nginx")
        (state "directory")
-       (owner "prod-reg")
+       (owner "prod-registry")
        (group "users")
        (mode "u=rwX,g=rwX,o=rX")
        (follow no)
@@ -1615,15 +1615,15 @@
       (title "make group")
       (group
        (gid 9021)
-       (name "prod-impls")))
+       (name "prod-get")))
      (task
       (title "make user")
       (user
        (uid 9021)
-       (name "prod-impls")
-       (group "prod-impls")
+       (name "prod-get")
+       (group "prod-get")
        (groups ("users"))
-       (comment "prod-impls")
+       (comment "prod-get")
        (home "/production/get")
        (shell "/bin/bash")
        (move-home yes)))
@@ -1639,7 +1639,7 @@
       (file
        (path "/production/get")
        (state "directory")
-       (owner "prod-impls")
+       (owner "prod-get")
        (group "users")
        (follow no)
        (recurse yes)))
@@ -1648,7 +1648,7 @@
       (file
        (path "/production/get/www")
        (state "directory")
-       (owner "prod-impls")
+       (owner "prod-get")
        (group "users")
        (mode "u=rwX,g=rwX,o=rX")
        (follow no)
@@ -1658,7 +1658,7 @@
       (file
        (path "/production/get/log/nginx")
        (state "directory")
-       (owner "prod-impls")
+       (owner "prod-get")
        (group "users")
        (mode "u=rwX,g=rwX,o=rX")
        (follow no)
@@ -1849,15 +1849,15 @@
       (title "make group")
       (group
        (gid 9020)
-       (name "prod-contain")))
+       (name "prod-container")))
      (task
       (title "make user")
       (user
        (uid 9020)
-       (name "prod-contain")
-       (group "prod-contain")
+       (name "prod-container")
+       (group "prod-container")
        (groups ("users"))
-       (comment "prod-contain")
+       (comment "prod-container")
        (home "/production/containers")
        (shell "/bin/bash")
        (move-home yes)))
@@ -1873,7 +1873,7 @@
       (file
        (path "/production/containers")
        (state "directory")
-       (owner "prod-contain")
+       (owner "prod-container")
        (group "users")
        (follow no)
        (recurse yes)))
@@ -1882,7 +1882,7 @@
       (file
        (path "/production/containers/www")
        (state "directory")
-       (owner "prod-contain")
+       (owner "prod-container")
        (group "users")
        (mode "u=rwX,g=rwX,o=rX")
        (follow no)
@@ -1892,7 +1892,7 @@
       (file
        (path "/production/containers/log/nginx")
        (state "directory")
-       (owner "prod-contain")
+       (owner "prod-container")
        (group "users")
        (mode "u=rwX,g=rwX,o=rX")
        (follow no)
