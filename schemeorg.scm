@@ -1,6 +1,9 @@
 (import (scheme base)
         (scheme file)
+        (srfi 1)
         (srfi 166))
+
+(define rest cdr)
 
 (define (write-top-level-expressions . exps)
   (for-each (lambda (exp)
@@ -16,6 +19,24 @@
     (let ((x (g)))
       (if (eof-object? x) (reverse xs) (loop (cons x xs))))))
 
+(define human-users
+  '((0 "lassi" "Lassi Kortela")
+    (1 "arthur" "Arthur Gleckler")
+    (2 "hga" "Harold Ancell")
+    (3 "feeley" "Marc Feeley")
+    (4 "jeronimo" "Jeronimo Pellegrini")
+    (5 "graywolf" "graywolf")))
+
+(define human-user-ordinal first)
+(define human-user-name second)
+(define human-user-display-name third)
+
+(define (human-user-id human-user)
+  (+ 1000 (human-user-ordinal human-user)))
+
+(define (human-user-groups human-user)
+  '("users" "sudo" "docker"))
+
 (define (ssh-key-tasks* user-name human-user-name)
   (map (lambda (key)
          `(task
@@ -28,6 +49,18 @@
 
 (define (ssh-key-tasks user-name)
   (ssh-key-tasks* user-name user-name))
+
+(define (human-user-tasks human-user)
+  `((task
+     (title ,(string-append "make user " (human-user-name human-user)))
+     (user
+      (uid ,(human-user-id human-user))
+      (name ,(human-user-name human-user))
+      (comment ,(human-user-display-name human-user))
+      (group ,(first (human-user-groups human-user)))
+      (groups ,(rest (human-user-groups human-user)))
+      (shell "/bin/bash")))
+    ,@(ssh-key-tasks (human-user-name human-user))))
 
 (write-top-level-expressions
 
@@ -273,66 +306,8 @@
    (role
     (name make-human-users)
     (tasks
-     (task
-      (title "make user lassi")
-      (user
-       (uid 1000)
-       (name "lassi")
-       (comment "Lassi")
-       (group "users")
-       (groups ("sudo" "docker"))
-       (shell "/bin/bash")))
-     ,@(ssh-key-tasks "lassi")
-     (task
-      (title "make user arthur")
-      (user
-       (uid 1001)
-       (name "arthur")
-       (comment "Arthur")
-       (group "users")
-       (groups ("sudo" "docker"))
-       (shell "/bin/bash")))
-     ,@(ssh-key-tasks "arthur")
-     (task
-      (title "make user hga")
-      (user
-       (uid 1002)
-       (name "hga")
-       (comment "Harold")
-       (group "users")
-       (groups ("sudo" "docker"))
-       (shell "/bin/bash")))
-     ,@(ssh-key-tasks "hga")
-     (task
-      (title "make user feeley")
-      (user
-       (uid 1003)
-       (name "feeley")
-       (comment "Marc")
-       (group "users")
-       (groups ("sudo" "docker"))
-       (shell "/bin/bash")))
-     ,@(ssh-key-tasks "feeley")
-     (task
-      (title "make user jeronimo")
-      (user
-       (uid 1004)
-       (name "jeronimo")
-       (comment "Jeronimo")
-       (group "users")
-       (groups ("sudo" "docker"))
-       (shell "/bin/bash")))
-     ,@(ssh-key-tasks "jeronimo")
-     (task
-      (title "make user graywolf")
-      (user
-       (uid 1005)
-       (name "graywolf")
-       (comment "wolfsden.cz")
-       (group "users")
-       (groups ("sudo" "docker"))
-       (shell "/bin/bash")))
-     ,@(ssh-key-tasks "graywolf")))
+     ,@(append-map human-user-tasks
+                   human-users)))
 
    (role
     (name make-production-docs)
