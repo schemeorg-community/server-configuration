@@ -1,10 +1,33 @@
-(import (scheme base) (srfi 166))
+(import (scheme base)
+        (scheme file)
+        (srfi 166))
 
 (define (write-top-level-expressions . exps)
   (for-each (lambda (exp)
               (newline)
               (show #t (pretty exp)))
             exps))
+
+(define (path-append a b)
+  (string-append a "/" b))
+
+(define (generator->list g)  ; Subset of the behavior in SRFI 158.
+  (let loop ((xs '()))
+    (let ((x (g)))
+      (if (eof-object? x) (reverse xs) (loop (cons x xs))))))
+
+(define (ssh-key-tasks* user-name human-user-name)
+  (map (lambda (key)
+         `(task
+           (title ,(string-append "add key for " human-user-name))
+           (authorized-key
+            (user ,user-name)
+            (key ,(string-append key " " human-user-name)))))
+       (with-input-from-file (path-append "keys" human-user-name)
+         (lambda () (generator->list read-line)))))
+
+(define (ssh-key-tasks user-name)
+  (ssh-key-tasks* user-name user-name))
 
 (write-top-level-expressions
 
@@ -259,11 +282,7 @@
        (group "users")
        (groups ("sudo" "docker"))
        (shell "/bin/bash")))
-     (task
-      (title "add key for lassi")
-      (authorized-key
-       (user "lassi")
-       (key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCpM/+u5VCcY42aR654U4BB1pYXAOMAwiwLUBMDztoPsf/i1PNK3j0ouiY1o8S13E0aNvn4Bg0D7/E/aRdnWgDc/diJt3q5KMp1ECFA6hJx/feEbQwTIro0pQeAplOX1vIBPPc6RAMITLlcTm91jMaKH/j8PZvz1vW/LApxXUdEPd2cnn467kpAnBVQtha0hWU/4PdHCfVPm9DYWD01MKE4GtdifHFdKVvezvuXX6m589qSaLV3BxmwTsDO+1RBUfBg1apohzr7UVfiugIzHOCxD07vdMxkg5+x270k76Ahizvk3Y4BmqmkKFVE6W7Sp7kKXpcAwVWtP1k6gjYiwxd+Fnq0eOjTNdyFZmd19ubC84YoH3dWGESUzH67OROa70QAREocT1F/4mCyyuOLZvJioSPH/lK7eww90xCIaERr0jSHsRCV9xk/lY6waNyAKSdg9jiQdp8RUYWirL+YPTSagvfW9RjUYdiHizM7+BvnwKU1UiHqyF7ojrEdZ0NmIgfb4cVIp2XfvXFXkux1InQitc99fHUAPXAzQwXuZ+bCdvNUu1NdgrZ2xUv7hd7WDEfS+vsb5LBKv7LCFoVymCSTkOyrvOZ2lRkkf/B9ZjkwllN3EL1fq9+rinsZQDZV3UJWiD2Dcw26c6YnkinbPZfj8aev1PM6/gEpgm9CXxh5+w== lassi")))
+     ,@(ssh-key-tasks "lassi")
      (task
       (title "make user arthur")
       (user
@@ -273,16 +292,7 @@
        (group "users")
        (groups ("sudo" "docker"))
        (shell "/bin/bash")))
-     (task
-      (title "add key for arthur")
-      (authorized-key
-       (user "arthur")
-       (key "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAn5xABd0bK+wsy2Dl5/+GgRTTzOZP48qSPRkQHlGbnJND9IzX/W/ftYmUJFpMvxNESfFrckVbmRS70ZzbVODqeN0uvVYNdODJzGjXi5D1gib2VGNe/q5OJIyI1Z3mPhhKLEiwwbiiX1iGE4pGrmTddgYqqQW9r5TWkXRy6OqhP5s2yCcnyDlUw5x/o/JM2IQ+5wwvTTi9aOtMHwDjs/JKhKM8rRAQEMMxC0Wr410mcUIekb8PoxKQ2sCrZuxnwuH2JdBDiPqm0gpQVJVSQMgDUEegP4bf043BE62wzfXN8psNfETD9p4/94Yy4G+06n9l5fCUxmoM0jT1zRapZMthCw== arthur")))
-     (task
-      (title "add key for arthur")
-      (authorized-key
-       (user "arthur")
-       (key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCs6l+mUdMxwNB2bpS3tfIA8tb/UAVKndLqif5GTlS8B47awxMQQ5pwwLls697y0EdWLPxop6B9/pId51hxqdfpYcLQvHbQX+jWeEw/ZUZj0o/Ob+naDkJFHFTlMD0vrO0qKlAkWVZGJsl8PxYnUvXl0Rib9O8z2LYNKKabPDc3Z36ZBkwB2XG22TiCGbVkQudpYnPx6KYLZ31uAz8zfcIq76HPI8eyBqv6IkQeB8fPRRpHbpNSgqqnr28md8qkEe5haK5w+r1O4v8d7EcMIiYmSY7r2J45CcdCi0br0RSWpAK9HbomnknxbqfcAVioQqUTtQYwL+oulQ47DLEcGDLz arthur")))
+     ,@(ssh-key-tasks "arthur")
      (task
       (title "make user hga")
       (user
@@ -292,11 +302,7 @@
        (group "users")
        (groups ("sudo" "docker"))
        (shell "/bin/bash")))
-     (task
-      (title "add key for hga")
-      (authorized-key
-       (user "hga")
-       (key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFxF/9Gmg0vGsxasPdYWmgiN7kJGbfZfUt+hrINDQ/y/ hga")))
+     ,@(ssh-key-tasks "hga")
      (task
       (title "make user feeley")
       (user
@@ -306,11 +312,7 @@
        (group "users")
        (groups ("sudo" "docker"))
        (shell "/bin/bash")))
-     (task
-      (title "add key for feeley")
-      (authorized-key
-       (user "feeley")
-       (key "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEA3A8iCdI/TzkcQOx2Uf4Z/kaIvVRtPTgB3d5VurlLWSmAL9akiFjKkNPIkk2VGvqTDcUOTygkIh5chtnVMhcuUvVWunOEBtrnKeFo1JLt4sg8T+EiuTqeIrjZDxKv82tAsahG6/rVVOL0sWeDydbgYX/thsHXQfOiTnhU/9PYm8s= feeley")))
+     ,@(ssh-key-tasks "feeley")
      (task
       (title "make user jeronimo")
       (user
@@ -320,11 +322,7 @@
        (group "users")
        (groups ("sudo" "docker"))
        (shell "/bin/bash")))
-     (task
-      (title "add key for jeronimo")
-      (authorized-key
-       (user "jeronimo")
-       (key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJIeZEkHcnKHJxAKfpGAW3Ud6fIPkEO6KOkXyEhvCzPw jeronimo")))
+     ,@(ssh-key-tasks "jeronimo")
      (task
       (title "make user graywolf")
       (user
@@ -334,11 +332,7 @@
        (group "users")
        (groups ("sudo" "docker"))
        (shell "/bin/bash")))
-     (task
-      (title "add key for graywolf")
-      (authorized-key
-       (user "graywolf")
-       (key "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICAdYTnnOM6HWMF+CiatIHy7bbUerC0Tyonot+mN4gp+ graywolf")))))
+     ,@(ssh-key-tasks "graywolf")))
 
    (role
     (name make-production-docs)
@@ -543,21 +537,8 @@
        (group "users")
        (follow no)
        (recurse yes)))
-     (task
-      (title "add key for arthur")
-      (authorized-key
-       (user "stag-www")
-       (key "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAn5xABd0bK+wsy2Dl5/+GgRTTzOZP48qSPRkQHlGbnJND9IzX/W/ftYmUJFpMvxNESfFrckVbmRS70ZzbVODqeN0uvVYNdODJzGjXi5D1gib2VGNe/q5OJIyI1Z3mPhhKLEiwwbiiX1iGE4pGrmTddgYqqQW9r5TWkXRy6OqhP5s2yCcnyDlUw5x/o/JM2IQ+5wwvTTi9aOtMHwDjs/JKhKM8rRAQEMMxC0Wr410mcUIekb8PoxKQ2sCrZuxnwuH2JdBDiPqm0gpQVJVSQMgDUEegP4bf043BE62wzfXN8psNfETD9p4/94Yy4G+06n9l5fCUxmoM0jT1zRapZMthCw== arthur")))
-     (task
-      (title "add key for arthur")
-      (authorized-key
-       (user "stag-www")
-       (key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCs6l+mUdMxwNB2bpS3tfIA8tb/UAVKndLqif5GTlS8B47awxMQQ5pwwLls697y0EdWLPxop6B9/pId51hxqdfpYcLQvHbQX+jWeEw/ZUZj0o/Ob+naDkJFHFTlMD0vrO0qKlAkWVZGJsl8PxYnUvXl0Rib9O8z2LYNKKabPDc3Z36ZBkwB2XG22TiCGbVkQudpYnPx6KYLZ31uAz8zfcIq76HPI8eyBqv6IkQeB8fPRRpHbpNSgqqnr28md8qkEe5haK5w+r1O4v8d7EcMIiYmSY7r2J45CcdCi0br0RSWpAK9HbomnknxbqfcAVioQqUTtQYwL+oulQ47DLEcGDLz arthur")))
-     (task
-      (title "add key for lassi")
-      (authorized-key
-       (user "stag-www")
-       (key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCpM/+u5VCcY42aR654U4BB1pYXAOMAwiwLUBMDztoPsf/i1PNK3j0ouiY1o8S13E0aNvn4Bg0D7/E/aRdnWgDc/diJt3q5KMp1ECFA6hJx/feEbQwTIro0pQeAplOX1vIBPPc6RAMITLlcTm91jMaKH/j8PZvz1vW/LApxXUdEPd2cnn467kpAnBVQtha0hWU/4PdHCfVPm9DYWD01MKE4GtdifHFdKVvezvuXX6m589qSaLV3BxmwTsDO+1RBUfBg1apohzr7UVfiugIzHOCxD07vdMxkg5+x270k76Ahizvk3Y4BmqmkKFVE6W7Sp7kKXpcAwVWtP1k6gjYiwxd+Fnq0eOjTNdyFZmd19ubC84YoH3dWGESUzH67OROa70QAREocT1F/4mCyyuOLZvJioSPH/lK7eww90xCIaERr0jSHsRCV9xk/lY6waNyAKSdg9jiQdp8RUYWirL+YPTSagvfW9RjUYdiHizM7+BvnwKU1UiHqyF7ojrEdZ0NmIgfb4cVIp2XfvXFXkux1InQitc99fHUAPXAzQwXuZ+bCdvNUu1NdgrZ2xUv7hd7WDEfS+vsb5LBKv7LCFoVymCSTkOyrvOZ2lRkkf/B9ZjkwllN3EL1fq9+rinsZQDZV3UJWiD2Dcw26c6YnkinbPZfj8aev1PM6/gEpgm9CXxh5+w== lassi")))
+     ,@(ssh-key-tasks* "stag-www" "arthur")
+     ,@(ssh-key-tasks* "stag-www" "lassi")
      (task
       (title "make /staging/www/www dir")
       (file
