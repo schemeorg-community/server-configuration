@@ -2373,15 +2373,7 @@
     (apt
      (name
       ("certbot"
-       "python-certbot-nginx"))))
-   (task
-    (title "add cron job for certbot renewal")
-    (copy
-     (dest "/etc/cron.daily/scheme-certbot")
-     (content "#!/bin/sh\nexec certbot renew --non-interactive --no-self-upgrade --quiet --nginx\n")
-     (mode "555")
-     (owner "0")
-     (group "0")))))
+       "python-certbot-nginx"))))))
 
  (role
   (name configure-nginx)
