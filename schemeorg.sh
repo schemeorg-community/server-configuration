@@ -2,7 +2,7 @@
 set -eu
 R7RS=${R7RS:-chibi-scheme}
 cd "$(dirname "$0")"
-sensible -o schemeorg schemeorg.pose
+sensible -o schemeorg schemeorg.scm
 cd schemeorg
 echo "Entering directory '$PWD'"
 mkdir -p roles/configure_nginx/files
