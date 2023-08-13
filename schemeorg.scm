@@ -62,6 +62,138 @@
       (shell "/bin/bash")))
     ,@(ssh-key-tasks (human-user-name human-user))))
 
+(define sites
+  '(("api" 0)
+    ("apps" 22)
+    ("chat" 38)
+    ("comm" 8)
+    ("community" 26)
+    ("conservatory" 34)
+    ("containers" 20)
+    ("cookbook" 25)
+    ("docs" 2)
+    ("events" 16)
+    ("files" 13)
+    ("get" 21)
+    ("gitea" 30)
+    ("go" 36)
+    ("groups" 32)
+    ("learn" 23)
+    ("lists" 10)
+    ("man" 27)
+    ("persist" 7)
+    ("planet" 18)
+    ("registry" 6)
+    ("research" 15)
+    ("schemers" 40)
+    ("servers" 12)
+    ("standards" 14)
+    ("test" 9)
+    ("try" 17)
+    ("video" 28)
+    ("web" 11)
+    ("wiki" 24)
+    ("www" 4)))
+
+(define site-name first)
+(define site-ordinal second)
+
+(define (site-by-name name)
+  (or (assoc name sites)
+      (error "No site named" name)))
+
+;; User and group names longer than this are impractical as they mess
+;; up `ls -l` listings and such.
+(define unix-name-max 14)
+
+(define (site-unix-name prefix site)
+  (let* ((name (site-name site))
+         (name-len (string-length name))
+         (name-max (- unix-name-max (string-length prefix))))
+    (string-append prefix (string-copy name 0 (min name-len name-max)))))
+
+(define staging-site-names
+  '("api" "docs" "wiki" "www"))
+
+(define (staging-site? site)
+  (not (not (member (site-name site) staging-site-names))))
+
+;; Site IDs can be used as Unix user and group IDs as well as TCP/UDP
+;; port numbers.
+
+(define (production-site-id site)
+  (+ 9000 (site-ordinal site)))
+
+(define (staging-site-id site)
+  (and (staging-site? site)
+       (+ 1 (production-site-id site))))
+
+(define (site-tasks site-id site-unix-name site-home . subdirectories)
+  `((task
+     (title "make group")
+     (group
+      (gid ,site-id)
+      (name ,site-unix-name)))
+    (task
+     (title "make user")
+     (user
+      (uid ,site-id)
+      (name ,site-unix-name)
+      (group ,site-unix-name)
+      (groups ("users"))
+      (comment ,site-unix-name)
+      (home ,site-home)
+      (shell "/bin/bash")
+      (move-home yes)))
+    (task
+     (title "chmod home dir")
+     (file
+      (path ,site-home)
+      (mode "u=rwX,g=rX,o=rX")
+      (follow no)
+      (recurse no)))
+    (task
+     (title "chown home dir")
+     (file
+      (path ,site-home)
+      (state "directory")
+      (owner ,site-unix-name)
+      (group "users")
+      (follow no)
+      (recurse yes)))
+    ,@(map (lambda (subdir)
+             (let ((dir (string-append site-home "/" subdir)))
+               `(task
+                 (title ,(string-append "make " dir " dir"))
+                 (file
+                  (path ,dir)
+                  (state "directory")
+                  (owner ,site-unix-name)
+                  (group "users")
+                  (mode "u=rwX,g=rwX,o=rX")
+                  (follow no)
+                  (recurse yes)))))
+           (append '("log" "log/nginx")
+                   subdirectories))))
+
+(define (production-site-tasks site-name . subdirectories)
+  (let ((site (site-by-name site-name)))
+    (apply site-tasks
+           (production-site-id site)
+           (site-unix-name "prod-" site)
+           (string-append "/production/" site-name)
+           subdirectories)))
+
+(define (staging-site-tasks site-name . subdirectories)
+  (let ((site (site-by-name site-name)))
+    (unless (staging-site? site)
+      (error "No staging site for" site))
+    (apply site-tasks
+           (staging-site-id site)
+           (site-unix-name "stag-" site)
+           (string-append "/staging/" site-name)
+           subdirectories)))
+
 (write-top-level-expressions
 
  `(options
@@ -112,7 +244,7 @@
      make-production-man
      make-production-schemers
      make-production-test
-     make-production-web
+     ;; make-production-web  ; TODO: Rename home directory "web-topic" -> "web".
      make-production-wiki
      make-staging-wiki
      make-production-events
@@ -312,263 +444,29 @@
    (role
     (name make-production-docs)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9002)
-       (name "prod-docs")))
-     (task
-      (title "make user")
-      (user
-       (uid 9002)
-       (name "prod-docs")
-       (group "prod-docs")
-       (groups ("users"))
-       (comment "prod-docs")
-       (home "/production/docs")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/docs")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/docs")
-       (state "directory")
-       (owner "prod-docs")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/docs/www dir")
-      (file
-       (path "/production/docs/www")
-       (state "directory")
-       (owner "prod-docs")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/docs/log/nginx dir")
-      (file
-       (path "/production/docs/log/nginx")
-       (state "directory")
-       (owner "prod-docs")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "docs" "www")))
 
    (role
     (name make-staging-docs)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9003)
-       (name "stag-docs")))
-     (task
-      (title "make user")
-      (user
-       (uid 9003)
-       (name "stag-docs")
-       (group "stag-docs")
-       (groups ("users"))
-       (comment "stag-docs")
-       (home "/staging/docs")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/staging/docs")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/staging/docs")
-       (state "directory")
-       (owner "stag-docs")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /staging/docs/www dir")
-      (file
-       (path "/staging/docs/www")
-       (state "directory")
-       (owner "stag-docs")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /staging/docs/log/nginx dir")
-      (file
-       (path "/staging/docs/log/nginx")
-       (state "directory")
-       (owner "stag-docs")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(staging-site-tasks "docs" "www")))
 
    (role
     (name make-production-www)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9004)
-       (name "prod-www")))
-     (task
-      (title "make user")
-      (user
-       (uid 9004)
-       (name "prod-www")
-       (group "prod-www")
-       (groups ("users"))
-       (comment "prod-www")
-       (home "/production/www")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/www")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/www")
-       (state "directory")
-       (owner "prod-www")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/www/www dir")
-      (file
-       (path "/production/www/www")
-       (state "directory")
-       (owner "prod-www")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/www/log/nginx dir")
-      (file
-       (path "/production/www/log/nginx")
-       (state "directory")
-       (owner "prod-www")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "www" "www")))
 
    (role
     (name make-staging-www)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9005)
-       (name "stag-www")))
-     (task
-      (title "make user")
-      (user
-       (uid 9005)
-       (name "stag-www")
-       (group "stag-www")
-       (groups ("users"))
-       (comment "stag-www")
-       (home "/staging/www")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/staging/www")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/staging/www")
-       (state "directory")
-       (owner "stag-www")
-       (group "users")
-       (follow no)
-       (recurse yes)))
+     ,@(staging-site-tasks "www" "www")
      ,@(ssh-key-tasks* "stag-www" "arthur")
-     ,@(ssh-key-tasks* "stag-www" "lassi")
-     (task
-      (title "make /staging/www/www dir")
-      (file
-       (path "/staging/www/www")
-       (state "directory")
-       (owner "stag-www")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /staging/www/log/nginx dir")
-      (file
-       (path "/staging/www/log/nginx")
-       (state "directory")
-       (owner "stag-www")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(ssh-key-tasks* "stag-www" "lassi")))
 
    (role
     (name make-production-api)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9000)
-       (name "prod-api")))
-     (task
-      (title "make user")
-      (user
-       (uid 9000)
-       (name "prod-api")
-       (group "prod-api")
-       (comment "prod-api")
-       (home "/production/api")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/api")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/api")
-       (state "directory")
-       (owner "prod-api")
-       (group "users")
-       (follow no)
-       (recurse yes)))
+     ,@(production-site-tasks "api")
      (task
       (title "make run script")
       (copy
@@ -577,66 +475,21 @@
        (mode "u=rwx,g=rx,o=rx"))
       (notify "restart services"))
      (task
-      (title "make log dir")
-      (file
-       (path "/production/api/log")
-       (state "directory")
-       (owner "prod-api")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)))
-     (task
       (title "make log/run script")
       (copy
        (dest "/production/api/log/run")
        (src "log-run")
        (mode "u=rwx,g=rx,o=rx"))
-      (notify "restart services"))
-     (task
-      (title "make log/nginx dir")
-      (file
-       (path "/production/api/log/nginx")
-       (state "directory")
-       (owner "prod-api")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+      (notify "restart services")))
+    (handlers
+     (handler
+      (title "restart services")
+      (command (cmd "true")))))
 
    (role
     (name make-staging-api)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9001)
-       (name "stag-api")))
-     (task
-      (title "make user")
-      (user
-       (uid 9001)
-       (name "stag-api")
-       (group "stag-api")
-       (comment "stag-api")
-       (home "/staging/api")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/staging/api")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/staging/api")
-       (state "directory")
-       (owner "stag-api")
-       (group "users")
-       (follow no)
-       (recurse yes)))
+     ,@(staging-site-tasks "api")
      ;;(task
      ;; (title "install packages based on package.json")
      ;; (npm
@@ -649,143 +502,26 @@
        (mode "u=rwx,g=rx,o=rx"))
       (notify "restart services"))
      (task
-      (title "make log dir")
-      (file
-       (path "/staging/api/log")
-       (state "directory")
-       (owner "stag-api")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)))
-     (task
       (title "make log/run script")
       (copy
        (dest "/staging/api/log/run")
        (src "log-run")
        (mode "u=rwx,g=rx,o=rx"))
-      (notify "restart services"))
-     (task
-      (title "make log/nginx dir")
-      (file
-       (path "/staging/api/log/nginx")
-       (state "directory")
-       (owner "stag-api")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+      (notify "restart services")))
+    (handlers
+     (handler
+      (title "restart services")
+      (command (cmd "true")))))
 
    (role
     (name make-production-registry)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9006)
-       (name "prod-registry")))
-     (task
-      (title "make user")
-      (user
-       (uid 9006)
-       (name "prod-registry")
-       (group "prod-registry")
-       (groups ("users"))
-       (comment "prod-registry")
-       (home "/production/registry")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/registry")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/registry")
-       (state "directory")
-       (owner "prod-registry")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/registry/www dir")
-      (file
-       (path "/production/registry/www")
-       (state "directory")
-       (owner "prod-registry")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/registry/log/nginx dir")
-      (file
-       (path "/production/registry/log/nginx")
-       (state "directory")
-       (owner "prod-registry")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "registry" "www")))
 
    (role
     (name make-production-persist)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9007)
-       (name "prod-persist")))
-     (task
-      (title "make user")
-      (user
-       (uid 9007)
-       (name "prod-persist")
-       (group "prod-persist")
-       (groups ("users"))
-       (comment "prod-persist")
-       (home "/production/persist")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/persist")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/persist")
-       (state "directory")
-       (owner "prod-persist")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/persist/www dir")
-      (file
-       (path "/production/persist/www")
-       (state "directory")
-       (owner "prod-persist")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/persist/log/nginx dir")
-      (file
-       (path "/production/persist/log/nginx")
-       (state "directory")
-       (owner "prod-persist")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "persist" "www")))
 
    (role
     (name make-production-planet)
@@ -793,58 +529,7 @@
      (task
       (title "install planet-venus")
       (apt (name "planet-venus")))
-     (task
-      (title "make group")
-      (group
-       (gid 9018)
-       (name "prod-planet")))
-     (task
-      (title "make user")
-      (user
-       (uid 9018)
-       (name "prod-planet")
-       (group "prod-planet")
-       (groups ("users"))
-       (comment "prod-planet")
-       (home "/production/planet")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/planet")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/planet")
-       (state "directory")
-       (owner "prod-planet")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/planet/www dir")
-      (file
-       (path "/production/planet/www")
-       (state "directory")
-       (owner "prod-planet")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/planet/log/nginx dir")
-      (file
-       (path "/production/planet/log/nginx")
-       (state "directory")
-       (owner "prod-planet")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
+     ,@(production-site-tasks "planet" "www")
      (task
       (title "add cron job to check the feeds")
       (copy
@@ -858,598 +543,57 @@
    (role
     (name make-production-apps)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9022)
-       (name "prod-apps")))
-     (task
-      (title "make user")
-      (user
-       (uid 9022)
-       (name "prod-apps")
-       (group "prod-apps")
-       (groups ("users"))
-       (comment "prod-apps")
-       (home "/production/apps")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/apps")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/apps")
-       (state "directory")
-       (owner "prod-apps")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/apps/www dir")
-      (file
-       (path "/production/apps/www")
-       (state "directory")
-       (owner "prod-apps")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/apps/log/nginx dir")
-      (file
-       (path "/production/apps/log/nginx")
-       (state "directory")
-       (owner "prod-apps")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "apps" "www")))
 
    (role
     (name make-production-chat)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9038)
-       (name "prod-chat")))
-     (task
-      (title "make user")
-      (user
-       (uid 9038)
-       (name "prod-chat")
-       (group "prod-chat")
-       (groups ("users"))
-       (comment "prod-chat")
-       (home "/production/chat")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/chat")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/chat")
-       (state "directory")
-       (owner "prod-chat")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/chat/www dir")
-      (file
-       (path "/production/chat/www")
-       (state "directory")
-       (owner "prod-chat")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/chat/log/nginx dir")
-      (file
-       (path "/production/chat/log/nginx")
-       (state "directory")
-       (owner "prod-chat")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "chat" "www")))
 
    (role
     (name make-production-comm)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9008)
-       (name "prod-comm")))
-     (task
-      (title "make user")
-      (user
-       (uid 9008)
-       (name "prod-comm")
-       (group "prod-comm")
-       (groups ("users"))
-       (comment "prod-comm")
-       (home "/production/comm")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/comm")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/comm")
-       (state "directory")
-       (owner "prod-comm")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/comm/www dir")
-      (file
-       (path "/production/comm/www")
-       (state "directory")
-       (owner "prod-comm")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/comm/log/nginx dir")
-      (file
-       (path "/production/comm/log/nginx")
-       (state "directory")
-       (owner "prod-comm")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "comm" "www")))
 
    (role
     (name make-production-community)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9026)
-       (name "prod-community")))
-     (task
-      (title "make user")
-      (user
-       (uid 9026)
-       (name "prod-community")
-       (group "prod-community")
-       (groups ("users"))
-       (comment "prod-community")
-       (home "/production/community")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/community")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/community")
-       (state "directory")
-       (owner "prod-community")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/community/www dir")
-      (file
-       (path "/production/community/www")
-       (state "directory")
-       (owner "prod-community")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/community/log/nginx dir")
-      (file
-       (path "/production/community/log/nginx")
-       (state "directory")
-       (owner "prod-community")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "community" "www")))
 
    (role
     (name make-production-cookbook)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9025)
-       (name "prod-cookbook")))
-     (task
-      (title "make user")
-      (user
-       (uid 9025)
-       (name "prod-cookbook")
-       (group "prod-cookbook")
-       (groups ("users"))
-       (comment "prod-cookbook")
-       (home "/production/cookbook")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/cookbook")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/cookbook")
-       (state "directory")
-       (owner "prod-cookbook")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/cookbook/www dir")
-      (file
-       (path "/production/cookbook/www")
-       (state "directory")
-       (owner "prod-cookbook")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/cookbook/log/nginx dir")
-      (file
-       (path "/production/cookbook/log/nginx")
-       (state "directory")
-       (owner "prod-cookbook")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "cookbook" "www")))
 
    (role
     (name make-production-gitea)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9030)
-       (name "prod-gitea")))
-     (task
-      (title "make user")
-      (user
-       (uid 9030)
-       (name "prod-gitea")
-       (group "prod-gitea")
-       (groups ("users"))
-       (comment "prod-gitea")
-       (home "/production/gitea")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/gitea")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/gitea")
-       (state "directory")
-       (owner "prod-gitea")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/gitea/log/nginx dir")
-      (file
-       (path "/production/gitea/log/nginx")
-       (state "directory")
-       (owner "prod-gitea")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "gitea" "www")))
 
    (role
     (name make-production-man)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9027)
-       (name "prod-man")))
-     (task
-      (title "make user")
-      (user
-       (uid 9027)
-       (name "prod-man")
-       (group "prod-man")
-       (groups ("users"))
-       (comment "prod-man")
-       (home "/production/man")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/man")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/man")
-       (state "directory")
-       (owner "prod-man")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/man/www dir")
-      (file
-       (path "/production/man/www")
-       (state "directory")
-       (owner "prod-man")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/man/log/nginx dir")
-      (file
-       (path "/production/man/log/nginx")
-       (state "directory")
-       (owner "prod-man")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "man" "www")))
 
    (role
     (name make-production-schemers)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9040)
-       (name "prod-schemers")))
-     (task
-      (title "make user")
-      (user
-       (uid 9040)
-       (name "prod-schemers")
-       (group "prod-schemers")
-       (groups ("users"))
-       (comment "prod-schemers")
-       (home "/production/schemers")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/schemers")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/schemers")
-       (state "directory")
-       (owner "prod-schemers")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/schemers/www dir")
-      (file
-       (path "/production/schemers/www")
-       (state "directory")
-       (owner "prod-schemers")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/schemers/log/nginx dir")
-      (file
-       (path "/production/schemers/log/nginx")
-       (state "directory")
-       (owner "prod-schemers")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "schemers")))
 
    (role
     (name make-production-test)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9009)
-       (name "prod-test")))
-     (task
-      (title "make user")
-      (user
-       (uid 9009)
-       (name "prod-test")
-       (group "prod-test")
-       (groups ("users"))
-       (comment "prod-test")
-       (home "/production/test")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/test")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/test")
-       (state "directory")
-       (owner "prod-test")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/test/www dir")
-      (file
-       (path "/production/test/www")
-       (state "directory")
-       (owner "prod-test")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/test/log/nginx dir")
-      (file
-       (path "/production/test/log/nginx")
-       (state "directory")
-       (owner "prod-test")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "test" "www")))
 
    (role
     (name make-production-web)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9011)
-       (name "prod-web")))
-     (task
-      (title "make user")
-      (user
-       (uid 9011)
-       (name "prod-web")
-       (group "prod-web")
-       (groups ("users"))
-       (comment "prod-web")
-       (home "/production/web-topic")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/web-topic")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/web-topic")
-       (state "directory")
-       (owner "prod-web")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/web-topic/www dir")
-      (file
-       (path "/production/web-topic/www")
-       (state "directory")
-       (owner "prod-web")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/web-topic/log/nginx dir")
-      (file
-       (path "/production/web-topic/log/nginx")
-       (state "directory")
-       (owner "prod-web")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "web" "www")))
 
    (role
     (name make-production-wiki)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9024)
-       (name "prod-wiki")))
-     (task
-      (title "make user")
-      (user
-       (uid 9024)
-       (name "prod-wiki")
-       (group "prod-wiki")
-       (groups ("users"))
-       (comment "prod-wiki")
-       (home "/production/wiki")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/wiki")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/wiki")
-       (state "directory")
-       (owner "prod-wiki")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/wiki/log/nginx dir")
-      (file
-       (path "/production/wiki/log/nginx")
-       (state "directory")
-       (owner "prod-wiki")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "wiki")))
 
    (role
     (name make-staging-wiki)
@@ -1500,230 +644,27 @@
    (role
     (name make-production-events)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9016)
-       (name "prod-events")))
-     (task
-      (title "make user")
-      (user
-       (uid 9016)
-       (name "prod-events")
-       (group "prod-events")
-       (groups ("users"))
-       (comment "prod-events")
-       (home "/production/events")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/events")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/events")
-       (state "directory")
-       (owner "prod-events")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/events/www dir")
-      (file
-       (path "/production/events/www")
-       (state "directory")
-       (owner "prod-events")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/events/log/nginx dir")
-      (file
-       (path "/production/events/log/nginx")
-       (state "directory")
-       (owner "prod-events")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "events" "www")))
 
    (role
     (name make-production-files)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9013)
-       (name "prod-files")))
-     (task
-      (title "make user")
-      (user
-       (uid 9013)
-       (name "prod-files")
-       (group "prod-files")
-       (groups ("users"))
-       (comment "prod-files")
-       (home "/production/files")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/files")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/files")
-       (state "directory")
-       (owner "prod-files")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/files/www dir")
-      (file
-       (path "/production/files/www")
-       (state "link")
-       (src "/blockstorage/prod-files/www")
-       (owner "prod-files")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)))
-     (task
-      (title "make /production/files/log/nginx dir")
-      (file
-       (path "/production/files/log/nginx")
-       (state "directory")
-       (owner "prod-files")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ;; www is a symlink to /blockstorage
+     ,@(production-site-tasks "files")))
 
    (role
     (name make-production-get)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9021)
-       (name "prod-get")))
-     (task
-      (title "make user")
-      (user
-       (uid 9021)
-       (name "prod-get")
-       (group "prod-get")
-       (groups ("users"))
-       (comment "prod-get")
-       (home "/production/get")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/get")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/get")
-       (state "directory")
-       (owner "prod-get")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/get/www dir")
-      (file
-       (path "/production/get/www")
-       (state "directory")
-       (owner "prod-get")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/get/log/nginx dir")
-      (file
-       (path "/production/get/log/nginx")
-       (state "directory")
-       (owner "prod-get")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "get" "www")))
 
    (role
     (name make-production-go)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9036)
-       (name "prod-go")))
-     (task
-      (title "make user")
-      (user
-       (uid 9036)
-       (name "prod-go")
-       (group "prod-go")
-       (groups ("users"))
-       (comment "prod-go")
-       (home "/production/go")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/go")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/go")
-       (state "directory")
-       (owner "prod-go")
-       (group "users")
-       (follow no)
-       (recurse yes)))
+     ,@(production-site-tasks "go" "www")
      (task
       (title "make /production/go/nginx dir")
       (file
        (path "/production/go/nginx")
-       (state "directory")
-       (owner "prod-go")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/go/www dir")
-      (file
-       (path "/production/go/www")
-       (state "directory")
-       (owner "prod-go")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/go/log/nginx dir")
-      (file
-       (path "/production/go/log/nginx")
        (state "directory")
        (owner "prod-go")
        (group "users")
@@ -1734,450 +675,43 @@
    (role
     (name make-production-groups)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9032)
-       (name "prod-groups")))
-     (task
-      (title "make user")
-      (user
-       (uid 9032)
-       (name "prod-groups")
-       (group "prod-groups")
-       (groups ("users"))
-       (comment "prod-groups")
-       (home "/production/groups")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/groups")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/groups")
-       (state "directory")
-       (owner "prod-groups")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/groups/www dir")
-      (file
-       (path "/production/groups/www")
-       (state "directory")
-       (owner "prod-groups")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/groups/log/nginx dir")
-      (file
-       (path "/production/groups/log/nginx")
-       (state "directory")
-       (owner "prod-groups")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "groups" "www")))
 
    (role
     (name make-production-conservatory)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9034)
-       (name "prod-conservat")))
-     (task
-      (title "make user")
-      (user
-       (uid 9034)
-       (name "prod-conservat")
-       (group "prod-conservat")
-       (groups ("users"))
-       (comment "prod-conservat")
-       (home "/production/conservatory")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/conservatory")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/conservatory")
-       (state "directory")
-       (owner "prod-conservat")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     ;;   (task
-     ;;    (title "make /production/conservatory/www dir")
-     ;;    (file
-     ;;     (path "/production/conservatory/www")
-     ;;     (state "directory")
-     ;;     (owner "prod-conservat")
-     ;;     (group "users")
-     ;;     (mode "u=rwX,g=rwX,o=rX")
-     ;;     (follow no)
-     ;;     (recurse yes)))
-     (task
-      (title "make /production/conservatory/log/nginx dir")
-      (file
-       (path "/production/conservatory/log/nginx")
-       (state "directory")
-       (owner "prod-conservat")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ;; www is a symlink to /blockstorage
+     ,@(production-site-tasks "conservatory")))
 
    (role
     (name make-production-containers)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9020)
-       (name "prod-container")))
-     (task
-      (title "make user")
-      (user
-       (uid 9020)
-       (name "prod-container")
-       (group "prod-container")
-       (groups ("users"))
-       (comment "prod-container")
-       (home "/production/containers")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/containers")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/containers")
-       (state "directory")
-       (owner "prod-container")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/containers/www dir")
-      (file
-       (path "/production/containers/www")
-       (state "directory")
-       (owner "prod-container")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/containers/log/nginx dir")
-      (file
-       (path "/production/containers/log/nginx")
-       (state "directory")
-       (owner "prod-container")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "containers" "www")))
 
    (role
     (name make-production-learn)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9023)
-       (name "prod-learn")))
-     (task
-      (title "make user")
-      (user
-       (uid 9023)
-       (name "prod-learn")
-       (group "prod-learn")
-       (groups ("users"))
-       (comment "prod-learn")
-       (home "/production/learn")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/learn")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/learn")
-       (state "directory")
-       (owner "prod-learn")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/learn/www dir")
-      (file
-       (path "/production/learn/www")
-       (state "directory")
-       (owner "prod-learn")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/learn/log/nginx dir")
-      (file
-       (path "/production/learn/log/nginx")
-       (state "directory")
-       (owner "prod-learn")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "learn" "www")))
 
    (role
     (name make-production-lists)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9010)
-       (name "prod-lists")))
-     (task
-      (title "make user")
-      (user
-       (uid 9010)
-       (name "prod-lists")
-       (group "prod-lists")
-       (groups ("users"))
-       (comment "prod-lists")
-       (home "/production/lists")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/lists")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/lists")
-       (state "directory")
-       (owner "prod-lists")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/lists/www dir")
-      (file
-       (path "/production/lists/www")
-       (state "directory")
-       (owner "prod-lists")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/lists/log/nginx dir")
-      (file
-       (path "/production/lists/log/nginx")
-       (state "directory")
-       (owner "prod-lists")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "lists" "www")))
 
    (role
     (name make-production-research)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9015)
-       (name "prod-research")))
-     (task
-      (title "make user")
-      (user
-       (uid 9015)
-       (name "prod-research")
-       (group "prod-research")
-       (groups ("users"))
-       (comment "prod-research")
-       (home "/production/research")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/research")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/research")
-       (state "directory")
-       (owner "prod-research")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/research/www dir")
-      (file
-       (path "/production/research/www")
-       (state "directory")
-       (owner "prod-research")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/research/log/nginx dir")
-      (file
-       (path "/production/research/log/nginx")
-       (state "directory")
-       (owner "prod-research")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "research" "www")))
 
    (role
     (name make-production-standards)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9014)
-       (name "prod-standards")))
-     (task
-      (title "make user")
-      (user
-       (uid 9014)
-       (name "prod-standards")
-       (group "prod-standards")
-       (groups ("users"))
-       (comment "prod-standards")
-       (home "/production/standards")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/standards")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/standards")
-       (state "directory")
-       (owner "prod-standards")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/standards/www dir")
-      (file
-       (path "/production/standards/www")
-       (state "directory")
-       (owner "prod-standards")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/standards/log/nginx dir")
-      (file
-       (path "/production/standards/log/nginx")
-       (state "directory")
-       (owner "prod-standards")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "standards" "www")))
 
    (role
     (name make-production-servers)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9012)
-       (name "prod-servers")))
-     (task
-      (title "make user")
-      (user
-       (uid 9012)
-       (name "prod-servers")
-       (group "prod-servers")
-       (groups ("users"))
-       (comment "prod-servers")
-       (home "/production/servers")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/servers")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/servers")
-       (state "directory")
-       (owner "prod-servers")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/servers/www dir")
-      (file
-       (path "/production/servers/www")
-       (state "directory")
-       (owner "prod-servers")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/servers/log/nginx dir")
-      (file
-       (path "/production/servers/log/nginx")
-       (state "directory")
-       (owner "prod-servers")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "servers" "www")))
 
    (role
     (name make-production-alpha-servers)
@@ -2223,114 +757,12 @@
    (role
     (name make-production-try)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9017)
-       (name "prod-try")))
-     (task
-      (title "make user")
-      (user
-       (uid 9017)
-       (name "prod-try")
-       (group "prod-try")
-       (groups ("users"))
-       (comment "prod-try")
-       (home "/production/try")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/try")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/try")
-       (state "directory")
-       (owner "prod-try")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/try/www dir")
-      (file
-       (path "/production/try/www")
-       (state "directory")
-       (owner "prod-try")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/try/log/nginx dir")
-      (file
-       (path "/production/try/log/nginx")
-       (state "directory")
-       (owner "prod-try")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "try" "www")))
 
    (role
     (name make-production-video)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9028)
-       (name "prod-video")))
-     (task
-      (title "make user")
-      (user
-       (uid 9028)
-       (name "prod-video")
-       (group "prod-video")
-       (groups ("users"))
-       (comment "prod-video")
-       (home "/production/video")
-       (shell "/bin/bash")
-       (move-home yes)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/video")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/video")
-       (state "directory")
-       (owner "prod-video")
-       (group "users")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/video/www dir")
-      (file
-       (path "/production/video/www")
-       (state "directory")
-       (owner "prod-video")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     (task
-      (title "make /production/video/log/nginx dir")
-      (file
-       (path "/production/video/log/nginx")
-       (state "directory")
-       (owner "prod-video")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ,@(production-site-tasks "video" "www")))
 
    (role
     (name setup-lets-encrypt)
