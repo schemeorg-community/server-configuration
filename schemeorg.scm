@@ -1,7 +1,17 @@
-  (options
+(import (scheme base) (srfi 166))
+
+(define (write-top-level-expressions . exps)
+  (for-each (lambda (exp)
+              (newline)
+              (show #t (pretty exp)))
+            exps))
+
+(write-top-level-expressions
+
+ `(options
    (var pipelining true))
 
-  (groups
+ `(groups
    (group
     (name schemeorg)
     (hosts
@@ -11,7 +21,7 @@
        (var ansible-host "8.9.4.141")
        (var ansible-python-interpreter "/usr/bin/python3"))))))
 
-  (playbooks
+ `(playbooks
 
    (playbook
     (name schemeorg)
@@ -66,7 +76,7 @@
      configure-nginx
      configure-ssh-server)))
 
-  (roles
+ `(roles
 
    (role
     (name upgrade-packages)
@@ -2405,4 +2415,4 @@
     (handlers
      (handler
       (title "restart nginx")
-      (service (name "nginx") (state "restarted"))))))
+      (service (name "nginx") (state "restarted")))))))
