@@ -193,6 +193,7 @@
 ;;   -d r5rs.scheme.org \
 ;;   -d r6rs.scheme.org \
 ;;   -d r7rs.scheme.org \
+;;   -d racket.scheme.org \
 ;;   -d registry.scheme.org \
 ;;   -d research.scheme.org \
 ;;   -d s7.scheme.org \
@@ -520,6 +521,9 @@
 
          (http-redirect-only-server
           "mit.scheme.org" "https://www.gnu.org/software/mit-scheme/")
+
+         (http-redirect-only-server
+          "racket.scheme.org" "https://racket-lang.org/")
 
          (http-redirect-only-server
           "mosh.scheme.org" "https://mosh.monaos.org/")
