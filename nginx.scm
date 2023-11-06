@@ -335,6 +335,8 @@
 
          (static-site "lists")
 
+         (static-site "redirect")
+
          (static-site "research")
 
          (static-site "servers")

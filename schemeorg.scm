@@ -62,6 +62,8 @@
       (shell "/bin/bash")))
     ,@(ssh-key-tasks (human-user-name human-user))))
 
+;; TODO: These numbers are a mess. Establish a systematic numbering
+;; scheme.
 (define sites
   '(("api" 0)
     ("apps" 22)
@@ -84,6 +86,7 @@
     ("persist" 7)
     ("planet" 18)
     ("registry" 6)
+    ("redirect" 42)
     ("research" 15)
     ("schemers" 40)
     ("servers" 12)
@@ -254,6 +257,7 @@
      make-production-containers
      make-production-learn
      make-production-lists
+     make-production-redirect
      make-production-research
      make-production-standards
      make-production-servers
@@ -697,6 +701,11 @@
     (name make-production-lists)
     (tasks
      ,@(production-site-tasks "lists" "www")))
+
+   (role
+    (name make-production-redirect)
+    (tasks
+     ,@(production-site-tasks "redirect" "www")))
 
    (role
     (name make-production-research)
