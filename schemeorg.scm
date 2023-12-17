@@ -155,14 +155,14 @@
       (comment ,site-unix-name)
       (home ,site-home)
       (shell "/bin/bash")
-      (move-home yes)))
+      (move-home true)))
     (task
      (title "chmod home dir")
      (file
       (path ,site-home)
       (mode "u=rwX,g=rX,o=rX")
-      (follow no)
-      (recurse no)))
+      (follow false)
+      (recurse false)))
     (task
      (title "chown home dir")
      (file
@@ -170,8 +170,8 @@
       (state "directory")
       (owner ,site-unix-name)
       (group "users")
-      (follow no)
-      (recurse yes)))
+      (follow false)
+      (recurse true)))
     ,@(map (lambda (subdir)
              (let ((dir (string-append site-home "/" subdir)))
                `(task
@@ -182,8 +182,8 @@
                   (owner ,site-unix-name)
                   (group "users")
                   (mode "u=rwX,g=rwX,o=rX")
-                  (follow no)
-                  (recurse yes)))))
+                  (follow false)
+                  (recurse true)))))
            subdirectories)))
 
 (define (production-site-tasks site-name . subdirectories)
@@ -286,8 +286,9 @@
      (task
       (title "upgrade all apt packages to latest versions")
       (apt
-       (update-cache yes)
-       (upgrade "yes")))))
+       (update-cache true)
+       (upgrade true)))))
+
 
    (role
     (name set-server-basics-tuonela)
@@ -616,14 +617,14 @@
        (comment "stag-wiki")
        (home "/staging/wiki")
        (shell "/bin/bash")
-       (move-home yes)))
+       (move-home true)))
      (task
       (title "chmod home dir")
       (file
        (path "/staging/wiki")
        (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
+       (follow false)
+       (recurse false)))
      (task
       (title "chown home dir")
       (file
@@ -631,8 +632,8 @@
        (state "directory")
        (owner "stag-wiki")
        (group "users")
-       (follow no)
-       (recurse yes)))
+       (follow false)
+       (recurse true)))
      ;; (task
      ;;  (title "make /staging/wiki/log/nginx dir")
      ;;  (file
@@ -641,8 +642,8 @@
      ;;   (owner "stag-wiki")
      ;;   (group "users")
      ;;   (mode "u=rwX,g=rwX,o=rX")
-     ;;   (follow no)
-     ;;   (recurse yes)))
+     ;;   (follow false)
+     ;;   (recurse true)))
      ))
 
    (role
@@ -672,18 +673,18 @@
        (owner "prod-go")
        (group "users")
        (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
+       (follow false)
+       (recurse true)))
      (task
       (title "ensure /production/go/nginx/map.conf exists")
       (copy
        (dest "/production/go/nginx/map.conf")
        (content "")
-       (force no)
+       (force false)
        (owner "prod-go")
        (group "users")
        (mode "u=rwX,g=rwX,o=rX")
-       (follow no)))))
+       (follow false)))))
 
    (role
     (name make-production-groups)
@@ -736,8 +737,8 @@
        (path "/production/tuonela")
        (state "directory")
        (mode "u=rwX,g=rX,o=rX")
-       (follow no)
-       (recurse no)))
+       (follow false)
+       (recurse false)))
      (task
       (title "chown home dir")
       (file
@@ -745,8 +746,8 @@
        (state "directory")
        (owner "prod-servers")
        (group "users")
-       (follow no)
-       (recurse yes)))
+       (follow false)
+       (recurse true)))
      (task
       (title "make /production/tuonela/www dir")
       (file
@@ -797,9 +798,9 @@
       (copy
        (dest "/etc/nginx/nginx.conf.orig")
        (src "/etc/nginx/nginx.conf")
-       (remote-src yes)
+       (remote-src true)
        (mode "0444")
-       (force no)))
+       (force false)))
      (task
       (title "install our own nginx.conf")
       (copy
@@ -814,7 +815,7 @@
       (title "start nginx now and at every boot")
       (service
        (name "nginx")
-       (enabled yes)
+       (enabled true)
        (state "started"))))
     (handlers
      (handler
