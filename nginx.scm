@@ -88,6 +88,15 @@
    (add-header "X-Permitted-Cross-Domain-Policies" "none")
    (add-header "X-Xss-Protection" "1" "mode=block")))
 
+(define (default-server)
+  (block "server"
+         "listen [::]:80 default_server;"
+         "listen 80 default_server;"
+         "listen [::]:443 ssl default_server;"
+         "listen 443 ssl default_server;"
+         "server_name _;"
+         "return 403;"))
+
 (define (http->https-redirect-server primary alias)
   (block "server"
          (string-append "server_name " alias ";")
@@ -138,20 +147,24 @@
     (block "location = /"
            (string-append "return 301 " redirect-to ";")))))
 
-(define (static-site subdomain)
-  (https-server
-   (list (string-append subdomain ".scheme.org"))
-   (string-append "access_log"
-                  " /production/" subdomain "/log/nginx/access.log;")
-   (string-append "error_log"
-                  " /production/" subdomain "/log/nginx/error.log;")
-   (string-append "root"
-                  " /production/" subdomain "/www;")))
+(define (log-directives hostname)
+  (list (string-append "access_log /var/log/nginx/" hostname "_access.log;")
+        (string-append "error_log /var/log/nginx/" hostname "_error.log;")))
+
+(define (static-site subdomain . body)
+  (let ((hostname (string-append subdomain ".scheme.org")))
+    (apply
+     https-server
+     (list hostname)
+     (append
+      (log-directives hostname)
+      (list (string-append "root /production/" subdomain "/www;"))
+      body))))
 
 ;;;;
 
 (set! letsencrypt-etc "/etc/letsencrypt")
-(set! certificate-hostname "alpha.servers.scheme.org")
+(set! certificate-hostname "tuonela.scheme.org")
 
 (define cors
   (list "add_header 'Access-Control-Allow-Origin' '*';"
@@ -202,61 +215,36 @@
                         "/live/" certificate-hostname "/privkey.pem;")
          (string-append "ssl_dhparam " letsencrypt-etc
                         "/ssl-dhparams.pem;")
-         (https-server
-          '("alpha.servers.scheme.org")
-          "access_log /production/alpha.servers/log/nginx/access.log;"
-          "error_log  /production/alpha.servers/log/nginx/error.log;"
-          "root /production/alpha.servers/www;")
 
-         (https-server
-          '("www.scheme.org" "scheme.org")
-          "access_log /production/www/log/nginx/access.log;"
-          "error_log  /production/www/log/nginx/error.log;"
-          "root /production/www/www;")
+         (default-server)
 
-         (https-server
-          '("www.staging.scheme.org" "staging.scheme.org")
-          "access_log /staging/www/log/nginx/access.log;"
-          "error_log  /staging/www/log/nginx/error.log;"
-          "root /staging/www/www;")
+         (static-site "tuonela")
 
-         (https-server
-          '("www.schemers.org" "schemers.org")
-          "access_log /production/schemers/log/nginx/access.log;"
-          "error_log  /production/schemers/log/nginx/error.log;"
-          "root /production/schemers/www;"
+         ;; (https-server
+         ;;  '("api.scheme.org")
+         ;;  "access_log /var/log/nginx/api.scheme.org_access.log;"
+         ;;  "error_log  /var/log/nginx/api.scheme.org_error.log;"
+         ;;  (block "location /"
+         ;;         "proxy_pass http://127.0.0.1:9000;"
+         ;;         (apply block "if ($request_method = 'OPTIONS')"
+         ;;                (append cors
+         ;;                        (list "add_header 'Access-Control-Max-Age' 1728000;"
+         ;;                              "add_header 'Content-Type' 'text/plain; charset=utf-8';"
+         ;;                              "add_header 'Content-Length' 0;"
+         ;;                              "return 204;")))
+         ;;         (apply block "if ($request_method = 'POST')"
+         ;;                (append cors
+         ;;                        (list "add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';")))
+         ;;         (apply block "if ($request_method = 'GET')"
+         ;;                (append cors
+         ;;                        (list "add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';")))))
 
-          "rewrite ^/$ https://www.scheme.org/schemers/ permanent;"
-          "rewrite ^/welcome.shtml$ https://conservatory.scheme.org/schemers/Welcome/ permanent;"
-          "rewrite ^/ https://conservatory.scheme.org/schemers$request_uri permanent;")
-
-         (https-server
-          '("api.scheme.org")
-          "access_log /production/api/log/nginx/access.log;"
-          "error_log  /production/api/log/nginx/error.log;"
-          (block "location /"
-                 "proxy_pass http://127.0.0.1:9000;"
-                 (apply block "if ($request_method = 'OPTIONS')"
-                        (append cors
-                                (list "add_header 'Access-Control-Max-Age' 1728000;"
-                                      "add_header 'Content-Type' 'text/plain; charset=utf-8';"
-                                      "add_header 'Content-Length' 0;"
-                                      "return 204;")))
-                 (apply block "if ($request_method = 'POST')"
-                        (append cors
-                                (list "add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';")))
-                 (apply block "if ($request_method = 'GET')"
-                        (append cors
-                                (list "add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';")))))
-
-         (https-server
-          '("api.staging.scheme.org")
-          "access_log /staging/api/log/nginx/access.log;"
-          "error_log  /staging/api/log/nginx/error.log;"
-          (block "location /"
-                 "proxy_pass http://127.0.0.1:9001;"))
-
-         (static-site "apps")
+         ;; (https-server
+         ;;  '("api.staging.scheme.org")
+         ;;  "access_log /staging/api/log/nginx/access.log;"
+         ;;  "error_log  /staging/api/log/nginx/error.log;"
+         ;;  (block "location /"
+         ;;         "proxy_pass http://127.0.0.1:9001;"))
 
          (static-site "planet")
 
@@ -270,29 +258,24 @@
 
          (https-server
           '("docs.staging.scheme.org")
-          "access_log /staging/docs/log/nginx/access.log;"
-          "error_log  /staging/docs/log/nginx/error.log;"
+          (log-directives "docs.staging.scheme.org")
           "root /staging/docs/www;")
 
-         (https-server
-          '("man.scheme.org")
-          "access_log /production/man/log/nginx/access.log;"
-          "error_log  /production/man/log/nginx/error.log;"
-          "root /production/man/www;"
+         (static-site "man"
 
-          "include /etc/nginx/mime.types;"
-          (block "types"
-                 "text/html 1;"
-                 "text/html 3scm;"
-                 "text/html 7scm;")
+                      "include /etc/nginx/mime.types;"
+                      (block "types"
+                             "text/html 1;"
+                             "text/html 3scm;"
+                             "text/html 7scm;")
 
-          (block "location /raw"
+                      (block "location /raw"
 
-                 "include /etc/nginx/mime.types;"
-                 (block "types"
-                        "text/plain 1;"
-                        "text/plain 3scm;"
-                        "text/plain 7scm;")))
+                             "include /etc/nginx/mime.types;"
+                             (block "types"
+                                    "text/plain 1;"
+                                    "text/plain 3scm;"
+                                    "text/plain 7scm;")))
 
          (static-site "registry")
 
@@ -305,8 +288,8 @@
          ;; Named "web-topic" instead of "web" to avoid confusion with "www".
          (https-server
           '("web.scheme.org")
-          "access_log /production/web-topic/log/nginx/access.log;"
-          "error_log  /production/web-topic/log/nginx/error.log;"
+          "access_log /var/log/nginx/web-topic.scheme.org_access.log;"
+          "error_log  /var/log/nginx/web-topic.scheme.org_error.log;"
           "root /production/web-topic/www;")
 
          (static-site "files")
@@ -317,11 +300,8 @@
 
          (static-site "events")
 
-         (https-server
-          '("get.scheme.org")
-          "access_log /production/get/log/nginx/access.log;"
-          "error_log  /production/get/log/nginx/error.log;"
-          "root /production/get/www;"
+         (static-site
+          "get"
 
           (block "location /v2/"
                  "proxy_pass http://localhost:5000;"
@@ -331,24 +311,13 @@
 
          (static-site "groups")
 
-         (static-site "learn")
-
-         (static-site "lists")
-
-         (static-site "redirect")
-
          (static-site "research")
-
-         (static-site "servers")
 
          (static-site "standards")
 
          (parameterize ((content-security-policy '()))
-           (https-server
-            '("try.scheme.org")
-            "access_log /production/try/log/nginx/access.log;"
-            "error_log  /production/try/log/nginx/error.log;"
-            "root /production/try/www;"
+           (static-site
+            "try"
 
             "gzip on;"
             "gzip_comp_level 6;"
@@ -364,8 +333,7 @@
                                          "'unsafe-eval'"))))
            (https-server
             '("gitea.scheme.org")
-            "access_log /production/gitea/log/nginx/access.log;"
-            "error_log  /production/gitea/log/nginx/error.log;"
+            (log-directives "gitea.scheme.org")
             (block "location /"
                    "proxy_pass http://localhost:9030;"
                    "proxy_set_header Host $host;"
@@ -375,11 +343,8 @@
 
          (block "map $go_scheme_source $go_scheme_target"
                 "include /production/go/nginx/map.conf;")
-         (https-server
-          '("go.scheme.org")
-          "access_log /production/go/log/nginx/access.log;"
-          "error_log  /production/go/log/nginx/error.log;"
-          "root /production/go/www;"
+         (static-site
+          "go"
           (block "location ~ ^/([a-z0-9][a-z0-9-]*)$"
                  "set $go_scheme_source $1;"
                  (block "if ($go_scheme_target)"
@@ -387,8 +352,7 @@
 
          (https-server
           '("wiki.staging.scheme.org")
-          "access_log /staging/wiki/log/nginx/access.log;"
-          "error_log  /staging/wiki/log/nginx/error.log;"
+          (log-directives "wiki.staging.scheme.org")
           (block "location /"
                  "proxy_pass http://localhost:9033;"
                  "proxy_set_header Host $host;"
@@ -404,78 +368,4 @@
           "doc.scheme.org" "https://docs.scheme.org/")
 
          (http-redirect-only-server
-          "wiki.scheme.org" "http://community.schemewiki.org/")
-
-         (http-redirect-only-server
-          "faq.scheme.org" "http://community.schemewiki.org/?scheme-faq")
-
-         (http-redirect-only-server
-          "list.scheme.org" "https://lists.scheme.org/")
-
-         (http-redirect-only-server
-          "play.scheme.org" "https://try.scheme.org/")
-
-         (http-redirect-only-server
-          "r5rs.scheme.org" "http://schemers.org/Documents/Standards/R5RS/")
-
-         (http-redirect-only-server
-          "r6rs.scheme.org" "http://www.r6rs.org/")
-
-         (http-redirect-only-server
-          "r7rs.scheme.org" "http://r7rs.org/")
-
-         ;;
-
-         (http-redirect-only-server
-          "bigloo.scheme.org" "https://www-sop.inria.fr/indes/fp/Bigloo/")
-
-         (http-redirect-only-server
-          "chez.scheme.org" "https://cisco.github.io/ChezScheme/")
-
-         (http-redirect-only-server
-          "chibi.scheme.org" "https://synthcode.com/scheme/chibi/")
-
-         (http-redirect-only-server
-          "chicken.scheme.org" "https://call-cc.org/")
-
-         (http-redirect-only-server
-          "cyclone.scheme.org" "https://justinethier.github.io/cyclone/")
-
-         (http-redirect-only-server
-          "gauche.scheme.org" "https://practical-scheme.net/gauche/")
-
-         (http-redirect-only-server
-          "guile.scheme.org" "https://www.gnu.org/software/guile/")
-
-         (http-redirect-only-server
-          "jazz.scheme.org"
-          ;; The "www." and "index.htm" are mandatory.
-          "http://www.jazzscheme.org/index.htm")
-
-         (http-redirect-only-server
-          "kawa.scheme.org" "https://www.gnu.org/software/kawa/")
-
-         (http-redirect-only-server
-          "mit.scheme.org" "https://www.gnu.org/software/mit-scheme/")
-
-         (http-redirect-only-server
-          "racket.scheme.org" "https://racket-lang.org/")
-
-         (http-redirect-only-server
-          "mosh.scheme.org" "https://mosh.monaos.org/")
-
-         (http-redirect-only-server
-          "s7.scheme.org" "https://ccrma.stanford.edu/software/s7/")
-
-         (http-redirect-only-server
-          "sagittarius.scheme.org" "https://ktakashi.github.io/")
-
-         (http-redirect-only-server
-          "scm.scheme.org" "https://people.csail.mit.edu/jaffer/SCM")
-
-         (http-redirect-only-server
-          "stklos.scheme.org" "https://stklos.net/")
-
-         (http-redirect-only-server
-          "ypsilon.scheme.org"
-          "http://www.littlewingpinball.com/doc/en/ypsilon/"))))
+          "play.scheme.org" "https://try.scheme.org/"))))

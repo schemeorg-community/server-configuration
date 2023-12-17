@@ -1,15 +1,24 @@
 (import (scheme base)
         (scheme file)
-        (srfi 1)
-        (srfi 166))
+        (srfi 1))
+
+(cond-expand
+ ((library (srfi 166))
+  (import (only (srfi 166) pretty show)))
+ (else))
+
+(cond-expand
+ ((library (srfi 166))
+  (begin
+    (define (pretty-print x)
+      (show #t (pretty x)))))
+ (else
+  (begin
+    (define (pretty-print x)
+      (write x)
+      (newline)))))
 
 (define rest cdr)
-
-(define (write-top-level-expressions . exps)
-  (for-each (lambda (exp)
-              (newline)
-              (show #t (pretty exp)))
-            exps))
 
 (define (path-append a b)
   (string-append a "/" b))
@@ -116,7 +125,7 @@
     (string-append prefix (string-copy name 0 (min name-len name-max)))))
 
 (define staging-site-names
-  '("api" "docs" "wiki" "www"))
+  '("api" "docs" "wiki"))
 
 (define (staging-site? site)
   (not (not (member (site-name site) staging-site-names))))
@@ -176,8 +185,7 @@
                   (mode "u=rwX,g=rwX,o=rX")
                   (follow no)
                   (recurse yes)))))
-           (append '("log" "log/nginx")
-                   subdirectories))))
+           subdirectories)))
 
 (define (production-site-tasks site-name . subdirectories)
   (let ((site (site-by-name site-name)))
@@ -193,9 +201,12 @@
       (error "No staging site for" site))
     (apply site-tasks
            (staging-site-id site)
-           (site-unix-name "stag-" site)
+           "www"
            (string-append "/staging/" site-name)
            subdirectories)))
+
+(define (write-top-level-expressions . exps)
+  (for-each pretty-print exps))
 
 (write-top-level-expressions
 
@@ -207,30 +218,31 @@
     (name schemeorg)
     (hosts
      (host
-      (name alpha)
+      (name tuonela)
       (vars
-       (var ansible-host "8.9.4.141")
+       (var ansible-host "192.210.181.186")
        (var ansible-python-interpreter "/usr/bin/python3"))))))
 
  `(playbooks
 
    (playbook
     (name schemeorg)
-    (hosts alpha)
+    (hosts tuonela)
     (become true)
     (roles
      upgrade-packages
-     set-server-basics-alpha
+     install-tools
+     set-server-basics-tuonela
      set-server-basics
      configure-firewall
-     install-tools
+     antivirus
      install-nginx
+     install-docker
+     databases
      make-human-users
      make-build-user
-     make-production-www
-     make-staging-www
-     make-production-api
-     make-staging-api
+     ;;make-production-api
+     ;;make-staging-api
      make-production-docs
      make-staging-docs
      make-production-registry
@@ -261,7 +273,7 @@
      make-production-research
      make-production-standards
      make-production-servers
-     make-production-alpha-servers
+     make-production-tuonela
      make-production-try
      make-production-video
      setup-lets-encrypt
@@ -280,40 +292,16 @@
        (upgrade "yes")))))
 
    (role
-    (name set-server-basics-alpha)
+    (name set-server-basics-tuonela)
     (tasks
      (task
       (title "set hostname")
       (hostname
-       (name "alpha.servers.scheme.org")))
-     (task
-      (title "set purpose")
-      (copy
-       (dest "/etc/scheme-server-purpose")
-       (content "Static web sites and redirects")))
-     (task
-      (title "set location")
-      (copy
-       (dest "/etc/scheme-server-location")
-       (content "New Jersey, United States")))))
+       (name "tuonela.scheme.org")))))
 
    (role
     (name set-server-basics)
     (tasks
-     (task
-      (title "chmod purpose file")
-      (file
-       (path "/etc/scheme-server-purpose")
-       (owner "root")
-       (group "root")
-       (mode "u=r,g=r,o=r")))
-     (task
-      (title "chmod location file")
-      (file
-       (path "/etc/scheme-server-location")
-       (owner "root")
-       (group "root")
-       (mode "u=r,g=r,o=r")))
      (task
       (title "set login greeting message")
       (copy
@@ -323,9 +311,12 @@
        (group "root")
        (mode "u=rw,g=r,o=r")))
      (task
+      (title "install sudo")
+      (apt (name ("sudo"))))
+     (task
       (title "enable passwordless sudo")
       (lineinfile
-       (validate "visudo -cqf /etc/sudoers")
+       (validate "visudo -cqf %s")
        (path "/etc/sudoers")
        (regexp "%sudo")
        (line "%sudo ALL=(ALL:ALL) NOPASSWD:ALL")))))
@@ -404,14 +395,23 @@
       (apt
        (name
         ("htop"
+         "rdiff-backup"
          "stow"
          "tmux"
-         "tree"))))
+         "tree"
+         "unzip"))))
      (task
       (title "dependencies for building gauche")
       (apt
        (name
         ("libmbedtls-dev"))))))
+
+   (role
+    (name antivirus)
+    (tasks
+     (task
+      (title "install clamav")
+      (apt (name "clamav-base")))))
 
    (role
     (name install-nginx)
@@ -420,6 +420,20 @@
       (title "install nginx")
       (apt (name "nginx"))
       (notify "restart nginx"))))
+
+   (role
+    (name install-docker)
+    (tasks
+     (task
+      (title "install docker")
+      (apt (name "docker.io")))))
+
+   (role
+    (name databases)
+    (tasks
+     (task
+      (title "install postgresql")
+      (apt (name "postgresql")))))
 
    (role
     (name make-build-user)
@@ -456,18 +470,6 @@
      ,@(staging-site-tasks "docs" "www")))
 
    (role
-    (name make-production-www)
-    (tasks
-     ,@(production-site-tasks "www" "www")))
-
-   (role
-    (name make-staging-www)
-    (tasks
-     ,@(staging-site-tasks "www" "www")
-     ,@(ssh-key-tasks* "stag-www" "arthur")
-     ,@(ssh-key-tasks* "stag-www" "lassi")))
-
-   (role
     (name make-production-api)
     (tasks
      ,@(production-site-tasks "api")
@@ -478,13 +480,14 @@
        (src "run")
        (mode "u=rwx,g=rx,o=rx"))
       (notify "restart services"))
-     (task
-      (title "make log/run script")
-      (copy
-       (dest "/production/api/log/run")
-       (src "log-run")
-       (mode "u=rwx,g=rx,o=rx"))
-      (notify "restart services")))
+     ;; (task
+     ;;  (title "make log/run script")
+     ;;  (copy
+     ;;   (dest "/production/api/log/run")
+     ;;   (src "log-run")
+     ;;   (mode "u=rwx,g=rx,o=rx"))
+     ;;  (notify "restart services"))
+     )
     (handlers
      (handler
       (title "restart services")
@@ -505,13 +508,14 @@
        (src "run")
        (mode "u=rwx,g=rx,o=rx"))
       (notify "restart services"))
-     (task
-      (title "make log/run script")
-      (copy
-       (dest "/staging/api/log/run")
-       (src "log-run")
-       (mode "u=rwx,g=rx,o=rx"))
-      (notify "restart services")))
+     ;; (task
+     ;;  (title "make log/run script")
+     ;;  (copy
+     ;;   (dest "/staging/api/log/run")
+     ;;   (src "log-run")
+     ;;   (mode "u=rwx,g=rx,o=rx"))
+     ;;  (notify "restart services"))
+     )
     (handlers
      (handler
       (title "restart services")
@@ -530,9 +534,6 @@
    (role
     (name make-production-planet)
     (tasks
-     (task
-      (title "install planet-venus")
-      (apt (name "planet-venus")))
      ,@(production-site-tasks "planet" "www")
      (task
       (title "add cron job to check the feeds")
@@ -634,16 +635,17 @@
        (group "users")
        (follow no)
        (recurse yes)))
-     (task
-      (title "make /staging/wiki/log/nginx dir")
-      (file
-       (path "/staging/wiki/log/nginx")
-       (state "directory")
-       (owner "stag-wiki")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ;; (task
+     ;;  (title "make /staging/wiki/log/nginx dir")
+     ;;  (file
+     ;;   (path "/staging/wiki/log/nginx")
+     ;;   (state "directory")
+     ;;   (owner "stag-wiki")
+     ;;   (group "users")
+     ;;   (mode "u=rwX,g=rwX,o=rX")
+     ;;   (follow no)
+     ;;   (recurse yes)))
+     ))
 
    (role
     (name make-production-events)
@@ -653,8 +655,7 @@
    (role
     (name make-production-files)
     (tasks
-     ;; www is a symlink to /blockstorage
-     ,@(production-site-tasks "files")))
+     ,@(production-site-tasks "files" "www")))
 
    (role
     (name make-production-get)
@@ -674,7 +675,17 @@
        (group "users")
        (mode "u=rwX,g=rwX,o=rX")
        (follow no)
-       (recurse yes)))))
+       (recurse yes)))
+     (task
+      (title "ensure /production/go/nginx/map.conf exists")
+      (copy
+       (dest "/production/go/nginx/map.conf")
+       (content "")
+       (force no)
+       (owner "prod-go")
+       (group "users")
+       (mode "u=rwX,g=rwX,o=rX")
+       (follow no)))))
 
    (role
     (name make-production-groups)
@@ -723,45 +734,47 @@
      ,@(production-site-tasks "servers" "www")))
 
    (role
-    (name make-production-alpha-servers)
+    (name make-production-tuonela)
     ;; Re-use the prod-servers user account for this one.
     (tasks
      (task
       (title "chmod home dir")
       (file
-       (path "/production/alpha.servers")
+       (path "/production/tuonela")
+       (state "directory")
        (mode "u=rwX,g=rX,o=rX")
        (follow no)
        (recurse no)))
      (task
       (title "chown home dir")
       (file
-       (path "/production/alpha.servers")
+       (path "/production/tuonela")
        (state "directory")
        (owner "prod-servers")
        (group "users")
        (follow no)
        (recurse yes)))
      (task
-      (title "make /production/alpha.servers/www dir")
+      (title "make /production/tuonela/www dir")
       (file
-       (path "/production/alpha.servers/www")
+       (path "/production/tuonela/www")
        (state "directory")
        (owner "prod-servers")
        (group "users")
        (mode "u=rwX,g=rwX,o=rX")
        (follow no)
        (recurse yes)))
-     (task
-      (title "make /production/alpha.servers/log/nginx dir")
-      (file
-       (path "/production/alpha.servers/log/nginx")
-       (state "directory")
-       (owner "prod-servers")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))))
+     ;; (task
+     ;;  (title "make /production/tuonela/log/nginx dir")
+     ;;  (file
+     ;;   (path "/production/tuonela/log/nginx")
+     ;;   (state "directory")
+     ;;   (owner "prod-servers")
+     ;;   (group "users")
+     ;;   (mode "u=rwX,g=rwX,o=rX")
+     ;;   (follow no)
+     ;;   (recurse yes)))
+     ))
 
    (role
     (name make-production-try)
@@ -781,7 +794,7 @@
       (apt
        (name
         ("certbot"
-         "python-certbot-nginx"))))))
+         "python3-certbot-nginx"))))))
 
    (role
     (name configure-nginx)

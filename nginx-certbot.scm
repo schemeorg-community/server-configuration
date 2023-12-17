@@ -8,14 +8,18 @@
     (let ((x (read)))
       (if (eof-object? x) (reverse xs) (loop (cons x xs))))))
 
-(define (write-line x) (write-string x) (newline))
+(define (echo . strings) (for-each write-string strings) (newline))
 
 (define (sort-unique strings)
   (list-delete-neighbor-dups string=? (list-sort string<? strings)))
 
 ;;
 
-(define domains '("scheme.org" "schemers.org"))
+(define main-domain "scheme.org")
+
+(define domains (list main-domain))
+
+(define server "tuonela.scheme.org")
 
 (define source-file (string-append (script-directory) "nginx.scm"))
 
@@ -38,12 +42,14 @@
         (else
          '())))
 
-(define subdomains (sort-unique (append-map grovel source-code)))
+(define subdomains
+  (cons server (delete server (sort-unique (append-map grovel source-code)))))
 
-(write-line "sudo certbot renew")
-(write-line
+(echo "sudo certbot renew")
+(echo
  (string-join
-  (cons "sudo certbot certonly --nginx --cert-name alpha.servers.scheme.org"
+  (cons (string-append "sudo certbot certonly --nginx --cert-name "
+                       server)
         (map (lambda (subdomain) (string-append "  -d " subdomain))
              subdomains))
   " \\\n"))
