@@ -201,7 +201,7 @@
       (error "No staging site for" site))
     (apply site-tasks
            (staging-site-id site)
-           "www"
+           (site-unix-name "stag-" site)
            (string-append "/staging/" site-name)
            subdirectories)))
 
