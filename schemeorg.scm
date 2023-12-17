@@ -103,7 +103,7 @@
     ("try" 17)
     ("video" 28)
     ("web" 11)
-    ("wiki" 24)
+    ("wiki" 48)
     ("workshop" 44)
     ("www" 4)))
 
@@ -620,38 +620,7 @@
    (role
     (name make-staging-wiki)
     (tasks
-     (task
-      (title "make group")
-      (group
-       (gid 9033)
-       (name "stag-wiki")))
-     (task
-      (title "make user")
-      (user
-       (uid 9033)
-       (name "stag-wiki")
-       (group "stag-wiki")
-       (groups ("users"))
-       (comment "stag-wiki")
-       (home "/staging/wiki")
-       (shell "/bin/bash")
-       (move-home true)))
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/staging/wiki")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow false)
-       (recurse false)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/staging/wiki")
-       (state "directory")
-       (owner "stag-wiki")
-       (group "users")
-       (follow false)
-       (recurse true)))))
+     ,@(staging-site-tasks "wiki")))
 
    (role
     (name make-staging-workshop)
