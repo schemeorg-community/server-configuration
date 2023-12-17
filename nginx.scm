@@ -362,7 +362,7 @@
          (https-server
           '("www.staging.schemeworkshop.org")
           (log-directives "www.staging.schemeworkshop.org")
-          "root /staging/schemeworkshop/www;")
+          "root /staging/workshop/www;")
 
          ;;
 
