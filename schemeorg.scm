@@ -510,15 +510,7 @@
        (dest "/production/api/run")
        (src "run")
        (mode "u=rwx,g=rx,o=rx"))
-      (notify "restart services"))
-     ;; (task
-     ;;  (title "make log/run script")
-     ;;  (copy
-     ;;   (dest "/production/api/log/run")
-     ;;   (src "log-run")
-     ;;   (mode "u=rwx,g=rx,o=rx"))
-     ;;  (notify "restart services"))
-     )
+      (notify "restart services")))
     (handlers
      (handler
       (title "restart services")
@@ -538,15 +530,7 @@
        (dest "/staging/api/run")
        (src "run")
        (mode "u=rwx,g=rx,o=rx"))
-      (notify "restart services"))
-     ;; (task
-     ;;  (title "make log/run script")
-     ;;  (copy
-     ;;   (dest "/staging/api/log/run")
-     ;;   (src "log-run")
-     ;;   (mode "u=rwx,g=rx,o=rx"))
-     ;;  (notify "restart services"))
-     )
+      (notify "restart services")))
     (handlers
      (handler
       (title "restart services")
@@ -673,18 +657,7 @@
        (owner "stag-wiki")
        (group "users")
        (follow false)
-       (recurse true)))
-     ;; (task
-     ;;  (title "make /staging/wiki/log/nginx dir")
-     ;;  (file
-     ;;   (path "/staging/wiki/log/nginx")
-     ;;   (state "directory")
-     ;;   (owner "stag-wiki")
-     ;;   (group "users")
-     ;;   (mode "u=rwX,g=rwX,o=rX")
-     ;;   (follow false)
-     ;;   (recurse true)))
-     ))
+       (recurse true)))))
 
    (role
     (name make-production-events)
