@@ -2,17 +2,17 @@
 set -eu
 R7RS=${R7RS:-chibi-scheme}
 cd "$(dirname "$0")"
-$R7RS schemeorg.scm >schemeorg.pose
-sensible -o schemeorg schemeorg.pose
+rm -rf schemeorg/
+mkdir -p schemeorg
+mkdir -p schemeorg/roles/make_production_gitea/files
+mkdir -p schemeorg/roles/motd/files
+mkdir -p schemeorg/roles/nginx/files
+cp -p gitea/prod-gitea.service schemeorg/roles/make_production_gitea/files/
+{ echo && cat motd.text && echo; } >schemeorg/roles/motd/files/motd
+$R7RS nginx.scm >schemeorg/roles/nginx/files/nginx.conf
+$R7RS schemeorg.scm >schemeorg/schemeorg.pose
 cd schemeorg
 echo "Entering directory '$PWD'"
-mkdir -p roles/nginx/files
-$R7RS ../nginx.scm >roles/nginx/files/nginx.conf
-mkdir -p roles/make_production_gitea/files
-cp -p ../gitea/prod-gitea.service roles/make_production_gitea/files/
-mkdir -p roles/make_production_api/files
-mkdir -p roles/make_staging_api/files
-mkdir -p roles/motd/files
-{ echo && cat ../motd.text && echo; } >roles/motd/files/motd
-$R7RS ../services.scm
+set -x
+sensible schemeorg.pose
 ansible-playbook schemeorg.yaml "$@"
