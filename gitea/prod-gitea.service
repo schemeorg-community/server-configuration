@@ -1,0 +1,16 @@
+[Unit]
+Description=prod-gitea
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+User=root
+Group=docker
+WorkingDirectory=/production/gitea
+ExecStartPre=/usr/bin/docker-compose down
+ExecStart=/usr/bin/docker-compose up
+ExecStop=/usr/bin/docker-compose down
+
+[Install]
+WantedBy=multi-user.target
