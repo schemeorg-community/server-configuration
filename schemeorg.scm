@@ -425,14 +425,6 @@
       (apt (name "clamav-base")))))
 
    (role
-    (name nginx)
-    (tasks
-     (task
-      (title "install nginx")
-      (apt (name "nginx"))
-      (notify "restart nginx"))))
-
-   (role
     (name postgresql)
     (tasks
      (task
