@@ -229,17 +229,18 @@
     (hosts tuonela)
     (become true)
     (roles
-     upgrade-packages
-     install-tools
-     set-server-basics-tuonela
-     set-server-basics
-     configure-firewall
+
+     apt-upgrade
+     apt-comfort
+     hostname
+     motd
+     sudo
+     firewall
+     docker
      antivirus
-     install-nginx
-     install-docker
-     databases
-     make-human-users
-     make-build-user
+     postgresql
+     build-user
+     human-users
      ;;make-production-api
      ;;make-staging-api
      make-production-docs
@@ -274,14 +275,13 @@
      make-production-tuonela
      make-production-try
      make-production-video
-     setup-lets-encrypt
-     configure-nginx
-     configure-ssh-server)))
+     nginx
+     sshd)))
 
  `(roles
 
    (role
-    (name upgrade-packages)
+    (name apt-upgrade)
     (tasks
      (task
       (title "upgrade all apt packages to latest versions")
@@ -289,80 +289,8 @@
        (update-cache true)
        (upgrade true)))))
 
-
    (role
-    (name set-server-basics-tuonela)
-    (tasks
-     (task
-      (title "set hostname")
-      (hostname
-       (name "tuonela.scheme.org")))))
-
-   (role
-    (name set-server-basics)
-    (tasks
-     (task
-      (title "set login greeting message")
-      (copy
-       (dest "/etc/motd")
-       (src "files/motd")
-       (owner "root")
-       (group "root")
-       (mode "u=rw,g=r,o=r")))
-     (task
-      (title "install sudo")
-      (apt (name ("sudo"))))
-     (task
-      (title "enable passwordless sudo")
-      (lineinfile
-       (validate "visudo -cqf %s")
-       (path "/etc/sudoers")
-       (regexp "%sudo")
-       (line "%sudo ALL=(ALL:ALL) NOPASSWD:ALL")))))
-
-   (role
-    (name configure-ssh-server)
-    (tasks
-     (task
-      (title "deny ssh root logins")
-      (lineinfile
-       (dest "/etc/ssh/sshd_config")
-       (regexp "^#?PermitRootLogin")
-       (line "PermitRootLogin no"))
-      (notify "restart ssh"))
-     (task
-      (title "deny ssh password authentication")
-      (lineinfile
-       (dest "/etc/ssh/sshd_config")
-       (regexp "^#?PasswordAuthentication")
-       (line "PasswordAuthentication no"))
-      (notify "restart ssh")))
-    (handlers
-     (handler
-      (title "restart ssh")
-      (service (name "sshd") (state "restarted")))))
-
-   (role
-    (name configure-firewall)
-    (tasks
-     (task
-      (title "install ufw")
-      (apt (name "ufw")))
-     (task
-      (title "allow ssh")
-      (ufw (rule allow) (proto tcp) (port ssh)))
-     (task
-      (title "allow http")
-      (ufw (rule allow) (proto tcp) (port http)))
-     (task
-      (title "allow https")
-      (ufw (rule allow) (proto tcp) (port https)))
-     (task
-      (title "enable firewall with default policy to deny all")
-      (ufw (state enabled) (policy deny)))))
-
-   (role
-    (name install-tools)
+    (name apt-comfort)
     (tasks
      (task
       (title "text editors")
@@ -373,37 +301,121 @@
          "nano"
          "vim"))))
      (task
-      (title "dev tools")
+      (title "other tools")
       (apt
        (name
         ("build-essential"
-         "git"
-         "jq"
-         "silversearcher-ag"))))
-     (task
-      (title "net tools")
-      (apt
-       (name
-        ("dnsutils"
          "curl"
+         "dnsutils"
+         "fdupes"
+         "git"
+         "htop"
          "httpie"
-         "rsync"
-         "wget"))))
-     (task
-      (title "sys tools")
-      (apt
-       (name
-        ("htop"
+         "jq"
          "rdiff-backup"
+         "rsync"
+         "silversearcher-ag"
          "stow"
          "tmux"
          "tree"
-         "unzip"))))
+         "unzip"
+         "wget"))))))
+
+   (role
+    (name hostname)
+    (tasks
      (task
-      (title "dependencies for building gauche")
+      (title "set hostname")
+      (hostname (name "tuonela.scheme.org")))))
+
+   (role
+    (name motd)
+    (tasks
+     (task
+      (title "set login greeting message")
+      (copy
+       (dest "/etc/motd")
+       (src "files/motd")
+       (owner "root")
+       (group "root")
+       (mode "u=rw,g=r,o=r")))))
+
+   (role
+    (name sudo)
+    (tasks
+     (task
+      (title "install sudo")
+      (apt (name "sudo")))
+     (task
+      (title "enable passwordless sudo")
+      (lineinfile
+       (validate "visudo -cqf %s")
+       (path "/etc/sudoers")
+       (regexp "%sudo")
+       (line "%sudo ALL=(ALL:ALL) NOPASSWD:ALL")))
+     (task
+      (title "do not create .sudo_as_admin_successful")
+      (lineinfile
+       (validate "visudo -cqf %s")
+       (path "/etc/sudoers")
+       (line "Defaults !admin_flag")))))
+
+   (role
+    (name sshd)
+    (tasks
+     (task
+      (title "deny ssh password authentication")
+      (lineinfile
+       (dest "/etc/ssh/sshd_config")
+       (regexp "^#?PasswordAuthentication")
+       (line "PasswordAuthentication no"))
+      (notify "restart ssh")))
+    (handlers
+     (handler
+      (title "restart ssh")
+      (service
+       (name "sshd")
+       (state "restarted")))))
+
+   (role
+    (name firewall)
+    (tasks
+     (task
+      (title "install ufw")
+      (apt (name "ufw")))
+     (task
+      (title "allow ssh")
+      (ufw
+       (rule allow)
+       (proto tcp)
+       (port ssh)))
+     (task
+      (title "allow http")
+      (ufw
+       (rule allow)
+       (proto tcp)
+       (port http)))
+     (task
+      (title "allow https")
+      (ufw
+       (rule allow)
+       (proto tcp)
+       (port https)))
+     (task
+      (title "enable firewall with default policy to deny all")
+      (ufw
+       (state enabled)
+       (policy deny)))))
+
+   (role
+    (name docker)
+    (tasks
+     (task
+      (title "install docker")
       (apt
        (name
-        ("libmbedtls-dev"))))))
+        ("docker.io"
+         "docker-compose"))))))
 
    (role
     (name antivirus)
@@ -413,7 +425,7 @@
       (apt (name "clamav-base")))))
 
    (role
-    (name install-nginx)
+    (name nginx)
     (tasks
      (task
       (title "install nginx")
@@ -421,21 +433,41 @@
       (notify "restart nginx"))))
 
    (role
-    (name install-docker)
-    (tasks
-     (task
-      (title "install docker")
-      (apt (name "docker.io")))))
-
-   (role
-    (name databases)
+    (name postgresql)
     (tasks
      (task
       (title "install postgresql")
-      (apt (name "postgresql")))))
+      (apt (name "postgresql")))
+     (task
+      (title "backup system pg_hba.conf to pg_hba.conf.orig")
+      (copy
+       (dest "/etc/postgresql/15/main/pg_hba.conf.orig")
+       (src "/etc/postgresql/15/main/pg_hba.conf")
+       (remote-src true)
+       (mode "0444")
+       (force false)))
+     (task
+      (title "change peer to md5 so unix domain sockets work")
+      (lineinfile
+       (dest "/etc/postgresql/15/main/pg_hba.conf")
+       (regexp "^local.*all.*all")
+       (line "local all all md5"))
+      (notify "restart postgresql"))
+     (task
+      (title "start postgresql now and at every boot")
+      (service
+       (name "postgresql")
+       (enabled true)
+       (state "started"))))
+    (handlers
+     (handler
+      (title "restart postgresql")
+      (service
+       (name "postgresql")
+       (state "restarted")))))
 
    (role
-    (name make-build-user)
+    (name build-user)
     (tasks
      (task
       (title "make build group")
@@ -453,7 +485,7 @@
        (home "/build")))))
 
    (role
-    (name make-human-users)
+    (name human-users)
     (tasks
      ,@(append-map human-user-tasks
                    human-users)))
@@ -572,7 +604,15 @@
    (role
     (name make-production-gitea)
     (tasks
-     ,@(production-site-tasks "gitea" "www")))
+     ,@(production-site-tasks "gitea")
+     (task
+      (title "make systemd prod-gitea.service")
+      (copy
+       (dest "/etc/systemd/system/prod-gitea.service")
+       (src "prod-gitea.service")
+       (owner "root")
+       (group "root")
+       (mode "0644")))))
 
    (role
     (name make-production-man)
@@ -694,8 +734,7 @@
    (role
     (name make-production-conservatory)
     (tasks
-     ;; www is a symlink to /blockstorage
-     ,@(production-site-tasks "conservatory")))
+     ,@(production-site-tasks "conservatory" "www")))
 
    (role
     (name make-production-containers)
@@ -756,19 +795,8 @@
        (owner "prod-servers")
        (group "users")
        (mode "u=rwX,g=rwX,o=rX")
-       (follow no)
-       (recurse yes)))
-     ;; (task
-     ;;  (title "make /production/tuonela/log/nginx dir")
-     ;;  (file
-     ;;   (path "/production/tuonela/log/nginx")
-     ;;   (state "directory")
-     ;;   (owner "prod-servers")
-     ;;   (group "users")
-     ;;   (mode "u=rwX,g=rwX,o=rX")
-     ;;   (follow no)
-     ;;   (recurse yes)))
-     ))
+       (follow false)
+       (recurse true)))))
 
    (role
     (name make-production-try)
@@ -781,18 +809,16 @@
      ,@(production-site-tasks "video" "www")))
 
    (role
-    (name setup-lets-encrypt)
+    (name nginx)
     (tasks
      (task
-      (title "install certbot for nginx")
+      (title "install nginx and certbot")
       (apt
        (name
-        ("certbot"
-         "python3-certbot-nginx"))))))
-
-   (role
-    (name configure-nginx)
-    (tasks
+        ("nginx"
+         "certbot"
+         "python3-certbot-nginx")))
+      (notify "restart nginx"))
      (task
       (title "backup system nginx.conf to nginx.conf.orig")
       (copy
@@ -820,4 +846,6 @@
     (handlers
      (handler
       (title "restart nginx")
-      (service (name "nginx") (state "restarted")))))))
+      (service
+       (name "nginx")
+       (state "restarted")))))))
