@@ -89,7 +89,6 @@
     ("gitea" 30)
     ("go" 36)
     ("groups" 32)
-    ("learn" 23)
     ("lists" 10)
     ("man" 27)
     ("persist" 7)
@@ -267,7 +266,6 @@
      make-production-get
      make-production-conservatory
      make-production-containers
-     make-production-learn
      make-production-lists
      make-production-redirect
      make-production-research
@@ -702,11 +700,6 @@
     (name make-production-containers)
     (tasks
      ,@(production-site-tasks "containers" "www")))
-
-   (role
-    (name make-production-learn)
-    (tasks
-     ,@(production-site-tasks "learn" "www")))
 
    (role
     (name make-production-lists)
