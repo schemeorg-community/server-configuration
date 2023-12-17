@@ -31,10 +31,10 @@
       '()
       (list
        (string-join (list "add_header"
-			  name
-			  (string-append "\"" (string-join params "; ") "\"")
-			  "always;")
-		    " "))))
+                          name
+                          (string-append "\"" (string-join params "; ") "\"")
+                          "always;")
+                    " "))))
 
 ;;;;
 
@@ -75,7 +75,7 @@
 (define (https-security-header-lines)
   (append
    (apply add-header "Content-Security-Policy"
-	  (map encode-csp-directive (content-security-policy)))
+          (map encode-csp-directive (content-security-policy)))
    (apply add-header "Feature-Policy"
           (map (lambda (feature) (string-append feature " 'none'"))
                blocked-features))
