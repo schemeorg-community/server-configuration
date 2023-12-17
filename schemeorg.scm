@@ -104,6 +104,7 @@
     ("video" 28)
     ("web" 11)
     ("wiki" 24)
+    ("workshop" 44)
     ("www" 4)))
 
 (define site-name first)
@@ -124,7 +125,7 @@
     (string-append prefix (string-copy name 0 (min name-len name-max)))))
 
 (define staging-site-names
-  '("api" "docs" "wiki"))
+  '("api" "docs" "wiki" "workshop"))
 
 (define (staging-site? site)
   (not (not (member (site-name site) staging-site-names))))
@@ -262,6 +263,7 @@
      ;; make-production-web  ; TODO: Rename home directory "web-topic" -> "web".
      make-production-wiki
      make-staging-wiki
+     make-staging-workshop
      make-production-events
      make-production-files
      make-production-get
@@ -650,6 +652,11 @@
        (group "users")
        (follow false)
        (recurse true)))))
+
+   (role
+    (name make-staging-workshop)
+    (tasks
+     ,@(staging-site-tasks "workshop" "www")))
 
    (role
     (name make-production-events)

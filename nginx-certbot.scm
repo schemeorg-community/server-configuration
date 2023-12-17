@@ -17,7 +17,7 @@
 
 (define main-domain "scheme.org")
 
-(define domains (list main-domain))
+(define domains (list main-domain "schemeworkshop.org"))
 
 (define server "tuonela.scheme.org")
 

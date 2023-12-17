@@ -359,6 +359,11 @@
                  "proxy_set_header X-Real-IP  $remote_addr;"
                  "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"))
 
+         (https-server
+          '("www.staging.schemeworkshop.org")
+          (log-directives "www.staging.schemeworkshop.org")
+          "root /staging/schemeworkshop/www;")
+
          ;;
 
          (http-redirect-only-server
