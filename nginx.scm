@@ -360,6 +360,11 @@
                  "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"))
 
          (https-server
+          '("www.schemeworkshop.org" "schemeworkshop.org")
+          (log-directives "www.schemeworkshop.org")
+          "root /production/workshop/www;")
+
+         (https-server
           '("www.staging.schemeworkshop.org")
           (log-directives "www.staging.schemeworkshop.org")
           "root /staging/workshop/www;")

@@ -263,6 +263,7 @@
      ;; make-production-web  ; TODO: Rename home directory "web-topic" -> "web".
      make-production-wiki
      make-staging-wiki
+     make-production-workshop
      make-staging-workshop
      make-production-events
      make-production-files
@@ -621,6 +622,11 @@
     (name make-staging-wiki)
     (tasks
      ,@(staging-site-tasks "wiki")))
+
+   (role
+    (name make-production-workshop)
+    (tasks
+     ,@(production-site-tasks "workshop" "www")))
 
    (role
     (name make-staging-workshop)
