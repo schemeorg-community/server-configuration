@@ -251,6 +251,8 @@
 
          (static-site "planet")
 
+         (static-site "books")
+
          (static-site "chat")
 
          (static-site "community")

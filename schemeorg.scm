@@ -76,6 +76,7 @@
 (define sites
   '(("api" 0)
     ("apps" 22)
+    ("books" 50)
     ("chat" 38)
     ("comm" 8)
     ("community" 26)
@@ -250,6 +251,7 @@
      make-production-persist
      make-production-planet
      make-production-apps
+     make-production-books
      make-production-chat
      make-production-comm
      make-production-community
@@ -559,6 +561,11 @@
     (name make-production-apps)
     (tasks
      ,@(production-site-tasks "apps" "www")))
+
+   (role
+    (name make-production-books)
+    (tasks
+     ,@(production-site-tasks "books" "www")))
 
    (role
     (name make-production-chat)
