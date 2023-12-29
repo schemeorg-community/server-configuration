@@ -88,14 +88,17 @@
    (add-header "X-Permitted-Cross-Domain-Policies" "none")
    (add-header "X-Xss-Protection" "1" "mode=block")))
 
-(define (default-server)
-  (block "server"
-         "listen [::]:80 default_server;"
-         "listen 80 default_server;"
-         "listen [::]:443 ssl default_server;"
-         "listen 443 ssl default_server;"
-         "server_name _;"
-         "return 403;"))
+(define (default-servers)
+  (list (block "server"
+               "server_name _;"
+               "listen 80 default_server;"
+               "listen [::]:80 default_server;"
+               "return 444;")
+        (block "server"
+               "server_name _;"
+               "listen 443 default_server;"
+               "listen [::]:443 default_server;"
+               "ssl_reject_handshake on;")))
 
 (define (http->https-redirect-server primary alias)
   (block "server"
@@ -216,7 +219,7 @@
          (string-append "ssl_dhparam " letsencrypt-etc
                         "/ssl-dhparams.pem;")
 
-         (default-server)
+         (default-servers)
 
          (static-site "tuonela")
 
