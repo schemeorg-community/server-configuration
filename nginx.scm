@@ -4,9 +4,10 @@
   (for-each (lambda (line) (display line) (newline))
             lines))
 
-(define (flatten-once list_)
-  (append-map (lambda (x) (if (pair? x) x (list x)))
-              list_))
+(define (flatten-all x)
+  (if (list? x)
+      (append-map flatten-all x)
+      (list x)))
 
 (define (string-join strings delimiter)
   (if (null? strings)
@@ -18,9 +19,9 @@
   (string-append (make-string 4 #\space) string))
 
 (define (block head . body)
-  (cons (string-append head " {")
-        (append (map indent (flatten-once body))
-                (list "}"))))
+  (append (list (string-append head " {"))
+          (map indent (flatten-all body))
+          (list "}")))
 
 (define (alist-change alist key val)
   (map (lambda (pair) (if (equal? key (car pair)) (cons key val) pair))
