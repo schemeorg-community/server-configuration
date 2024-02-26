@@ -179,6 +179,7 @@
  (append
   (block "events")
   (block "http"
+
          "include /etc/nginx/mime.types;"
          (block "types"
 
@@ -200,6 +201,10 @@
 
                 "text/plain text;")
          "default_type application/octet-stream;"
+
+         "charset utf-8;"
+         "charset_types text/plain;"
+
          "sendfile on;"
          "gzip on;"
 
