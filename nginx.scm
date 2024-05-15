@@ -272,6 +272,11 @@
           (log-directives "docs.staging.scheme.org")
           "root /staging/docs/www;")
 
+         (https-server
+          '("get.staging.scheme.org")
+          (log-directives "get.staging.scheme.org")
+          "root /staging/get/www;")
+
          (static-site "man"
 
                       "include /etc/nginx/mime.types;"

@@ -126,7 +126,7 @@
     (string-append prefix (string-copy name 0 (min name-len name-max)))))
 
 (define staging-site-names
-  '("api" "docs" "wiki" "workshop"))
+  '("api" "docs" "get" "wiki" "workshop"))
 
 (define (staging-site? site)
   (not (not (member (site-name site) staging-site-names))))
@@ -270,6 +270,7 @@
      make-production-events
      make-production-files
      make-production-get
+     make-staging-get
      make-production-conservatory
      make-production-containers
      make-production-lists
@@ -654,6 +655,11 @@
     (name make-production-get)
     (tasks
      ,@(production-site-tasks "get" "www")))
+
+   (role
+    (name make-staging-get)
+    (tasks
+     ,@(staging-site-tasks "get" "www")))
 
    (role
     (name make-production-go)
