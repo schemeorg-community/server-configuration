@@ -85,7 +85,7 @@
     ("events" 16)
     ("files" 13)
     ("get" 21)
-    ("gitea" 30)
+    ("gitea" 40)
     ("go" 36)
     ("groups" 32)
     ("lists" 10)
