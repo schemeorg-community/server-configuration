@@ -368,7 +368,7 @@
           '("wiki.staging.scheme.org")
           (log-directives "wiki.staging.scheme.org")
           (block "location /"
-                 "proxy_pass http://localhost:9033;"
+                 "proxy_pass http://localhost:7070;"
                  "proxy_set_header Host $host;"
                  "proxy_set_header X-Real-IP  $remote_addr;"
                  "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"))

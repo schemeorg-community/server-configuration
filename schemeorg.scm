@@ -100,7 +100,7 @@
     ("try" 17)
     ("video" 28)
     ("web" 11)
-    ("wiki" 48)
+    ("wiki" 70)
     ("workshop" 44)))
 
 (define site-name first)
