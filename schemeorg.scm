@@ -71,8 +71,6 @@
       (shell "/bin/bash")))
     ,@(ssh-key-tasks (human-user-name human-user))))
 
-;; TODO: These numbers are a mess. Establish a systematic numbering
-;; scheme.
 (define sites
   '(("api" 0)
     ("apps" 22)
@@ -135,11 +133,11 @@
 ;; port numbers.
 
 (define (production-site-id site)
-  (+ 9000 (site-ordinal site)))
+  (+ 4000 (site-ordinal site)))
 
 (define (staging-site-id site)
   (and (staging-site? site)
-       (+ 1 (production-site-id site))))
+       (+ 7000 (site-ordinal site))))
 
 (define (site-tasks site-id site-unix-name site-home . subdirectories)
   `((task
