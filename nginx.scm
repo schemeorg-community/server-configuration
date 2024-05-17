@@ -227,7 +227,10 @@
 
          (default-servers)
 
-         (static-site "tuonela")
+         (let ((server "tuonela.scheme.org"))
+           (https-server (list server)
+                         (log-directives server)
+                         "root /production/server/www;"))
 
          ;; (https-server
          ;;  '("api.scheme.org")
@@ -301,12 +304,7 @@
 
          (static-site "test")
 
-         ;; Named "web-topic" instead of "web" to avoid confusion with "www".
-         (https-server
-          '("web.scheme.org")
-          "access_log /var/log/nginx/web-topic.scheme.org_access.log;"
-          "error_log  /var/log/nginx/web-topic.scheme.org_error.log;"
-          "root /production/web-topic/www;")
+         (static-site "web")
 
          (static-site "files")
 

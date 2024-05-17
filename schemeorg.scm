@@ -93,18 +93,15 @@
     ("persist" 7)
     ("planet" 18)
     ("registry" 6)
-    ("redirect" 42)
     ("research" 15)
-    ("schemers" 40)
-    ("servers" 12)
+    ("server" 12)
     ("standards" 14)
     ("test" 9)
     ("try" 17)
     ("video" 28)
     ("web" 11)
     ("wiki" 48)
-    ("workshop" 44)
-    ("www" 4)))
+    ("workshop" 44)))
 
 (define site-name first)
 (define site-ordinal second)
@@ -258,9 +255,8 @@
      make-production-go
      make-production-groups
      make-production-man
-     make-production-schemers
      make-production-test
-     ;; make-production-web  ; TODO: Rename home directory "web-topic" -> "web".
+     make-production-web
      make-production-wiki
      make-staging-wiki
      make-production-workshop
@@ -272,11 +268,9 @@
      make-production-conservatory
      make-production-containers
      make-production-lists
-     make-production-redirect
      make-production-research
      make-production-standards
-     make-production-servers
-     make-production-tuonela
+     make-production-server
      make-production-try
      make-production-video
      nginx
@@ -605,11 +599,6 @@
      ,@(production-site-tasks "man" "www")))
 
    (role
-    (name make-production-schemers)
-    (tasks
-     ,@(production-site-tasks "schemers")))
-
-   (role
     (name make-production-test)
     (tasks
      ,@(production-site-tasks "test" "www")))
@@ -705,11 +694,6 @@
      ,@(production-site-tasks "lists" "www")))
 
    (role
-    (name make-production-redirect)
-    (tasks
-     ,@(production-site-tasks "redirect" "www")))
-
-   (role
     (name make-production-research)
     (tasks
      ,@(production-site-tasks "research" "www")))
@@ -720,41 +704,9 @@
      ,@(production-site-tasks "standards" "www")))
 
    (role
-    (name make-production-servers)
+    (name make-production-server)
     (tasks
-     ,@(production-site-tasks "servers" "www")))
-
-   (role
-    (name make-production-tuonela)
-    ;; Re-use the prod-servers user account for this one.
-    (tasks
-     (task
-      (title "chmod home dir")
-      (file
-       (path "/production/tuonela")
-       (state "directory")
-       (mode "u=rwX,g=rX,o=rX")
-       (follow false)
-       (recurse false)))
-     (task
-      (title "chown home dir")
-      (file
-       (path "/production/tuonela")
-       (state "directory")
-       (owner "prod-servers")
-       (group "users")
-       (follow false)
-       (recurse true)))
-     (task
-      (title "make /production/tuonela/www dir")
-      (file
-       (path "/production/tuonela/www")
-       (state "directory")
-       (owner "prod-servers")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow false)
-       (recurse true)))))
+     ,@(production-site-tasks "server" "www")))
 
    (role
     (name make-production-try)
