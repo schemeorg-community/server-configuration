@@ -237,7 +237,7 @@
          ;;  "access_log /var/log/nginx/api.scheme.org_access.log;"
          ;;  "error_log  /var/log/nginx/api.scheme.org_error.log;"
          ;;  (block "location /"
-         ;;         "proxy_pass http://127.0.0.1:9000;"
+         ;;         "proxy_pass http://127.0.0.1:4090;"
          ;;         (apply block "if ($request_method = 'OPTIONS')"
          ;;                (append cors
          ;;                        (list "add_header 'Access-Control-Max-Age' 1728000;"
@@ -256,7 +256,7 @@
          ;;  "access_log /staging/api/log/nginx/access.log;"
          ;;  "error_log  /staging/api/log/nginx/error.log;"
          ;;  (block "location /"
-         ;;         "proxy_pass http://127.0.0.1:9001;"))
+         ;;         "proxy_pass http://127.0.0.1:7090;"))
 
          (static-site "planet")
 
