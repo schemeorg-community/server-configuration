@@ -74,7 +74,7 @@
 (define sites
   '(("api" 0)
     ("apps" 22)
-    ("books" 50)
+    ("books" 23)
     ("chat" 38)
     ("comm" 8)
     ("community" 26)
@@ -84,7 +84,7 @@
     ("docs" 2)
     ("events" 16)
     ("files" 13)
-    ("get" 21)
+    ("get" 50)
     ("gitea" 40)
     ("go" 36)
     ("groups" 32)
