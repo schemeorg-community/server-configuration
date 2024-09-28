@@ -542,6 +542,14 @@
     (tasks
      ,@(production-site-tasks "planet" "www")
      (task
+      (title "add prod-planet to docker group")
+      ;; TODO: It's not elegant to grant Docker privileges to
+      ;; non-human user accounts. Think of something better.
+      (user
+       (name "prod-planet")
+       (groups "docker")
+       (append true)))
+     (task
       (title "add cron job to check the feeds")
       (copy
        (dest "/etc/cron.d/scheme-prod-planet")
