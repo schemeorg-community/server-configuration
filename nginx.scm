@@ -197,6 +197,10 @@
                 "text/plain diff;"
                 "text/plain patch;"
 
+                "text/plain scm;"   ; Scheme source code
+                "text/plain ss;"    ; Ditto
+                "text/plain pp;"    ; Ditto (used by psyntax)
+
                 "text/plain pose;"  ; Portable S-expressions
 
                 "text/plain text;")
