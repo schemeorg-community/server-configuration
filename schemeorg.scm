@@ -34,7 +34,8 @@
     (2 "hga" "Harold Ancell")
     (3 "feeley" "Marc Feeley")
     (4 "jeronimo" "Jeronimo Pellegrini")
-    (5 "graywolf" "graywolf")))
+    (5 "graywolf" "graywolf")
+    (6 "leahneukirchen" "Leah Neukirchen")))
 
 (define human-user-ordinal first)
 (define human-user-name second)
