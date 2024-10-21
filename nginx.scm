@@ -329,7 +329,14 @@
 
          (static-site "groups")
 
-         (static-site "research")
+         (block "map $research_scheme_source $research_scheme_target"
+                "include /production/research/nginx/map.conf;")
+         (static-site
+          "research"
+          (block "location ~ ^/([a-z][a-z0-9]*\.pdf)$"
+                 "set $research_scheme_source $1;"
+                 (block "if ($research_scheme_target)"
+                        "return 307 $research_scheme_target;")))
 
          (static-site "standards")
 
