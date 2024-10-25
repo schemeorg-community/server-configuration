@@ -222,6 +222,14 @@
      ;; should use Ansible standard variables, but I don't know which.
 
      (host
+      (name jenkins)
+      (vars
+       (var scheme-hostname "jenkins.scheme.org")
+       (var scheme-hostname-short "jenkins")
+       (var ansible-host "49.13.140.103")
+       (var ansible-python-interpreter "/usr/bin/python3")))
+
+     (host
       (name tuonela)
       (vars
        (var scheme-hostname "tuonela.scheme.org")
@@ -233,6 +241,20 @@
    (playbook
     (name "schemeorg")
     (plays
+
+     (play
+      (name jenkins)
+      (hosts jenkins)
+      (become true)
+      (roles
+
+       apt-upgrade
+       apt-comfort
+       hostname
+       sudo
+       firewall
+       docker
+       sshd))
 
      (play
       (name tuonela)
