@@ -1,0 +1,214 @@
+jenkins:
+  systemMessage: "Scheme Jenkins"
+  numExecutors: 0
+  nodes:
+    - permanent:
+        mode: NORMAL
+        name: "agent1"
+        labelString: "docker"
+        numExecutors: 8
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          SSHLauncher:
+            host: "jenkins-agent"
+            port: 22
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
+    - permanent:
+        mode: NORMAL
+        name: "agent2"
+        labelString: "debian-x86_64"
+        numExecutors: 16
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          SSHLauncher:
+            host: "retropikzel.madhacker.biz"
+            port: 5522
+            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
+  authorizationStrategy:
+    projectMatrix:
+      entries:
+      - group:
+          name: "authenticated"
+          permissions:
+          - "Job/Read"
+          - "Job/Build"
+          - "Job/Cancel"
+          - "Overall/Read"
+      - user:
+          name: "admin"
+          permissions:
+          - "Overall/Administer"
+      - user:
+          name: "lassik_admin"
+          permissions:
+          - "Overall/Administer"
+      - user:
+          name: "anonymous"
+          permissions:
+          - "Job/Read"
+          - "Overall/Read"
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: admin
+         name: admin
+         password: "${readFile:/secrets/adminpassword}"
+
+appearance:
+  pipelineGraphView:
+    showGraphOnBuildPage: true
+    showGraphOnJobPage: true
+
+credentials:
+  system:
+    domainCredentials:
+       - credentials:
+           - basicSSHUserPrivateKey:
+               scope: GLOBAL
+               id: agent_ssh
+               username: "jenkins"
+               description: "SSH key for jenkins agent"
+               privateKeySource:
+                 directEntry:
+                   privateKey: "${readFile:/secrets/id_rsa}"
+
+jobs:
+  - script: >
+      folder('index_scheme_org') {
+        displayName: 'index.scheme.org'
+      }
+  - script: >
+      multibranchPipelineJob('index_scheme_org/build') {
+        displayName: 'Build and deploy'
+        branchSources {
+          git {
+              id('github')
+              remote('https://github.com/schemeorg-community/index.scheme.org')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(10)
+          }
+        }
+      }
+  - script: >
+      folder('r7rs') {
+        displayName: 'r7rs'
+      }
+  - script: >
+      multibranchPipelineJob('r7rs/r7rs-srfi') {
+        displayName: 'R7RS-SRFI'
+        branchSources {
+          git {
+              id('github')
+              remote('https://github.com/srfi-explorations/r7rs-srfi.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(10)
+          }
+        }
+      }
+  - script: >
+      multibranchPipelineJob('r7rs/r7rs-tests') {
+        displayName: 'r7rs-tests'
+        branchSources {
+          git {
+              id('git')
+              remote('https://gitea.scheme.org/Retropikzel/r7rs-tests.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(10)
+          }
+        }
+      }
+  - script: >
+      folder('r7rs_pffi') {
+        displayName: 'r7rs-pffi'
+      }
+  - script: >
+      multibranchPipelineJob('r7rs_pffi/r7rs-pffi') {
+        displayName: 'r7rs-pffi'
+        branchSources {
+          git {
+              id('git')
+              remote('https://git.sr.ht/~retropikzel/r7rs-pffi')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(10)
+          }
+        }
+      }
+  - script: >
+      folder('jenkins') {
+        displayName: 'jenkins'
+      }
+  - script: >
+      multibranchPipelineJob('jenkins/auto-maintenance') {
+        displayName: 'auto-maintenance'
+        branchSources {
+          git {
+              id('git')
+              remote('https://gitea.scheme.org/Jenkins/jenkins-automaintenance.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(10)
+          }
+        }
+      }
+  - script: >
+      folder('rinne') {
+        displayName: 'rinne'
+      }
+  - script: >
+      multibranchPipelineJob('rinne/snow-fort-guix-channel') {
+        displayName: 'snow-fort-guix-channel'
+        branchSources {
+          git {
+              id('git')
+              remote('https://gitea.scheme.org/rinne/snow-fort-guix-channel.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(10)
+          }
+        }
+      }
+  - script: >
+      multibranchPipelineJob('rinne/snow-fort-windows-installer') {
+        displayName: 'snow-fort-windows-installer'
+        branchSources {
+          git {
+              id('git')
+              remote('https://gitea.scheme.org/rinne/snow-fort-windows-installer.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(10)
+          }
+        }
+      }
