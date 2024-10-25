@@ -2,25 +2,22 @@ services:
   jenkins-controller:
     build:
       context: .
-      dockerfile: jenkins.dockerfile
+      dockerfile: Dockerfile.jenkins
     environment:
-      - CASC_JENKINS_CONFIG=/jenkins.yml
+      - CASC_JENKINS_CONFIG=/config/jenkins.yml
     volumes:
-      - ./jenkins.yml:/jenkins.yml
+      - ./config:/config
       - ./id_rsa:/secrets/id_rsa
       - ./adminpassword:/secrets/adminpassword
-      - jenkins-data:/var/jenkins_home
+      - /home/jenkins/jenkins-data:/var/jenkins_home
     ports:
       - 8080:8080
   jenkins-agent:
     env_file: ./agent.env
     build:
       context: .
-      dockerfile: jenkins-agent.dockerfile
+      dockerfile: Dockerfile.agent
       args:
         DOCKER_GROUP: '${DOCKER_GROUP}'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-
-volumes:
-  jenkins-data:
