@@ -39,8 +39,9 @@
 
 ;;;;
 
-(define letsencrypt-etc #f)
-(define certificate-hostname #f)
+(define letsencrypt-etc "/etc/letsencrypt")
+
+(define certificate-hostname (make-parameter #f))
 
 (define blocked-features
   '("accelerometer"
@@ -167,9 +168,6 @@
 
 ;;;;
 
-(set! letsencrypt-etc "/etc/letsencrypt")
-(set! certificate-hostname "tuonela.scheme.org")
-
 (define cors
   (list "add_header 'Access-Control-Allow-Origin' '*';"
         "add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';"
@@ -221,27 +219,29 @@
    "ssl_stapling on;"
    "ssl_stapling_verify on;"
    (string-append "ssl_certificate " letsencrypt-etc
-                  "/live/" certificate-hostname "/fullchain.pem;")
+                  "/live/" (certificate-hostname) "/fullchain.pem;")
    (string-append "ssl_certificate_key " letsencrypt-etc
-                  "/live/" certificate-hostname "/privkey.pem;")
+                  "/live/" (certificate-hostname) "/privkey.pem;")
    (string-append "ssl_dhparam " letsencrypt-etc
                   "/ssl-dhparams.pem;")
 
    (default-servers)))
 
-(define (write-host-nginx-conf hostname-short http-block-extra)
+(define (write-host-nginx-conf hostname hostname-short http-block-extra)
   (let ((conf-file (string-append hostname-short "-nginx.conf")))
     (with-output-to-file conf-file
       (lambda ()
-        (display-lines
-         (append
-          (block "events")
-          (block "http"
-                 (http-block-common-part)
-                 http-block-extra)))))))
+        (parameterize ((certificate-hostname hostname))
+          (display-lines
+           (append
+            (block "events")
+            (block "http"
+                   (http-block-common-part)
+                   http-block-extra))))))))
 
 (define (write-tuonela-nginx-conf)
   (write-host-nginx-conf
+   "tuonela.scheme.org"
    "tuonela"
    (list
 
