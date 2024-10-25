@@ -230,61 +230,64 @@
        (var ansible-python-interpreter "/usr/bin/python3"))))))
 
  `(playbooks
-
    (playbook
-    (name schemeorg)
-    (hosts tuonela)
-    (become true)
-    (roles
+    (name "schemeorg")
+    (plays
 
-     apt-upgrade
-     apt-comfort
-     hostname
-     motd
-     sudo
-     firewall
-     docker
-     antivirus
-     postgresql
-     build-user
-     human-users
-     ;;make-production-api
-     ;;make-staging-api
-     make-production-docs
-     make-staging-docs
-     make-production-registry
-     make-production-persist
-     make-production-planet
-     make-production-apps
-     make-production-books
-     make-production-chat
-     make-production-comm
-     make-production-community
-     make-production-cookbook
-     make-production-gitea
-     make-production-go
-     make-production-groups
-     make-production-man
-     make-production-test
-     make-production-web
-     make-production-wiki
-     make-staging-wiki
-     make-production-workshop
-     make-staging-workshop
-     make-production-events
-     make-production-files
-     make-production-get
-     make-staging-get
-     make-production-conservatory
-     make-production-containers
-     make-production-lists
-     make-production-research
-     make-production-standards
-     make-production-server
-     make-production-try
-     make-production-video
-     nginx
-     sshd)))
+     (play
+      (name tuonela)
+      (hosts tuonela)
+      (become true)
+      (roles
+
+       apt-upgrade
+       apt-comfort
+       hostname
+       motd
+       sudo
+       firewall
+       docker
+       antivirus
+       postgresql
+       build-user
+       human-users
+       ;;make-production-api
+       ;;make-staging-api
+       make-production-docs
+       make-staging-docs
+       make-production-registry
+       make-production-persist
+       make-production-planet
+       make-production-apps
+       make-production-books
+       make-production-chat
+       make-production-comm
+       make-production-community
+       make-production-cookbook
+       make-production-gitea
+       make-production-go
+       make-production-groups
+       make-production-man
+       make-production-test
+       make-production-web
+       make-production-wiki
+       make-staging-wiki
+       make-production-workshop
+       make-staging-workshop
+       make-production-events
+       make-production-files
+       make-production-get
+       make-staging-get
+       make-production-conservatory
+       make-production-containers
+       make-production-lists
+       make-production-research
+       make-production-standards
+       make-production-server
+       make-production-try
+       make-production-video
+       nginx
+       sshd)))))
 
  `(roles
 
