@@ -202,6 +202,38 @@
            (string-append "/staging/" site-name)
            subdirectories)))
 
+(define (production-site-nginx-map-tasks site-name)
+  (let* ((site (site-by-name site-name))
+         (owner (site-unix-name "prod-" site))
+         (nginx-dir (string-append "/production/" site-name "/nginx"))
+         (nginx-file (string-append nginx-dir "/map.conf")))
+    `((task
+       (title ,(string-append "make " nginx-dir " dir"))
+       (file
+        (path ,nginx-dir)
+        (state "directory")
+        (owner ,owner)
+        (group "users")
+        (mode "u=rwX,g=rwX,o=rX")
+        (follow false)
+        (recurse true)))
+      (task
+       (title ,(string-append "ensure " nginx-file " exists"))
+       ;; In actual use the map file will be populated with various
+       ;; entries. In case the file does not exist on the server, this
+       ;; task creates an empty file, ensuring that the validation of
+       ;; the main nginx.conf passes and nginx can run. It would be
+       ;; bad for the whole server to go out of service for the sake
+       ;; of one subdomain's missing map file.
+       (copy
+        (dest ,nginx-file)
+        (content "")    ; Create an empty file.
+        (force false)   ; Do not overwrite an existing non-empty file.
+        (owner ,owner)
+        (group "users")
+        (mode "u=rwX,g=rwX,o=rX")
+        (follow false))))))
+
 (define (write-top-level-expressions . exps)
   (for-each pretty-print exps))
 
@@ -695,26 +727,7 @@
     (name make-production-go)
     (tasks
      ,@(production-site-tasks "go" "www")
-     (task
-      (title "make /production/go/nginx dir")
-      (file
-       (path "/production/go/nginx")
-       (state "directory")
-       (owner "prod-go")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow false)
-       (recurse true)))
-     (task
-      (title "ensure /production/go/nginx/map.conf exists")
-      (copy
-       (dest "/production/go/nginx/map.conf")
-       (content "")
-       (force false)
-       (owner "prod-go")
-       (group "users")
-       (mode "u=rwX,g=rwX,o=rX")
-       (follow false)))))
+     ,@(production-site-nginx-map-tasks "go")))
 
    (role
     (name make-production-groups)
