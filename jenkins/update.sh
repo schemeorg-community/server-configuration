@@ -1,10 +1,8 @@
 #!/bin/bash
 
-git fetch
-if [[ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]]
-then
-    echo 'Behind remote config; updating'
-    git pull
-    docker compose up -d --build
-fi
+git pull
+curl \
+    -X POST \
+    -u ${JENKINS_USER}:${JENKINS_API_TOKEN} \
+    "https://jenkins.scheme.org/reload-configuration-as-code/"
 
