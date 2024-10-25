@@ -1,4 +1,4 @@
-(import (scheme base) (scheme write) (srfi 1))
+(import (scheme base) (scheme file) (scheme write) (srfi 1))
 
 (define (display-lines lines)
   (for-each (lambda (line) (display line) (newline))
@@ -175,232 +175,248 @@
         "add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';"
         "add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';"))
 
-(display-lines
- (append
-  (block "events")
-  (block "http"
+(define (http-block-common-part)
+  (list
 
-         "include /etc/nginx/mime.types;"
-         (block "types"
+   "include /etc/nginx/mime.types;"
+   (block "types"
 
-                ;; Unix manual pages in troff format.
-                "text/plain 1;"
-                "text/plain 2;"
-                "text/plain 3;"
-                "text/plain 4;"
-                "text/plain 5;"
-                "text/plain 6;"
-                "text/plain 7;"
-                "text/plain 8;"
-                "text/plain 9;"
+          ;; Unix manual pages in troff format.
+          "text/plain 1;"
+          "text/plain 2;"
+          "text/plain 3;"
+          "text/plain 4;"
+          "text/plain 5;"
+          "text/plain 6;"
+          "text/plain 7;"
+          "text/plain 8;"
+          "text/plain 9;"
 
-                "text/plain diff;"
-                "text/plain patch;"
+          "text/plain diff;"
+          "text/plain patch;"
 
-                "text/plain scm;"   ; Scheme source code
-                "text/plain ss;"    ; Ditto
-                "text/plain pp;"    ; Ditto (used by psyntax)
+          "text/plain scm;"   ; Scheme source code
+          "text/plain ss;"    ; Ditto
+          "text/plain pp;"    ; Ditto (used by psyntax)
 
-                "text/plain pose;"  ; Portable S-expressions
+          "text/plain pose;"  ; Portable S-expressions
 
-                "text/plain text;")
-         "default_type application/octet-stream;"
+          "text/plain text;")
+   "default_type application/octet-stream;"
 
-         "charset utf-8;"
-         "charset_types text/plain;"
+   "charset utf-8;"
+   "charset_types text/plain;"
 
-         "sendfile on;"
-         "gzip on;"
+   "sendfile on;"
+   "gzip on;"
 
-         ;; An "expires" time of one month is way too long for some
-         ;; things, especially planet and gitea.
+   ;; An "expires" time of one month is way too long for some
+   ;; things, especially planet and gitea.
 
-         ;; TODO: Perhaps we should specify "expires" per subdomain?
+   ;; TODO: Perhaps we should specify "expires" per subdomain?
 
-         ;;"expires 1M;"
+   ;;"expires 1M;"
 
-         "server_tokens off;"
-         "ssl_stapling on;"
-         "ssl_stapling_verify on;"
-         (string-append "ssl_certificate " letsencrypt-etc
-                        "/live/" certificate-hostname "/fullchain.pem;")
-         (string-append "ssl_certificate_key " letsencrypt-etc
-                        "/live/" certificate-hostname "/privkey.pem;")
-         (string-append "ssl_dhparam " letsencrypt-etc
-                        "/ssl-dhparams.pem;")
+   "server_tokens off;"
+   "ssl_stapling on;"
+   "ssl_stapling_verify on;"
+   (string-append "ssl_certificate " letsencrypt-etc
+                  "/live/" certificate-hostname "/fullchain.pem;")
+   (string-append "ssl_certificate_key " letsencrypt-etc
+                  "/live/" certificate-hostname "/privkey.pem;")
+   (string-append "ssl_dhparam " letsencrypt-etc
+                  "/ssl-dhparams.pem;")
 
-         (default-servers)
+   (default-servers)))
 
-         (let ((server "tuonela.scheme.org"))
-           (https-server (list server)
-                         (log-directives server)
-                         "root /production/server/www;"))
+(define (write-host-nginx-conf hostname-short http-block-extra)
+  (let ((conf-file (string-append hostname-short "-nginx.conf")))
+    (with-output-to-file conf-file
+      (lambda ()
+        (display-lines
+         (append
+          (block "events")
+          (block "http"
+                 (http-block-common-part)
+                 http-block-extra)))))))
 
-         ;; (https-server
-         ;;  '("api.scheme.org")
-         ;;  "access_log /var/log/nginx/api.scheme.org_access.log;"
-         ;;  "error_log  /var/log/nginx/api.scheme.org_error.log;"
-         ;;  (block "location /"
-         ;;         "proxy_pass http://127.0.0.1:4090;"
-         ;;         (apply block "if ($request_method = 'OPTIONS')"
-         ;;                (append cors
-         ;;                        (list "add_header 'Access-Control-Max-Age' 1728000;"
-         ;;                              "add_header 'Content-Type' 'text/plain; charset=utf-8';"
-         ;;                              "add_header 'Content-Length' 0;"
-         ;;                              "return 204;")))
-         ;;         (apply block "if ($request_method = 'POST')"
-         ;;                (append cors
-         ;;                        (list "add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';")))
-         ;;         (apply block "if ($request_method = 'GET')"
-         ;;                (append cors
-         ;;                        (list "add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';")))))
+(define (write-tuonela-nginx-conf)
+  (write-host-nginx-conf
+   "tuonela"
+   (list
 
-         ;; (https-server
-         ;;  '("api.staging.scheme.org")
-         ;;  "access_log /staging/api/log/nginx/access.log;"
-         ;;  "error_log  /staging/api/log/nginx/error.log;"
-         ;;  (block "location /"
-         ;;         "proxy_pass http://127.0.0.1:7090;"))
+    (let ((server "tuonela.scheme.org"))
+      (https-server (list server)
+                    (log-directives server)
+                    "root /production/server/www;"))
 
-         (static-site "planet")
+    ;; (https-server
+    ;;  '("api.scheme.org")
+    ;;  "access_log /var/log/nginx/api.scheme.org_access.log;"
+    ;;  "error_log  /var/log/nginx/api.scheme.org_error.log;"
+    ;;  (block "location /"
+    ;;         "proxy_pass http://127.0.0.1:4090;"
+    ;;         (apply block "if ($request_method = 'OPTIONS')"
+    ;;                (append cors
+    ;;                        (list "add_header 'Access-Control-Max-Age' 1728000;"
+    ;;                              "add_header 'Content-Type' 'text/plain; charset=utf-8';"
+    ;;                              "add_header 'Content-Length' 0;"
+    ;;                              "return 204;")))
+    ;;         (apply block "if ($request_method = 'POST')"
+    ;;                (append cors
+    ;;                        (list "add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';")))
+    ;;         (apply block "if ($request_method = 'GET')"
+    ;;                (append cors
+    ;;                        (list "add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';")))))
 
-         (static-site "books")
+    ;; (https-server
+    ;;  '("api.staging.scheme.org")
+    ;;  "access_log /staging/api/log/nginx/access.log;"
+    ;;  "error_log  /staging/api/log/nginx/error.log;"
+    ;;  (block "location /"
+    ;;         "proxy_pass http://127.0.0.1:7090;"))
 
-         (static-site "chat")
+    (static-site "planet")
 
-         (static-site "community")
+    (static-site "books")
 
-         (static-site "cookbook")
+    (static-site "chat")
 
-         (static-site "docs")
+    (static-site "community")
 
-         (https-server
-          '("docs.staging.scheme.org")
-          (log-directives "docs.staging.scheme.org")
-          "root /staging/docs/www;")
+    (static-site "cookbook")
 
-         (https-server
-          '("get.staging.scheme.org")
-          (log-directives "get.staging.scheme.org")
-          "root /staging/get/www;")
+    (static-site "docs")
 
-         (static-site "man"
+    (https-server
+     '("docs.staging.scheme.org")
+     (log-directives "docs.staging.scheme.org")
+     "root /staging/docs/www;")
 
-                      "include /etc/nginx/mime.types;"
-                      (block "types"
-                             "text/html 1;"
-                             "text/html 3scm;"
-                             "text/html 7scm;")
+    (https-server
+     '("get.staging.scheme.org")
+     (log-directives "get.staging.scheme.org")
+     "root /staging/get/www;")
 
-                      (block "location /raw"
+    (static-site "man"
 
-                             "include /etc/nginx/mime.types;"
-                             (block "types"
-                                    "text/plain 1;"
-                                    "text/plain 3scm;"
-                                    "text/plain 7scm;")))
+                 "include /etc/nginx/mime.types;"
+                 (block "types"
+                        "text/html 1;"
+                        "text/html 3scm;"
+                        "text/html 7scm;")
 
-         (static-site "registry")
+                 (block "location /raw"
 
-         (static-site "persist")
+                        "include /etc/nginx/mime.types;"
+                        (block "types"
+                               "text/plain 1;"
+                               "text/plain 3scm;"
+                               "text/plain 7scm;")))
 
-         (static-site "comm")
+    (static-site "registry")
 
-         (static-site "test")
+    (static-site "persist")
 
-         (static-site "web")
+    (static-site "comm")
 
-         (static-site "files")
+    (static-site "test")
 
-         (static-site "conservatory")
+    (static-site "web")
 
-         (static-site "containers")
+    (static-site "files")
 
-         (static-site "events")
+    (static-site "conservatory")
 
-         (static-site
-          "get"
+    (static-site "containers")
 
-          (block "location /v2/"
-                 "proxy_pass http://localhost:4050;"
-                 "proxy_set_header Host $host;"
-                 "proxy_set_header X-Real-IP  $remote_addr;"
-                 "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"))
+    (static-site "events")
 
-         (static-site "groups")
+    (static-site
+     "get"
 
-         (block "map $research_scheme_source $research_scheme_target"
-                "include /production/research/nginx/map.conf;")
-         (static-site
-          "research"
-          (block "location ~ ^/([a-z][a-z0-9]*\.pdf)$"
-                 "set $research_scheme_source $1;"
-                 (block "if ($research_scheme_target)"
-                        "return 307 $research_scheme_target;")))
+     (block "location /v2/"
+            "proxy_pass http://localhost:4050;"
+            "proxy_set_header Host $host;"
+            "proxy_set_header X-Real-IP  $remote_addr;"
+            "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"))
 
-         (static-site "standards")
+    (static-site "groups")
 
-         (parameterize ((content-security-policy '()))
-           (static-site
-            "try"
+    (block "map $research_scheme_source $research_scheme_target"
+           "include /production/research/nginx/map.conf;")
+    (static-site
+     "research"
+     (block "location ~ ^/([a-z][a-z0-9]*\.pdf)$"
+            "set $research_scheme_source $1;"
+            (block "if ($research_scheme_target)"
+                   "return 307 $research_scheme_target;")))
 
-            "gzip on;"
-            "gzip_comp_level 6;"
-            "gzip_types application/javascript;"))
+    (static-site "standards")
 
-         (static-site "video")
+    (parameterize ((content-security-policy '()))
+      (static-site
+       "try"
 
-         (parameterize ((content-security-policy
-                         (alist-change (content-security-policy)
-                                       "script-src"
-                                       '("'self'"
-                                         "'unsafe-inline'"
-                                         "'unsafe-eval'"))))
-           (https-server
-            '("gitea.scheme.org")
-            (log-directives "gitea.scheme.org")
-            (block "location /"
-                   "proxy_pass http://localhost:4040;"
-                   "proxy_set_header Host $host;"
-                   "proxy_set_header X-Real-IP  $remote_addr;"
-                   "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"
-                   "client_max_body_size 1G;")))
+       "gzip on;"
+       "gzip_comp_level 6;"
+       "gzip_types application/javascript;"))
 
-         (block "map $go_scheme_source $go_scheme_target"
-                "include /production/go/nginx/map.conf;")
-         (static-site
-          "go"
-          (block "location ~ ^/([a-z0-9][a-z0-9-]*)$"
-                 "set $go_scheme_source $1;"
-                 (block "if ($go_scheme_target)"
-                        "return 301 $go_scheme_target;")))
+    (static-site "video")
 
-         (https-server
-          '("wiki.staging.scheme.org")
-          (log-directives "wiki.staging.scheme.org")
-          (block "location /"
-                 "proxy_pass http://localhost:7070;"
-                 "proxy_set_header Host $host;"
-                 "proxy_set_header X-Real-IP  $remote_addr;"
-                 "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"))
+    (parameterize ((content-security-policy
+                    (alist-change (content-security-policy)
+                                  "script-src"
+                                  '("'self'"
+                                    "'unsafe-inline'"
+                                    "'unsafe-eval'"))))
+      (https-server
+       '("gitea.scheme.org")
+       (log-directives "gitea.scheme.org")
+       (block "location /"
+              "proxy_pass http://localhost:4040;"
+              "proxy_set_header Host $host;"
+              "proxy_set_header X-Real-IP  $remote_addr;"
+              "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"
+              "client_max_body_size 1G;")))
 
-         (https-server
-          '("www.schemeworkshop.org" "schemeworkshop.org")
-          (log-directives "www.schemeworkshop.org")
-          "root /production/workshop/www;")
+    (block "map $go_scheme_source $go_scheme_target"
+           "include /production/go/nginx/map.conf;")
+    (static-site
+     "go"
+     (block "location ~ ^/([a-z0-9][a-z0-9-]*)$"
+            "set $go_scheme_source $1;"
+            (block "if ($go_scheme_target)"
+                   "return 301 $go_scheme_target;")))
 
-         (https-server
-          '("www.staging.schemeworkshop.org")
-          (log-directives "www.staging.schemeworkshop.org")
-          "root /staging/workshop/www;")
+    (https-server
+     '("wiki.staging.scheme.org")
+     (log-directives "wiki.staging.scheme.org")
+     (block "location /"
+            "proxy_pass http://localhost:7070;"
+            "proxy_set_header Host $host;"
+            "proxy_set_header X-Real-IP  $remote_addr;"
+            "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"))
 
-         ;;
+    (https-server
+     '("www.schemeworkshop.org" "schemeworkshop.org")
+     (log-directives "www.schemeworkshop.org")
+     "root /production/workshop/www;")
 
-         (http-redirect-only-server
-          "blog.scheme.org" "https://planet.scheme.org/")
+    (https-server
+     '("www.staging.schemeworkshop.org")
+     (log-directives "www.staging.schemeworkshop.org")
+     "root /staging/workshop/www;")
 
-         (http-redirect-only-server
-          "doc.scheme.org" "https://docs.scheme.org/")
+    ;;
 
-         (http-redirect-only-server
-          "play.scheme.org" "https://try.scheme.org/"))))
+    (http-redirect-only-server
+     "blog.scheme.org" "https://planet.scheme.org/")
+
+    (http-redirect-only-server
+     "doc.scheme.org" "https://docs.scheme.org/")
+
+    (http-redirect-only-server
+     "play.scheme.org" "https://try.scheme.org/"))))
+
+(write-tuonela-nginx-conf)

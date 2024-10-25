@@ -214,9 +214,18 @@
    (group
     (name schemeorg)
     (hosts
+
+     ;; We hardcode the IP address for each host since there are
+     ;; guaranteed to be DNS issues over the lifetime of a server.
+
+     ;; TODO: Instead of scheme-hostname and scheme-hostname-short we
+     ;; should use Ansible standard variables, but I don't know which.
+
      (host
       (name tuonela)
       (vars
+       (var scheme-hostname "tuonela.scheme.org")
+       (var scheme-hostname-short "tuonela")
        (var ansible-host "192.210.181.186")
        (var ansible-python-interpreter "/usr/bin/python3"))))))
 
@@ -325,7 +334,7 @@
     (tasks
      (task
       (title "set hostname")
-      (hostname (name "tuonela.scheme.org")))))
+      (hostname (name "{{scheme_hostname}}")))))
 
    (role
     (name motd)
@@ -751,7 +760,7 @@
       (copy
        (validate "nginx -t -c %s")
        (dest "/etc/nginx/nginx.conf")
-       (src "nginx.conf")
+       (src "{{scheme_hostname_short}}-nginx.conf")
        (owner "root")
        (group "root")
        (mode "0644"))
