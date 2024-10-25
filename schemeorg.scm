@@ -35,7 +35,8 @@
     (3 "feeley" "Marc Feeley")
     (4 "jeronimo" "Jeronimo Pellegrini")
     (5 "graywolf" "graywolf")
-    (6 "leahneukirchen" "Leah Neukirchen")))
+    (6 "leahneukirchen" "Leah Neukirchen")
+    (7 "retropikzel" "Retropikzel")))
 
 (define human-user-ordinal first)
 (define human-user-name second)
