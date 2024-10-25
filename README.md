@@ -85,7 +85,7 @@ lose a password or to accidentally reveal a password. Additionally,
 scripting with keys tends to be easy whereas scripting with passwords
 tends to be difficult. Our configuration is highly automated.
 
-### Security
+### Principles
 
 **No security by obscurity.** Everything except logs, passwords, and
 private keys is considered public information that can be read by
@@ -103,6 +103,49 @@ If we made an effort, it's likely that we would hinder legitimate work
 while still leaving many holes. Onboarding new admins has to be a
 reasonable process, and we cannot do that if everything is tweaked to
 the hilt.
+
+### TLS
+
+We get our Transport Layer Security (TLS) certificates from Let's
+Encrypt. These are used for HTTPS. We may find other uses for them in
+the future.
+
+We use `certbot` with its `nginx` plugin to obtain the certs. The
+certs need to be updated periodically. The Debian package of `certbot`
+comes with a standard cron job that does this daily.
+
+We have one certificate per server. This is simple, and in line with
+Scheme.org's commitment to transparency. It is fine that visitors are
+shown exactly which servers host which subdomains.
+
+`certbot` currently has to be run manually whenever a subdomain is
+added or removed or moved from one server to another.
+
+## Web sites
+
+### HTTP server
+
+We use Nginx as our HTTP server.
+
+* It is popular. Important so we can always find help.
+
+* It is resource efficient. Important since we run a site with a
+  high-profile domain name on low-end VPS boxes. We get a lot of
+  traffic. Much of it is from automated crawlers.
+
+* It has lots of features. A site with the scale and history of
+  Scheme.org has many obscure requirements that are not readily
+  apparent.
+
+### HTTPS
+
+All community sites are accessible via HTTPS in the usual way.
+
+Currently `http://` URLs redirect to their `https://` equivalents.
+
+## Email
+
+There is currently no email service under Scheme.org.
 
 ## User IDs and TCP ports
 
