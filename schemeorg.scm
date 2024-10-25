@@ -73,6 +73,15 @@
       (shell "/bin/bash")))
     ,@(ssh-key-tasks (human-user-name human-user))))
 
+(define (human-user-roles)
+  (map (lambda (human-user)
+         `(role
+           (name ,(string->symbol
+                   (string-append "human-" (human-user-name human-user))))
+           (tasks
+            ,@(human-user-tasks human-user))))
+       human-users))
+
 (define sites
   '(("api" 90)
     ("apps" 22)
@@ -281,6 +290,8 @@
       (become true)
       (roles
 
+       human-retropikzel
+
        apt-upgrade
        apt-comfort
        hostname
@@ -295,6 +306,14 @@
       (become true)
       (roles
 
+       human-lassi
+       human-arthur
+       human-hga
+       human-feeley
+       human-jeronimo
+       human-graywolf
+       human-leahneukirchen
+
        apt-upgrade
        apt-comfort
        hostname
@@ -305,7 +324,6 @@
        antivirus
        postgresql
        build-user
-       human-users
        ;;make-production-api
        ;;make-staging-api
        make-production-docs
@@ -542,11 +560,7 @@
        (shell "/bin/bash")
        (home "/build")))))
 
-   (role
-    (name human-users)
-    (tasks
-     ,@(append-map human-user-tasks
-                   human-users)))
+   ,@(human-user-roles)
 
    (role
     (name make-production-docs)
