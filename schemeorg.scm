@@ -752,7 +752,8 @@
    (role
     (name make-production-research)
     (tasks
-     ,@(production-site-tasks "research" "www")))
+     ,@(production-site-tasks "research" "www")
+     ,@(production-site-nginx-map-tasks "research")))
 
    (role
     (name make-production-standards)
