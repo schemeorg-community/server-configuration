@@ -69,22 +69,6 @@ should expect Guix to have more.
 
 ## Security
 
-### Keys and passwords
-
-SSH login is based on public keys. The keys are kept in the `keys`
-subdirectory of this repository. The filename is the Unix username,
-and each line is one public key.
-
-SSH password authentication is disabled. The passwords on individual
-users' Unix accounts are set to random strings. These passwords are
-not intended to be used.
-
-**Rationale:** Passwords are difficult to manage in a multi-user
-environment where people come and go over the years. It is easy to
-lose a password or to accidentally reveal a password. Additionally,
-scripting with keys tends to be easy whereas scripting with passwords
-tends to be difficult. Our configuration is highly automated.
-
 ### Principles
 
 **No security by obscurity.** Everything except logs, passwords, and
@@ -103,6 +87,22 @@ If we made an effort, it's likely that we would hinder legitimate work
 while still leaving many holes. Onboarding new admins has to be a
 reasonable process, and we cannot do that if everything is tweaked to
 the hilt.
+
+### Keys and passwords
+
+SSH login is based on public keys. The keys are kept in the `keys`
+subdirectory of this repository. The filename is the Unix username,
+and each line is one public key.
+
+SSH password authentication is disabled. The passwords on individual
+users' Unix accounts are set to random strings. These passwords are
+not intended to be used.
+
+**Rationale:** Passwords are difficult to manage in a multi-user
+environment where people come and go over the years. It is easy to
+lose a password or to accidentally reveal a password. Additionally,
+scripting with keys tends to be easy whereas scripting with passwords
+tends to be difficult. Our configuration is highly automated.
 
 ### TLS
 
