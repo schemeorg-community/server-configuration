@@ -1,5 +1,26 @@
 # Configuration for Scheme.org community servers
 
+## Scope of this document
+
+Scheme.org involves three kinds of servers:
+
+1. The origin server which hosts `www.scheme.org`.
+
+2. Community servers which host consensus-driven subdomains.
+
+3. Servers run by opinionated projects (e.g. Scheme implementations)
+   to host their own stuff.
+
+This document applies to community servers.
+
+The origin server is run quite similarly, but is airgapped from the
+community servers for reliability reasons. The social contract that
+applies to the maintenance of the origin server is stricter than with
+community servers.
+
+The opinionted servers are run according to the whims of each project.
+Their practices may be very different from the ones presented here.
+
 ## Machines
 
 ### VPS
