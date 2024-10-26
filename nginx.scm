@@ -239,6 +239,21 @@
                    (http-block-common-part)
                    http-block-extra))))))))
 
+(define (write-jenkins-nginx-conf)
+  (write-host-nginx-conf
+   "jenkins.scheme.org"
+   "jenkins"
+   (list
+
+    (https-server
+     '("jenkins.scheme.org")
+     (log-directives "jenkins.scheme.org")
+     (block "location /"
+            "proxy_pass http://localhost:8080;"
+            "proxy_set_header Host $host;"
+            "proxy_set_header X-Real-IP $remote_addr;"
+            "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;")))))
+
 (define (write-tuonela-nginx-conf)
   (write-host-nginx-conf
    "tuonela.scheme.org"
@@ -419,4 +434,5 @@
     (http-redirect-only-server
      "play.scheme.org" "https://try.scheme.org/"))))
 
+(write-jenkins-nginx-conf)
 (write-tuonela-nginx-conf)

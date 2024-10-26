@@ -298,6 +298,7 @@
        sudo
        firewall
        docker
+       nginx
        sshd))
 
      (play
