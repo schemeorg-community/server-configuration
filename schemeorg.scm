@@ -291,6 +291,7 @@
       (roles
 
        human-retropikzel
+       human-lassik
 
        apt-upgrade
        apt-comfort
