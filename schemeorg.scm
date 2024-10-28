@@ -639,7 +639,7 @@
       (copy
        (dest "/etc/cron.d/scheme-prod-planet")
        (content
-        "0 0-23/6 * * * prod-planet /production/planet/planet/planet.sh\n")
+        "0 0-23/6 * * * prod-planet /production/planet/cron.sh\n")
        (mode "644")
        (owner "0")
        (group "0")))))
