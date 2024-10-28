@@ -43,7 +43,7 @@
 (define human-user-display-name third)
 
 (define (human-user-id human-user)
-  (+ 1000 (human-user-ordinal human-user)))
+  (+ 1100 (human-user-ordinal human-user)))
 
 (define (human-user-groups human-user)
   '("users" "sudo" "docker"))
@@ -549,12 +549,12 @@
      (task
       (title "make build group")
       (group
-       (gid 1100)
+       (gid 1099)
        (name "build")))
      (task
       (title "make build user")
       (user
-       (uid 1100)
+       (uid 1099)
        (name "build")
        (comment "We can build packages from source using this account")
        (group "build")

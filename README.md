@@ -170,11 +170,15 @@ There is currently no email service under Scheme.org.
 
 ## User IDs and TCP ports
 
+Linux distributions tend to start numbering human users at UID 1000.
+We start ours at 1100. This makes it easier to add users with fixed
+global UIDs on servers that already have some local accounts.
+
 ### Humans
 
-    1000           Human user 0
-    1001           Human user 1
-    1002           Human user 2
+    1100           Human user 0
+    1101           Human user 1
+    1102           Human user 2
 
 ### Production sites
 
