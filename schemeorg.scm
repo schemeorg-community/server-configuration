@@ -36,7 +36,8 @@
     (4 "jeronimo" "Jeronimo Pellegrini")
     (5 "graywolf" "graywolf")
     (6 "leahneukirchen" "Leah Neukirchen")
-    (7 "retropikzel" "Retropikzel")))
+    (7 "retropikzel" "Retropikzel")
+    (8 "arvyy" "Arvydas Silanskas")))
 
 (define human-user-ordinal first)
 (define human-user-name second)
@@ -292,6 +293,7 @@
 
        human-retropikzel
        human-lassik
+       human-arvyy
 
        apt-upgrade
        apt-comfort
