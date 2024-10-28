@@ -29,7 +29,7 @@
       (if (eof-object? x) (reverse xs) (loop (cons x xs))))))
 
 (define human-users
-  '((0 "lassi" "Lassi Kortela")
+  '((0 "lassik" "Lassi Kortela")
     (1 "arthur" "Arthur Gleckler")
     (2 "hga" "Harold Ancell")
     (3 "feeley" "Marc Feeley")
@@ -307,7 +307,7 @@
       (become true)
       (roles
 
-       human-lassi
+       human-lassik
        human-arthur
        human-hga
        human-feeley
