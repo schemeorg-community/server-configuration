@@ -102,7 +102,7 @@ jobs:
         }
         orphanedItemStrategy {
           discardOldItems {
-              numToKeep(10)
+              numToKeep(5)
           }
         }
       }
@@ -121,7 +121,7 @@ jobs:
         }
         orphanedItemStrategy {
           discardOldItems {
-              numToKeep(10)
+              numToKeep(5)
           }
         }
       }
@@ -136,7 +136,7 @@ jobs:
         }
         orphanedItemStrategy {
           discardOldItems {
-              numToKeep(10)
+              numToKeep(5)
           }
         }
       }
@@ -155,26 +155,7 @@ jobs:
         }
         orphanedItemStrategy {
           discardOldItems {
-              numToKeep(10)
-          }
-        }
-      }
-  - script: >
-      folder('snow-shovel') {
-        displayName: 'snow-shovel'
-      }
-  - script: >
-      multibranchPipelineJob('snow-shovel/snow-shovel') {
-        displayName: 'snow-shovel'
-        branchSources {
-          git {
-              id('git')
-              remote('https://git.sr.ht/~retropikzel/snow-shovel')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(10)
+              numToKeep(5)
           }
         }
       }
@@ -193,7 +174,7 @@ jobs:
         }
         orphanedItemStrategy {
           discardOldItems {
-              numToKeep(10)
+              numToKeep(5)
           }
         }
       }
@@ -212,7 +193,7 @@ jobs:
         }
         orphanedItemStrategy {
           discardOldItems {
-              numToKeep(10)
+              numToKeep(5)
           }
         }
       }
@@ -227,7 +208,22 @@ jobs:
         }
         orphanedItemStrategy {
           discardOldItems {
-              numToKeep(10)
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
+      multibranchPipelineJob('rinne/snow-shovel') {
+        displayName: 'snow-shovel'
+        branchSources {
+          git {
+              id('git')
+              remote('https://git.sr.ht/~retropikzel/snow-shovel')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
           }
         }
       }
@@ -246,7 +242,7 @@ jobs:
         }
         orphanedItemStrategy {
           discardOldItems {
-              numToKeep(10)
+              numToKeep(5)
           }
         }
       }
