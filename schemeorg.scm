@@ -317,6 +317,7 @@
        human-jeronimo
        human-graywolf
        human-leahneukirchen
+       human-arvyy
 
        apt-upgrade
        apt-comfort
