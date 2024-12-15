@@ -100,6 +100,7 @@
     ("gitea" 40)
     ("go" 36)
     ("groups" 32)
+    ("index" 60)
     ("lists" 10)
     ("man" 27)
     ("persist" 7)
@@ -133,7 +134,7 @@
     (string-append prefix (string-copy name 0 (min name-len name-max)))))
 
 (define staging-site-names
-  '("api" "docs" "get" "wiki" "workshop"))
+  '("api" "docs" "get" "index" "wiki" "workshop"))
 
 (define (staging-site? site)
   (not (not (member (site-name site) staging-site-names))))
@@ -345,6 +346,8 @@
        make-production-gitea
        make-production-go
        make-production-groups
+       make-production-index
+       make-staging-index
        make-production-man
        make-production-test
        make-production-web
@@ -753,6 +756,16 @@
     (name make-production-groups)
     (tasks
      ,@(production-site-tasks "groups" "www")))
+
+   (role
+    (name make-production-index)
+    (tasks
+     ,@(production-site-tasks "index" "www")))
+
+   (role
+    (name make-staging-index)
+    (tasks
+     ,@(staging-site-tasks "index" "www")))
 
    (role
     (name make-production-conservatory)

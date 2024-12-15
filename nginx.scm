@@ -313,6 +313,20 @@
      (log-directives "get.staging.scheme.org")
      "root /staging/get/www;")
 
+    (static-site
+     "index"
+
+     (block "location /"
+            "try_files $uri $uri/ /index.html =404;"))
+
+    (https-server
+     '("index.staging.scheme.org")
+     (log-directives "index.staging.scheme.org")
+     "root /staging/index/www;"
+
+     (block "location /"
+            "try_files $uri $uri/ /index.html =404;"))
+
     (static-site "man"
 
                  "include /etc/nginx/mime.types;"
