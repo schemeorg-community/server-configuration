@@ -247,3 +247,19 @@ jobs:
           }
         }
       }
+  - script: >
+      multibranchPipelineJob('scman') {
+        displayName: 'scman'
+        branchSources {
+          git {
+              id('git')
+              remote('https://git.sr.ht/~retropikzel/scman')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5),
+              daysToKeep(7)
+          }
+        }
+      }
