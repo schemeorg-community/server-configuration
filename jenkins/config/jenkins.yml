@@ -102,7 +102,7 @@ jobs:
         }
         orphanedItemStrategy {
           discardOldItems {
-              numToKeep(5)
+              numToKeep(10)
           }
         }
       }
@@ -242,7 +242,8 @@ jobs:
         }
         orphanedItemStrategy {
           discardOldItems {
-              numToKeep(5)
+              numToKeep(5),
+              daysToKeep(7)
           }
         }
       }
