@@ -276,3 +276,18 @@ jobs:
           }
         }
       }
+  - script: >
+      multibranchPipelineJob('scheme-containers') {
+        displayName: 'scheme-containers'
+        branchSources {
+          git {
+              id('git')
+              remote('https://github.com/scheme-containers/monorepo.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
