@@ -228,25 +228,6 @@ jobs:
         }
       }
   - script: >
-      folder('scheme_containers') {
-        displayName: 'scheme_containers'
-      }
-  - script: >
-      multibranchPipelineJob('scheme_containers/monorepo') {
-        displayName: 'monorepo'
-        branchSources {
-          git {
-              id('git')
-              remote('https://github.com/schemeorg-community/server-configuration.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
       multibranchPipelineJob('scman') {
         displayName: 'scman'
         branchSources {
@@ -262,12 +243,12 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('scman') {
-        displayName: 'scman'
+      multibranchPipelineJob('scheme-containers') {
+        displayName: 'scheme-containers'
         branchSources {
           git {
               id('git')
-              remote('https://git.sr.ht/~retropikzel/scman')
+              remote('https://github.com/scheme-containers/monorepo.git')
           }
         }
         orphanedItemStrategy {
