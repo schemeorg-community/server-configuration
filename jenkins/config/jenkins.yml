@@ -272,3 +272,18 @@ jobs:
           }
         }
       }
+  - script: >
+      multibranchPipelineJob('r7rs-tools') {
+        displayName: 'r7rs-tools'
+        branchSources {
+          git {
+              id('git')
+              remote('https://git.sr.ht/~retropikzel/r7rs-tools')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
