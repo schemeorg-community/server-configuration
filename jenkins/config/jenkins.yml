@@ -273,12 +273,12 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('r7rs-tools') {
-        displayName: 'r7rs-tools'
+      multibranchPipelineJob('compile-r7rs') {
+        displayName: 'compile-r7rs'
         branchSources {
           git {
               id('git')
-              remote('https://git.sr.ht/~retropikzel/r7rs-tools')
+              remote('https://git.sr.ht/~retropikzel/compile-r7rs')
           }
         }
         orphanedItemStrategy {
