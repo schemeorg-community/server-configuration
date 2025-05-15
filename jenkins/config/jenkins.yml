@@ -141,16 +141,12 @@ jobs:
         }
       }
   - script: >
-      folder('r7rs_pffi') {
-        displayName: 'r7rs-pffi'
-      }
-  - script: >
-      multibranchPipelineJob('r7rs_pffi/r7rs-pffi') {
-        displayName: 'r7rs-pffi'
+      multibranchPipelineJob('foreign-c') {
+        displayName: 'foreign-c'
         branchSources {
           git {
               id('git')
-              remote('https://git.sr.ht/~retropikzel/r7rs-pffi')
+              remote('https://git.sr.ht/~retropikzel/foreign-c')
           }
         }
         orphanedItemStrategy {
