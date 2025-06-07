@@ -76,7 +76,7 @@ jenkins:
         name: "Android"
         labelString: "android-arm"
         numExecutors: 1
-        remoteFS: "/home/jenkins/agent"
+        remoteFS: "/data/data/com.termux/files/home"
         launcher:
           SSHLauncher:
             host: "retropikzel.madhacker.biz"
