@@ -4,9 +4,9 @@ jenkins:
   nodes:
     - permanent:
         mode: NORMAL
-        name: "agent1"
+        name: "VPS Docker"
         labelString: "docker"
-        numExecutors: 8
+        numExecutors: 1
         remoteFS: "/home/jenkins/agent"
         launcher:
           SSHLauncher:
@@ -17,11 +17,10 @@ jenkins:
             maxNumRetries: 3
             retryWaitTime: 30
             sshHostKeyVerificationStrategy:
-              manuallyTrustedKeyVerificationStrategy:
-                requireInitialManualTrust: false
+              nonverifyingTrustedKeyVerificationStrategy
     - permanent:
         mode: NORMAL
-        name: "agent2"
+        name: "Debian"
         labelString: "debian-x86_64"
         numExecutors: 16
         remoteFS: "/home/jenkins/agent"
@@ -35,8 +34,55 @@ jenkins:
             maxNumRetries: 3
             retryWaitTime: 30
             sshHostKeyVerificationStrategy:
-              manuallyTrustedKeyVerificationStrategy:
-                requireInitialManualTrust: false
+              nonverifyingTrustedKeyVerificationStrategy
+    - permanent:
+        mode: NORMAL
+        name: "Guix"
+        labelString: "guix-x86_64"
+        numExecutors: 4
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          SSHLauncher:
+            host: "retropikzel.madhacker.biz"
+            port: 5524
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
+            sshHostKeyVerificationStrategy:
+              nonverifyingTrustedKeyVerificationStrategy
+    - permanent:
+        mode: NORMAL
+        name: "Freebsd"
+        labelString: "freebsd-x86_64"
+        numExecutors: 4
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          SSHLauncher:
+            host: "retropikzel.madhacker.biz"
+            port: 5523
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
+            sshHostKeyVerificationStrategy:
+              nonverifyingTrustedKeyVerificationStrategy
+    - permanent:
+        mode: NORMAL
+        name: "Android"
+        labelString: "android-arm"
+        numExecutors: 1
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          SSHLauncher:
+            host: "retropikzel.madhacker.biz"
+            port: 8022
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
+            sshHostKeyVerificationStrategy:
+              nonverifyingTrustedKeyVerificationStrategy
   authorizationStrategy:
     projectMatrix:
       entries:
