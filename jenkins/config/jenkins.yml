@@ -17,7 +17,8 @@ jenkins:
             maxNumRetries: 3
             retryWaitTime: 30
             sshHostKeyVerificationStrategy:
-              nonVerifyingKeyVerificationStrategy
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
     - permanent:
         mode: NORMAL
         name: "Debian"
@@ -34,7 +35,8 @@ jenkins:
             maxNumRetries: 3
             retryWaitTime: 30
             sshHostKeyVerificationStrategy:
-              nonVerifyingKeyVerificationStrategy
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
     - permanent:
         mode: NORMAL
         name: "Guix"
@@ -50,7 +52,8 @@ jenkins:
             maxNumRetries: 3
             retryWaitTime: 30
             sshHostKeyVerificationStrategy:
-              nonVerifyingKeyVerificationStrategy
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
     - permanent:
         mode: NORMAL
         name: "FreeBSD"
@@ -66,7 +69,8 @@ jenkins:
             maxNumRetries: 3
             retryWaitTime: 30
             sshHostKeyVerificationStrategy:
-              nonVerifyingKeyVerificationStrategy
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
     - permanent:
         mode: NORMAL
         name: "Android"
@@ -82,7 +86,8 @@ jenkins:
             maxNumRetries: 3
             retryWaitTime: 30
             sshHostKeyVerificationStrategy:
-              nonVerifyingKeyVerificationStrategy
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
   authorizationStrategy:
     projectMatrix:
       entries:
