@@ -107,11 +107,7 @@ jobs:
         }
       }
   - script: >
-      folder('r7rs') {
-        displayName: 'r7rs'
-      }
-  - script: >
-      multibranchPipelineJob('r7rs/r7rs-srfi') {
+      multibranchPipelineJob('r7rs-srfi') {
         displayName: 'R7RS-SRFI'
         branchSources {
           git {
@@ -126,12 +122,16 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('r7rs/r7rs-tests') {
-        displayName: 'r7rs-tests'
+      folder('jenkins') {
+        displayName: 'foreign-c'
+      }
+  - script: >
+      multibranchPipelineJob('foreign-c/foreign-c') {
+        displayName: 'foreign-c'
         branchSources {
           git {
               id('git')
-              remote('https://gitea.scheme.org/Retropikzel/r7rs-tests.git')
+              remote('https://git.sr.ht/~retropikzel/foreign-c')
           }
         }
         orphanedItemStrategy {
@@ -141,12 +141,12 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('foreign-c') {
-        displayName: 'foreign-c'
+      multibranchPipelineJob('foreign-c/sqlite') {
+        displayName: 'sqlite'
         branchSources {
           git {
               id('git')
-              remote('https://git.sr.ht/~retropikzel/foreign-c')
+              remote('https://git.sr.ht/~retropikzel/foreign-c-sqlite')
           }
         }
         orphanedItemStrategy {
@@ -215,21 +215,6 @@ jobs:
           git {
               id('git')
               remote('https://git.sr.ht/~retropikzel/snow-shovel')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('scman') {
-        displayName: 'scman'
-        branchSources {
-          git {
-              id('git')
-              remote('https://git.sr.ht/~retropikzel/scman')
           }
         }
         orphanedItemStrategy {
