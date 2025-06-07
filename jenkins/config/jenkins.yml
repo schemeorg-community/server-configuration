@@ -172,7 +172,7 @@ jobs:
         displayName: 'foreign_c'
       }
   - script: >
-      multibranchPipelineJob('foreign_c/foreign-c') {
+      multibranchPipelineJob('foreign_c/foreign_c') {
         displayName: 'foreign-c'
         branchSources {
           git {
