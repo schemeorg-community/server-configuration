@@ -168,11 +168,11 @@ jobs:
         }
       }
   - script: >
-      folder('foreign_c') {
-        displayName: 'foreign_c'
+      folder('foreignc') {
+        displayName: 'foreignc'
       }
   - script: >
-      multibranchPipelineJob('foreign_c/foreign_c') {
+      multibranchPipelineJob('foreignc/foreignc') {
         displayName: 'foreign-c'
         branchSources {
           git {
@@ -187,7 +187,7 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('foreign_c/sqlite') {
+      multibranchPipelineJob('foreignc/sqlite') {
         displayName: 'sqlite'
         branchSources {
           git {
