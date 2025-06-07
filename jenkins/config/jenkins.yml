@@ -53,7 +53,7 @@ jenkins:
               nonVerifyingKeyVerificationStrategy
     - permanent:
         mode: NORMAL
-        name: "Freebsd"
+        name: "FreeBSD"
         labelString: "freebsd-x86_64"
         numExecutors: 4
         remoteFS: "/home/jenkins/agent"
