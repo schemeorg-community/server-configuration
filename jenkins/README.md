@@ -1,4 +1,54 @@
-# Docker based Jenkins setup through Configuration-as-Code
+# For users
+
+## Adding new jobs
+
+1. Add your job into config/jenkins.yml
+2. Make a pull request
+3. Ask Retropikzel (because most propably has time) to review and merge it
+4. Retropikzel manually updates the new configuration, because automation does
+not yet work :D
+
+## Jenkinsfile for testing code on many implementations
+
+This Jenkinsfile uses
+[https://github.com/Retropikzel/compile-r7rs](https://github.com/Retropikzel/compile-r7rs)
+to test code on all supported implementations. It tests with R7RS implementations
+but to test with r6rs-implementations change the --list-r7rs-schemes to
+--list-r6rs-schemes.
+
+Change the "your-project-" part of docker tags too.
+
+    pipeline {
+        agent any
+
+        options {
+            disableConcurrentBuilds()
+            buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        }
+
+        stages {
+            stage('Tests') {
+                steps {
+                    script {
+                        def implementations = sh(script: 'docker run retropikzel1/compile-r7rs:chibi sh -c "compile-r7rs --list-r7rs-schemes"', returnStdout: true).split()
+
+                        implementations.each { implementation->
+                            stage("${implementation}") {
+                                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                                    sh "docker build --build-arg COMPILE_R7RS=${implementation} --tag=your-project-test-${implementation} -f Dockerfile.test ."
+                                    sh "docker run -v ${WORKSPACE}:/workdir -w /workdir -t your-project-test-${implementation} sh -c \"compile-r7rs -I . -o test test.scm\""
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+# For maintainers
+
+Docker based Jenkins setup through Configuration-as-Code
 
 ## Running
 
@@ -9,12 +59,6 @@
 5. (Optionally) Add `update.sh` script to be run by cron periodically.
 
 If all went well jenkins should be reachable on `localhost:8080`, login with user `admin` and password from step 2.
-
-## Workflow for setting up jobs
-
-1. A pull request is initiated on a git platform where this configuration is hosted, with necessary changes in `jenkins.yml` jobs section;
-2. Maintainer(s) review the change, merge if appropriate;
-3. Either periodically, manually, or on some way set up trigger, machine hosting Jenkins controller does a `git pull` and `docker compose up -d --build`, after which the changes should appear on CI.
 
 ## User permissions and per-project secrets
 
