@@ -4,9 +4,9 @@ jenkins:
   nodes:
     - permanent:
         mode: NORMAL
-        name: "agent1"
+        name: "VPS Docker"
         labelString: "docker"
-        numExecutors: 8
+        numExecutors: 1
         remoteFS: "/home/jenkins/agent"
         launcher:
           SSHLauncher:
@@ -21,7 +21,7 @@ jenkins:
                 requireInitialManualTrust: false
     - permanent:
         mode: NORMAL
-        name: "agent2"
+        name: "Debian"
         labelString: "debian-x86_64"
         numExecutors: 16
         remoteFS: "/home/jenkins/agent"
@@ -30,6 +30,57 @@ jenkins:
             host: "retropikzel.madhacker.biz"
             port: 5522
             JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
+    - permanent:
+        mode: NORMAL
+        name: "Guix"
+        labelString: "guix-x86_64"
+        numExecutors: 4
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          SSHLauncher:
+            host: "retropikzel.madhacker.biz"
+            port: 5524
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
+    - permanent:
+        mode: NORMAL
+        name: "FreeBSD"
+        labelString: "freebsd-x86_64"
+        numExecutors: 4
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          SSHLauncher:
+            host: "retropikzel.madhacker.biz"
+            port: 5523
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
+    - permanent:
+        mode: NORMAL
+        name: "Android"
+        labelString: "android-arm"
+        numExecutors: 1
+        remoteFS: "/data/data/com.termux/files/home"
+        launcher:
+          SSHLauncher:
+            host: "retropikzel.madhacker.biz"
+            port: 8022
             credentialsId: agent_ssh
             launchTimeoutSeconds: 60
             maxNumRetries: 3
@@ -123,7 +174,7 @@ jobs:
       }
   - script: >
       folder('foreign_c') {
-        displayName: 'foreign_c'
+        displayName: 'foreign-c'
       }
   - script: >
       multibranchPipelineJob('foreign_c/foreign-c') {
@@ -215,21 +266,6 @@ jobs:
           git {
               id('git')
               remote('https://git.sr.ht/~retropikzel/snow-shovel')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('scheme-containers') {
-        displayName: 'scheme-containers'
-        branchSources {
-          git {
-              id('git')
-              remote('https://github.com/scheme-containers/monorepo.git')
           }
         }
         orphanedItemStrategy {
