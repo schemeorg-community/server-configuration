@@ -207,6 +207,21 @@ jobs:
         }
       }
   - script: >
+      multibranchPipelineJob('foreign_c/srfi_170') {
+        displayName: 'srfi-170'
+        branchSources {
+          git {
+              id('git')
+              remote('https://git.sr.ht/~retropikzel/foreign-c-srfi-170')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
       folder('jenkins') {
         displayName: 'jenkins'
       }
