@@ -22,6 +22,28 @@ Right click and **copy link**.
 
 To get token login and go to "Security" settings of your user menu.
 
+### Sourcehut example
+
+This is example for how to start build automatically in Jenkins when code is
+pushed to git. It's for Sourcehut but should give a general idea about how to
+do it Github/Gitlab/BitBucket and such.
+
+Add new secret file in path ${HOME}/netrc-scheme-jenkins with content:
+
+    machine jenkins.scheme.org
+    username <username>
+    password <token>
+
+Then add this .build.yml into your repository:
+
+   image: alpine/edge
+   secrets:
+     - <your secrets id>
+     tasks:
+         - trigger-jenkins-build: |
+             branch=$(echo "$GIT_REF" | awk '{split($0,a,"/"); print(a[3])}')
+             curl --netrc-file ${HOME}/netrc-scheme-jenkins -X POST "https://jenkins.scheme.org/job/<job directory>/job/<job name>/job/${branch}/build?delay=0sec"
+
 
 ## Jenkinsfile for testing code on many implementations
 
