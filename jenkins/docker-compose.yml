@@ -1,5 +1,6 @@
 services:
   jenkins-controller:
+    env_file: .env
     build:
       context: .
       dockerfile: Dockerfile.jenkins
