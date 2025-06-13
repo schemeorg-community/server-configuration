@@ -8,6 +8,21 @@
 4. Retropikzel manually updates the new configuration, because automation does
 not yet work :D
 
+## Building job using curl
+
+    curl -X POST https://<your username>:<token>@jenkins.scheme.org/job/<job directory>/job/<job name>/job/<branch>/build?delay=0sec"
+
+
+So for example to build foreign-c:
+
+    curl -X POST https://<your username>:<token>@jenkins.scheme.org/job/foreign_c/job/foreign-c/job/master/build?delay=0sec"
+
+You can get the link also from the **Build now** button on the job webpage.
+Right click and **copy link**.
+
+To get token login and go to "Security" settings of your user menu.
+
+
 ## Jenkinsfile for testing code on many implementations
 
 This Jenkinsfile uses
