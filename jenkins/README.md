@@ -6,22 +6,22 @@ Note that folder names should not contain -, recommended to replace it with \_.
 
 1. Add folder with your github username to config/jenkins.yml. Example:
 
-<code>
-    - script: >
-      folder('<username>') {
-        displayName: '<username>'
-        properties {
-          authorizationMatrix {
-            entries {
-              user {
-                name('<username>')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
-              }
-            }
+<code><pre>
+- script: >
+  folder('<username>') {
+    displayName: '<username>'
+    properties {
+      authorizationMatrix {
+        entries {
+          user {
+            name('<username>')
+            permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
           }
         }
       }
-</code>
+    }
+  }
+</pre></code>
 
 If you have a project with possibly multiple users working on it then you can
 also add folder for that project. In that case also add multiple user blocks
