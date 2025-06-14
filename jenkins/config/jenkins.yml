@@ -94,10 +94,10 @@ jenkins:
       - group:
           name: "authenticated"
           permissions:
+          - "Overall/Read"
           - "Job/Read"
           - "Job/Build"
           - "Job/Cancel"
-          - "Overall/Read"
       - user:
           name: "admin"
           permissions:
@@ -158,8 +158,26 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('r7rs-srfi') {
-        displayName: 'R7RS-SRFI'
+      folder('srfi_r7rs') {
+        displayName: 'srfi-r7rs'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+              }
+              user {
+                name('lassik')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+              }
+            }
+          }
+        }
+      }
+  - script: >
+      multibranchPipelineJob('r7rs_srfi/r7rs-srfi') {
+        displayName: 'r7rs-srfi'
         branchSources {
           git {
               id('github')
@@ -173,11 +191,21 @@ jobs:
         }
       }
   - script: >
-      folder('foreign_c') {
-        displayName: 'foreign-c'
+      folder('retropikzel') {
+        displayName: 'retropikzel'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+              }
+            }
+          }
+        }
       }
   - script: >
-      multibranchPipelineJob('foreign_c/foreign-c') {
+      multibranchPipelineJob('retropikzel/foreign-c') {
         displayName: 'foreign-c'
         branchSources {
           git {
@@ -192,8 +220,8 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('foreign_c/sqlite') {
-        displayName: 'sqlite'
+      multibranchPipelineJob('retropikzel/foreign-c-sqlite') {
+        displayName: 'foreign-c-sqlite'
         branchSources {
           git {
               id('git')
@@ -207,8 +235,8 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('foreign_c/srfi_170') {
-        displayName: 'srfi-170'
+      multibranchPipelineJob('retropikzel/foreign-c-srfi_170') {
+        displayName: 'foreign-c-srfi-170'
         branchSources {
           git {
               id('git')
@@ -224,6 +252,20 @@ jobs:
   - script: >
       folder('jenkins') {
         displayName: 'jenkins'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+              }
+              user {
+                name('lassik')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+              }
+            }
+          }
+        }
       }
   - script: >
       multibranchPipelineJob('jenkins/auto-maintenance') {
@@ -243,6 +285,20 @@ jobs:
   - script: >
       folder('rinne') {
         displayName: 'rinne'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+              }
+              user {
+                name('lassik')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+              }
+            }
+          }
+        }
       }
   - script: >
       multibranchPipelineJob('rinne/snow-fort-guix-channel') {
@@ -275,23 +331,26 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('rinne/snow-shovel') {
-        displayName: 'snow-shovel'
-        branchSources {
-          git {
-              id('git')
-              remote('https://git.sr.ht/~retropikzel/snow-shovel')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
+      folder('scheme_containers') {
+        displayName: 'scheme-containers'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+              }
+              user {
+                name('lassik')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+              }
+            }
           }
         }
       }
   - script: >
-      multibranchPipelineJob('scheme-containers') {
-        displayName: 'scheme-containers'
+      multibranchPipelineJob('scheme-containers/monorepo') {
+        displayName: 'monorepo'
         branchSources {
           git {
               id('git')
