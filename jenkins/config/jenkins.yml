@@ -9,7 +9,7 @@ jenkins:
         numExecutors: 1
         remoteFS: "/home/jenkins/agent"
         launcher:
-          SSHLauncher:
+          ssh:
             host: "jenkins-agent"
             port: 22
             credentialsId: agent_ssh
