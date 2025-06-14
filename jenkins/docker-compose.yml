@@ -10,6 +10,8 @@ services:
       - ./config:/config
       - ./id_rsa:/secrets/id_rsa
       - ./adminpassword:/secrets/adminpassword
+      - ./github_oauth_clientid:/secrets/github_oauth_clientid
+      - ./github_oauth_secret:/secrets/github_oauth_secret
       - /home/jenkins/jenkins-data:/var/jenkins_home
     ports:
       - 8080:8080
