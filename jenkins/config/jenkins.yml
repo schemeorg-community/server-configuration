@@ -26,7 +26,7 @@ jenkins:
         numExecutors: 16
         remoteFS: "/home/jenkins/agent"
         launcher:
-          SSHLauncher:
+          ssh:
             host: "retropikzel.madhacker.biz"
             port: 5522
             JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
@@ -44,7 +44,7 @@ jenkins:
         numExecutors: 4
         remoteFS: "/home/jenkins/agent"
         launcher:
-          SSHLauncher:
+          ssh:
             host: "retropikzel.madhacker.biz"
             port: 5524
             credentialsId: agent_ssh
@@ -61,7 +61,7 @@ jenkins:
         numExecutors: 4
         remoteFS: "/home/jenkins/agent"
         launcher:
-          SSHLauncher:
+          ssh:
             host: "retropikzel.madhacker.biz"
             port: 5523
             credentialsId: agent_ssh
@@ -78,7 +78,7 @@ jenkins:
         numExecutors: 1
         remoteFS: "/data/data/com.termux/files/home"
         launcher:
-          SSHLauncher:
+          ssh:
             host: "retropikzel.madhacker.biz"
             port: 8022
             credentialsId: agent_ssh
