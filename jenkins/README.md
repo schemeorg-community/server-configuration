@@ -8,13 +8,13 @@ Note that folder names should not contain -, recommended to replace it with \_.
 
 <pre>
 - script: >
-  folder('<username>') {
-    displayName: '<username>'
+  folder('username') {
+    displayName: 'username'
     properties {
       authorizationMatrix {
         entries {
           user {
-            name('<username>')
+            name('username')
             permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
           }
         }
@@ -31,12 +31,12 @@ under entries.
 
 <pre>
 - script: >
-  multibranchPipelineJob('<username>/<jobname>') {
-    displayName: '<jobname>'
+  multibranchPipelineJob('username/jobname') {
+    displayName: 'jobname'
     branchSources {
       git {
           id('git')
-          remote('<project git ssh url>')
+          remote('project git ssh url')
       }
     }
     orphanedItemStrategy {
