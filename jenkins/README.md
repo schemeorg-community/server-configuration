@@ -6,7 +6,6 @@ Note that folder names should not contain -, recommended to replace it with \_.
 
 1. Add folder with your github username to config/jenkins.yml. Example:
 
-
 <code><pre>
 \- script: >
   folder('<username>') {
