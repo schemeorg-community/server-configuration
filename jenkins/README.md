@@ -2,26 +2,34 @@
 
 Note that folder names should not contain -, recommended to replace it with \_.
 
-## Adding new jobs
+## Adding your jobs
 
-1. Add your job into config/jenkins.yml
-2. Make a pull request
-3. Ask admin to review and merge it
-    3.1 For admins: User should also be added to Jenkins with same name as
-    github username
-4. If automation does not work ask admin to manually update the new configuration
-
-For folder example see "Credentials".
-
-Example job in folder retropikzel.
+1. Add folder with your github username to config/jenkins.yml. Example:
 
   - script: >
-      multibranchPipelineJob('retropikzel/foreign-c') {
-        displayName: 'foreign-c'
+      folder('<username>') {
+        displayName: '<username>'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('<username>')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+            }
+          }
+        }
+      }
+
+1. Add your job into config/jenkins.yml
+
+  - script: >
+      multibranchPipelineJob('<username>/<jobname>') {
+        displayName: '<jobname>'
         branchSources {
           git {
               id('git')
-              remote('https://git.sr.ht/~retropikzel/foreign-c')
+              remote('<project git ssh url>')
           }
         }
         orphanedItemStrategy {
@@ -30,6 +38,14 @@ Example job in folder retropikzel.
           }
         }
       }
+
+2. Make a pull request
+3. Ask admin to review and merge it
+    3.1 For admins: User should also be added to Jenkins with same name as
+    github username and password sent to pull request maker.
+4. If configuration update automation does not work ask admin to manually
+update the new configuration. Restarting Jenkins with systemctl restart jenkins
+works.
 
 ## Building job using curl
 
@@ -66,29 +82,6 @@ Then add this .build.yml into your repository:
          - trigger-jenkins-build: |
              branch=$(echo "$GIT_REF" | awk '{split($0,a,"/"); print(a[3])}')
              curl --netrc-file ${HOME}/netrc-scheme-jenkins -X POST "https://jenkins.scheme.org/job/<job directory>/job/<job name>/job/${branch}/build?delay=0sec"
-
-## Credentials
-
-To handle credentials create a folder for your job, or one folder for all your
-jobs. Then add yourself permissions to handle credentials in that folder. You
-can also add other users if you like.
-
-Here is example of Retropikzel's folder.
-
-  - script: >
-      folder('retropikzel') {
-        displayName: 'retropikzel'
-        properties {
-          authorizationMatrix {
-            entries {
-              user {
-                name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
-              }
-            }
-          }
-        }
-      }
 
 ## Jenkinsfile for testing code on many implementations
 
