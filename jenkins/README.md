@@ -4,7 +4,7 @@ Note that folder names should not contain -, recommended to replace it with \_.
 
 ## Adding your jobs
 
-1. Add folder with your github username to config/jenkins.yml. Example:
+### Add folder with your github username to config/jenkins.yml. Example:
 
   - script: >
       folder('<username>') {
