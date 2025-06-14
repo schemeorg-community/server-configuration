@@ -1,21 +1,70 @@
 # For users
 
-## Adding new jobs
+Note that folder names should not contain -, recommended to replace it with \_.
 
-1. Add your job into config/jenkins.yml
-2. Make a pull request
-3. Ask Retropikzel (because most propably has time) to review and merge it
-4. Retropikzel manually updates the new configuration, because automation does
-not yet work :D
+## Adding your jobs
+
+1. Add folder with your github username to config/jenkins.yml. Example:
+
+<pre>
+- script: >
+  folder('username') {
+    displayName: 'username'
+    properties {
+      authorizationMatrix {
+        entries {
+          user {
+            name('username')
+            permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+          }
+        }
+      }
+    }
+  }
+</pre>
+
+If you have a project with possibly multiple users working on it then you can
+also add folder for that project. In that case also add multiple user blocks
+under entries.
+
+2. Add your job into config/jenkins.yml
+
+<pre>
+- script: >
+  multibranchPipelineJob('username/jobname') {
+    displayName: 'jobname'
+    branchSources {
+      git {
+          id('git')
+          remote('project git https url')
+      }
+    }
+    orphanedItemStrategy {
+      discardOldItems {
+          numToKeep(5)
+      }
+    }
+  }
+</pre>
+
+3. Make a pull request
+4. Ask admin to review and merge it
+5. If configuration update automation does not work ask admin to manually
+update the new configuration. Restarting Jenkins with "systemctl restart
+jenkins" works.
 
 ## Building job using curl
 
-    curl -X POST https://<your username>:<token>@jenkins.scheme.org/job/<job directory>/job/<job name>/job/<branch>/build?delay=0sec"
+<pre>
+curl -X POST https://<your username>:<token>@jenkins.scheme.org/job/<job directory>/job/<job name>/job/<branch>/build?delay=0sec"
+</pre>
 
 
 So for example to build foreign-c:
 
-    curl -X POST https://<your username>:<token>@jenkins.scheme.org/job/foreign_c/job/foreign-c/job/master/build?delay=0sec"
+<pre>
+curl -X POST https://<your username>:<token>@jenkins.scheme.org/job/foreign_c/job/foreign-c/job/master/build?delay=0sec"
+</pre>
 
 You can get the link also from the **Build now** button on the job webpage.
 Right click and **copy link**.
@@ -30,20 +79,23 @@ do it Github/Gitlab/BitBucket and such.
 
 Add new secret file in path ${HOME}/netrc-scheme-jenkins with content:
 
-    machine jenkins.scheme.org
-    username <username>
-    password <token>
+<pre>
+machine jenkins.scheme.org
+username <username>
+password <token>
+</pre>
 
 Then add this .build.yml into your repository:
 
-   image: alpine/edge
-   secrets:
-     - <your secrets id>
-     tasks:
-         - trigger-jenkins-build: |
-             branch=$(echo "$GIT_REF" | awk '{split($0,a,"/"); print(a[3])}')
-             curl --netrc-file ${HOME}/netrc-scheme-jenkins -X POST "https://jenkins.scheme.org/job/<job directory>/job/<job name>/job/${branch}/build?delay=0sec"
-
+<pre>
+image: alpine/edge
+secrets:
+ - <your secrets id>
+ tasks:
+     - trigger-jenkins-build: |
+         branch=$(echo "$GIT_REF" | awk '{split($0,a,"/"); print(a[3])}')
+         curl --netrc-file ${HOME}/netrc-scheme-jenkins -X POST "https://jenkins.scheme.org/job/<job directory>/job/<job name>/job/${branch}/build?delay=0sec"
+</pre>
 
 ## Jenkinsfile for testing code on many implementations
 
@@ -55,26 +107,26 @@ but to test with r6rs-implementations change the --list-r7rs-schemes to
 
 Change the "your-project-" part of docker tags too.
 
-    pipeline {
-        agent any
+<pre>
+pipeline {
+    agent any
 
-        options {
-            disableConcurrentBuilds()
-            buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
-        }
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+    }
 
-        stages {
-            stage('Tests') {
-                steps {
-                    script {
-                        def implementations = sh(script: 'docker run retropikzel1/compile-r7rs:chibi sh -c "compile-r7rs --list-r7rs-schemes"', returnStdout: true).split()
+    stages {
+        stage('Tests') {
+            steps {
+                script {
+                    def implementations = sh(script: 'docker run retropikzel1/compile-r7rs:chibi sh -c "compile-r7rs --list-r7rs-schemes"', returnStdout: true).split()
 
-                        implementations.each { implementation->
-                            stage("${implementation}") {
-                                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                                    sh "docker build --build-arg COMPILE_R7RS=${implementation} --tag=your-project-test-${implementation} -f Dockerfile.test ."
-                                    sh "docker run -v ${WORKSPACE}:/workdir -w /workdir -t your-project-test-${implementation} sh -c \"compile-r7rs -I . -o test test.scm\""
-                                }
+                    implementations.each { implementation->
+                        stage("${implementation}") {
+                            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                                sh "docker build --build-arg COMPILE_R7RS=${implementation} --tag=your-project-test-${implementation} -f Dockerfile.test ."
+                                sh "docker run -v ${WORKSPACE}:/workdir -w /workdir -t your-project-test-${implementation} sh -c \"compile-r7rs -I . -o test test.scm\""
                             }
                         }
                     }
@@ -82,6 +134,12 @@ Change the "your-project-" part of docker tags too.
             }
         }
     }
+}
+</pre>
+
+## Installed plugins
+
+For installed plugins see Dockerfile.jenkins
 
 # For maintainers
 

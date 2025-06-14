@@ -1,5 +1,5 @@
 jenkins:
-  systemMessage: "Scheme Jenkins"
+  systemMessage: "Scheme Jenkins Readme: https://github.com/schemeorg-community/server-configuration/tree/master/jenkins"
   numExecutors: 0
   nodes:
     - permanent:
@@ -9,7 +9,7 @@ jenkins:
         numExecutors: 1
         remoteFS: "/home/jenkins/agent"
         launcher:
-          SSHLauncher:
+          ssh:
             host: "jenkins-agent"
             port: 22
             credentialsId: agent_ssh
@@ -26,7 +26,7 @@ jenkins:
         numExecutors: 16
         remoteFS: "/home/jenkins/agent"
         launcher:
-          SSHLauncher:
+          ssh:
             host: "retropikzel.madhacker.biz"
             port: 5522
             JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
@@ -44,7 +44,7 @@ jenkins:
         numExecutors: 4
         remoteFS: "/home/jenkins/agent"
         launcher:
-          SSHLauncher:
+          ssh:
             host: "retropikzel.madhacker.biz"
             port: 5524
             credentialsId: agent_ssh
@@ -61,7 +61,7 @@ jenkins:
         numExecutors: 4
         remoteFS: "/home/jenkins/agent"
         launcher:
-          SSHLauncher:
+          ssh:
             host: "retropikzel.madhacker.biz"
             port: 5523
             credentialsId: agent_ssh
@@ -78,7 +78,7 @@ jenkins:
         numExecutors: 1
         remoteFS: "/data/data/com.termux/files/home"
         launcher:
-          SSHLauncher:
+          ssh:
             host: "retropikzel.madhacker.biz"
             port: 8022
             credentialsId: agent_ssh
@@ -95,8 +95,6 @@ jenkins:
           name: "authenticated"
           permissions:
           - "Job/Read"
-          - "Job/Build"
-          - "Job/Cancel"
           - "Overall/Read"
       - user:
           name: "admin"
@@ -139,11 +137,25 @@ credentials:
 
 jobs:
   - script: >
-      folder('index_scheme_org') {
+      folder('arvyy') {
+        displayName: 'arvyy'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('arvyy')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+            }
+          }
+        }
+      }
+  - script: >
+      folder('arvyy/index_scheme_org') {
         displayName: 'index.scheme.org'
       }
   - script: >
-      multibranchPipelineJob('index_scheme_org/build') {
+      multibranchPipelineJob('arvyy/index_scheme_org/build') {
         displayName: 'Build and deploy'
         branchSources {
           git {
@@ -158,8 +170,40 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('r7rs-srfi') {
-        displayName: 'R7RS-SRFI'
+      folder('lassik') {
+        displayName: 'lassik'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('lassik')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+            }
+          }
+        }
+      }
+  - script: >
+      folder('r7rs_srfi') {
+        displayName: 'r7rs-srfi'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+              user {
+                name('lassik')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+            }
+          }
+        }
+      }
+  - script: >
+      multibranchPipelineJob('r7rs_srfi/r7rs-srfi') {
+        displayName: 'r7rs-srfi'
         branchSources {
           git {
               id('github')
@@ -173,11 +217,36 @@ jobs:
         }
       }
   - script: >
-      folder('foreign_c') {
-        displayName: 'foreign-c'
+      folder('retropikzel') {
+        displayName: 'retropikzel'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+            }
+          }
+        }
       }
   - script: >
-      multibranchPipelineJob('foreign_c/foreign-c') {
+      multibranchPipelineJob('retropikzel/compile-r7rs') {
+        displayName: 'compile-r7rs'
+        branchSources {
+          git {
+              id('git')
+              remote('https://gitea.scheme.org/Retropikzel/compile-r7rs.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
+      multibranchPipelineJob('retropikzel/foreign-c') {
         displayName: 'foreign-c'
         branchSources {
           git {
@@ -192,8 +261,8 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('foreign_c/sqlite') {
-        displayName: 'sqlite'
+      multibranchPipelineJob('retropikzel/foreign-c-sqlite') {
+        displayName: 'foreign-c-sqlite'
         branchSources {
           git {
               id('git')
@@ -207,8 +276,8 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('foreign_c/srfi_170') {
-        displayName: 'srfi-170'
+      multibranchPipelineJob('retropikzel/foreign-c-srfi_170') {
+        displayName: 'foreign-c-srfi-170'
         branchSources {
           git {
               id('git')
@@ -224,6 +293,20 @@ jobs:
   - script: >
       folder('jenkins') {
         displayName: 'jenkins'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+              user {
+                name('lassik')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+            }
+          }
+        }
       }
   - script: >
       multibranchPipelineJob('jenkins/auto-maintenance') {
@@ -243,6 +326,20 @@ jobs:
   - script: >
       folder('rinne') {
         displayName: 'rinne'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+              user {
+                name('lassik')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+            }
+          }
+        }
       }
   - script: >
       multibranchPipelineJob('rinne/snow-fort-guix-channel') {
@@ -275,42 +372,30 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('rinne/snow-shovel') {
-        displayName: 'snow-shovel'
-        branchSources {
-          git {
-              id('git')
-              remote('https://git.sr.ht/~retropikzel/snow-shovel')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
+      folder('scheme_containers') {
+        displayName: 'scheme-containers'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+              user {
+                name('lassik')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+            }
           }
         }
       }
   - script: >
-      multibranchPipelineJob('scheme-containers') {
-        displayName: 'scheme-containers'
+      multibranchPipelineJob('scheme_containers/monorepo') {
+        displayName: 'monorepo'
         branchSources {
           git {
               id('git')
               remote('https://github.com/scheme-containers/monorepo.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('compile-r7rs') {
-        displayName: 'compile-r7rs'
-        branchSources {
-          git {
-              id('git')
-              remote('https://gitea.scheme.org/Retropikzel/compile-r7rs.git')
           }
         }
         orphanedItemStrategy {
