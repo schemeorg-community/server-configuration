@@ -1,12 +1,35 @@
 # For users
 
+Note that folder names should not contain -, recommended to replace it with \_.
+
 ## Adding new jobs
 
 1. Add your job into config/jenkins.yml
 2. Make a pull request
-3. Ask Retropikzel (because most propably has time) to review and merge it
-4. Retropikzel manually updates the new configuration, because automation does
-not yet work :D
+3. Ask admin to review and merge it
+    3.1 For admins: User should also be added to Jenkins with same name as
+    github username
+4. If automation does not work ask admin to manually update the new configuration
+
+For folder example see "Credentials".
+
+Example job in folder retropikzel.
+
+  - script: >
+      multibranchPipelineJob('retropikzel/foreign-c') {
+        displayName: 'foreign-c'
+        branchSources {
+          git {
+              id('git')
+              remote('https://git.sr.ht/~retropikzel/foreign-c')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
 
 ## Building job using curl
 
@@ -44,6 +67,28 @@ Then add this .build.yml into your repository:
              branch=$(echo "$GIT_REF" | awk '{split($0,a,"/"); print(a[3])}')
              curl --netrc-file ${HOME}/netrc-scheme-jenkins -X POST "https://jenkins.scheme.org/job/<job directory>/job/<job name>/job/${branch}/build?delay=0sec"
 
+## Credentials
+
+To handle credentials create a folder for your job, or one folder for all your
+jobs. Then add yourself permissions to handle credentials in that folder. You
+can also add other users if you like.
+
+Here is example of Retropikzel's folder.
+
+  - script: >
+      folder('retropikzel') {
+        displayName: 'retropikzel'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+              }
+            }
+          }
+        }
+      }
 
 ## Jenkinsfile for testing code on many implementations
 
