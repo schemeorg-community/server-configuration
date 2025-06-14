@@ -170,6 +170,20 @@ jobs:
         }
       }
   - script: >
+      folder('lassik') {
+        displayName: 'lassik'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('lassik')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+            }
+          }
+        }
+      }
+  - script: >
       folder('r7rs_srfi') {
         displayName: 'r7rs-srfi'
         properties {
