@@ -158,8 +158,8 @@ jobs:
         }
       }
   - script: >
-      folder('srfi_r7rs') {
-        displayName: 'srfi-r7rs'
+      folder('r7rs_srfi') {
+        displayName: 'r7rs-srfi'
         properties {
           authorizationMatrix {
             entries {
