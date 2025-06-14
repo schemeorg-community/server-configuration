@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if type docker-compose > /dev/null
+if type docker-compose 2> /dev/null
 then
     docker-compose up --build
 else
