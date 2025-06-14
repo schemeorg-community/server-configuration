@@ -151,11 +151,11 @@ jobs:
         }
       }
   - script: >
-      folder('index_scheme_org') {
+      folder('arvyy/index_scheme_org') {
         displayName: 'index.scheme.org'
       }
   - script: >
-      multibranchPipelineJob('index_scheme_org/build') {
+      multibranchPipelineJob('arvyy/index_scheme_org/build') {
         displayName: 'Build and deploy'
         branchSources {
           git {
