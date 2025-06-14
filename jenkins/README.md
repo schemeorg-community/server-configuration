@@ -8,7 +8,7 @@ Note that folder names should not contain -, recommended to replace it with \_.
 
 
 <code><pre>
-- script: >
+\- script: >
   folder('<username>') {
     displayName: '<username>'
     properties {
