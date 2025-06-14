@@ -139,6 +139,10 @@ pipeline {
 }
 </pre>
 
+## Installed plugins
+
+For installed plugins see Dockerfile.jenkins
+
 # For maintainers
 
 Docker based Jenkins setup through Configuration-as-Code
