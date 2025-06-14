@@ -1,5 +1,5 @@
 jenkins:
-  systemMessage: "Scheme Jenkins"
+  systemMessage: "Scheme Jenkins <a href=\https://github.com/schemeorg-community/server-configuration/tree/master/jenkins\">Readme</a>"
   numExecutors: 0
   nodes:
     - permanent:
