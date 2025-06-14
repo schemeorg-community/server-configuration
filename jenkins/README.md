@@ -49,11 +49,9 @@ under entries.
 
 3. Make a pull request
 4. Ask admin to review and merge it
-    3.1 For admins: User should also be added to Jenkins with same name as
-    github username and password sent to pull request maker.
 5. If configuration update automation does not work ask admin to manually
-update the new configuration. Restarting Jenkins with systemctl restart jenkins
-works.
+update the new configuration. Restarting Jenkins with "systemctl restart
+jenkins" works.
 
 ## Building job using curl
 
