@@ -349,7 +349,7 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('scheme-containers/monorepo') {
+      multibranchPipelineJob('scheme_containers/monorepo') {
         displayName: 'monorepo'
         branchSources {
           git {
