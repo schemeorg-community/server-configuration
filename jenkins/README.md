@@ -7,7 +7,7 @@ Note that folder names should not contain -, recommended to replace it with \_.
 1. Add folder with your github username to config/jenkins.yml. Example:
 
 <pre>
-\- script: >
+- script: >
   folder('<username>') {
     displayName: '<username>'
     properties {
@@ -29,21 +29,23 @@ under entries.
 
 2. Add your job into config/jenkins.yml
 
-    - script: >
-      multibranchPipelineJob('<username>/<jobname>') {
-        displayName: '<jobname>'
-        branchSources {
-          git {
-              id('git')
-              remote('<project git ssh url>')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
+<pre>
+- script: >
+  multibranchPipelineJob('<username>/<jobname>') {
+    displayName: '<jobname>'
+    branchSources {
+      git {
+          id('git')
+          remote('<project git ssh url>')
       }
+    }
+    orphanedItemStrategy {
+      discardOldItems {
+          numToKeep(5)
+      }
+    }
+  }
+</pre>
 
 3. Make a pull request
 4. Ask admin to review and merge it
