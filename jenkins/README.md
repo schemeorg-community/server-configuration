@@ -36,7 +36,7 @@ under entries.
     branchSources {
       git {
           id('git')
-          remote('project git ssh url')
+          remote('project git https url')
       }
     }
     orphanedItemStrategy {
