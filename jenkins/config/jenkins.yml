@@ -94,10 +94,8 @@ jenkins:
       - group:
           name: "authenticated"
           permissions:
-          - "Overall/Read"
           - "Job/Read"
-          - "Job/Build"
-          - "Job/Cancel"
+          - "Overall/Read"
       - user:
           name: "admin"
           permissions:
@@ -139,6 +137,20 @@ credentials:
 
 jobs:
   - script: >
+      folder('arvyy') {
+        displayName: 'arvyy'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('arvyy')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+            }
+          }
+        }
+      }
+  - script: >
       folder('index_scheme_org') {
         displayName: 'index.scheme.org'
       }
@@ -165,11 +177,11 @@ jobs:
             entries {
               user {
                 name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
               }
               user {
                 name('lassik')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
               }
             }
           }
@@ -198,7 +210,7 @@ jobs:
             entries {
               user {
                 name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
               }
             }
           }
@@ -272,11 +284,11 @@ jobs:
             entries {
               user {
                 name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
               }
               user {
                 name('lassik')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
               }
             }
           }
@@ -305,11 +317,11 @@ jobs:
             entries {
               user {
                 name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
               }
               user {
                 name('lassik')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
               }
             }
           }
@@ -353,11 +365,11 @@ jobs:
             entries {
               user {
                 name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
               }
               user {
                 name('lassik')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
               }
             }
           }

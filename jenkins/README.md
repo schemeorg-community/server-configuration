@@ -83,7 +83,7 @@ Here is example of Retropikzel's folder.
             entries {
               user {
                 name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View' ])
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
               }
             }
           }
