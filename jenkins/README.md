@@ -21,7 +21,11 @@ Note that folder names should not contain -, recommended to replace it with \_.
         }
       }
 
-1. Add your job into config/jenkins.yml
+If you have a project with possibly multiple users working on it then you can
+also add folder for that project. In that case also add multiple user blocks
+under entries.
+
+2. Add your job into config/jenkins.yml
 
   - script: >
       multibranchPipelineJob('<username>/<jobname>') {
@@ -39,11 +43,11 @@ Note that folder names should not contain -, recommended to replace it with \_.
         }
       }
 
-2. Make a pull request
-3. Ask admin to review and merge it
+3. Make a pull request
+4. Ask admin to review and merge it
     3.1 For admins: User should also be added to Jenkins with same name as
     github username and password sent to pull request maker.
-4. If configuration update automation does not work ask admin to manually
+5. If configuration update automation does not work ask admin to manually
 update the new configuration. Restarting Jenkins with systemctl restart jenkins
 works.
 
