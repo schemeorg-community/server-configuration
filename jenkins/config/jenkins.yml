@@ -97,11 +97,11 @@ jenkins:
           - "Job/Read"
           - "Overall/Read"
       - user:
-          name: "admin"
+          name: "retropikzel"
           permissions:
           - "Overall/Administer"
       - user:
-          name: "lassik_admin"
+          name: "lassik"
           permissions:
           - "Overall/Administer"
       - user:
