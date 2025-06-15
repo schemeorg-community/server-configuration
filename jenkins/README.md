@@ -56,14 +56,14 @@ jenkins" works.
 ## Building job using curl
 
 <pre>
-curl -X POST https://<your username>:<token>@jenkins.scheme.org/job/<job directory>/job/<job name>/job/<branch>/build?delay=0sec"
+curl -X POST https://${USERNAME}:${TOKEN}@jenkins.scheme.org/job/$DIRECTORY/job/$JOBNAME/job/$BRANCH/build?delay=0sec
 </pre>
 
 
 So for example to build foreign-c:
 
 <pre>
-curl -X POST https://<your username>:<token>@jenkins.scheme.org/job/foreign_c/job/foreign-c/job/master/build?delay=0sec"
+curl -X POST https://$USERNAME:$TOKEN@jenkins.scheme.org/job/retropikzel/job/foreign-c/job/master/build?delay=0sec
 </pre>
 
 You can get the link also from the **Build now** button on the job webpage.
@@ -81,8 +81,8 @@ Add new secret file in path ${HOME}/netrc-scheme-jenkins with content:
 
 <pre>
 machine jenkins.scheme.org
-username <username>
-password <token>
+username $USERNAME
+password $TOKEN
 </pre>
 
 Then add this .build.yml into your repository:
@@ -90,11 +90,11 @@ Then add this .build.yml into your repository:
 <pre>
 image: alpine/edge
 secrets:
- - <your secrets id>
+ - $SECRETS\_ID
  tasks:
      - trigger-jenkins-build: |
-         branch=$(echo "$GIT_REF" | awk '{split($0,a,"/"); print(a[3])}')
-         curl --netrc-file ${HOME}/netrc-scheme-jenkins -X POST "https://jenkins.scheme.org/job/<job directory>/job/<job name>/job/${branch}/build?delay=0sec"
+         branch=$(echo "$GIT\_REF" | awk '{split($0,a,"/"); print(a[3])}')
+         curl --netrc-file ${HOME}/netrc-scheme-jenkins -X POST https://${USERNAME}:${TOKEN}@jenkins.scheme.org/job/$DIRECTORY/job/$JOBNAME/job/$BRANCH/build?delay=0sec
 </pre>
 
 ## Jenkinsfile for testing code on many implementations
