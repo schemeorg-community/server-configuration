@@ -291,6 +291,21 @@ jobs:
         }
       }
   - script: >
+      multibranchPipelineJob('retropikzel/foreign-c-system') {
+        displayName: 'foreign-c-system'
+        branchSources {
+          git {
+              id('git')
+              remote('https://git.sr.ht/~retropikzel/foreign-c-system')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
       folder('jenkins') {
         displayName: 'jenkins'
         properties {
