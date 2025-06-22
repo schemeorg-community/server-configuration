@@ -39,23 +39,6 @@ jenkins:
                 requireInitialManualTrust: false
     - permanent:
         mode: NORMAL
-        name: "Guix"
-        labelString: "guix-x86_64"
-        numExecutors: 4
-        remoteFS: "/home/jenkins/agent"
-        launcher:
-          ssh:
-            host: "retropikzel.madhacker.biz"
-            port: 5524
-            credentialsId: agent_ssh
-            launchTimeoutSeconds: 60
-            maxNumRetries: 3
-            retryWaitTime: 30
-            sshHostKeyVerificationStrategy:
-              manuallyTrustedKeyVerificationStrategy:
-                requireInitialManualTrust: false
-    - permanent:
-        mode: NORMAL
         name: "FreeBSD"
         labelString: "freebsd-x86_64"
         numExecutors: 4
