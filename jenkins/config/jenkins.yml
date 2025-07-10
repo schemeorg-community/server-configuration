@@ -5,7 +5,7 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "VPS Docker"
-        labelString: "docker"
+        labelString: "debian-x86_64 linux linux-x86_64 agent1"
         numExecutors: 1
         remoteFS: "/home/jenkins/agent"
         launcher:
@@ -22,7 +22,7 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "Debian"
-        labelString: "debian-x86_64"
+        labelString: "debian-x86_64 linux linux-x86_64 agent2"
         numExecutors: 16
         remoteFS: "/home/jenkins/agent"
         launcher:
