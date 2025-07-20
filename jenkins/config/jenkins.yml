@@ -244,6 +244,21 @@ jobs:
         }
       }
   - script: >
+      multibranchPipelineJob('retropikzel/foreign-c-requests') {
+        displayName: 'foreign-c-requests'
+        branchSources {
+          git {
+              id('git')
+              remote('https://git.sr.ht/~retropikzel/foreign-c-requests')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
       multibranchPipelineJob('retropikzel/foreign-c-sqlite') {
         displayName: 'foreign-c-sqlite'
         branchSources {
