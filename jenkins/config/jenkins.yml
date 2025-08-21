@@ -37,40 +37,6 @@ jenkins:
             sshHostKeyVerificationStrategy:
               manuallyTrustedKeyVerificationStrategy:
                 requireInitialManualTrust: false
-    - permanent:
-        mode: NORMAL
-        name: "FreeBSD"
-        labelString: "freebsd-x86_64"
-        numExecutors: 4
-        remoteFS: "/home/jenkins/agent"
-        launcher:
-          ssh:
-            host: "retropikzel.madhacker.biz"
-            port: 5523
-            credentialsId: agent_ssh
-            launchTimeoutSeconds: 60
-            maxNumRetries: 3
-            retryWaitTime: 30
-            sshHostKeyVerificationStrategy:
-              manuallyTrustedKeyVerificationStrategy:
-                requireInitialManualTrust: false
-    - permanent:
-        mode: NORMAL
-        name: "Android"
-        labelString: "android-arm"
-        numExecutors: 1
-        remoteFS: "/data/data/com.termux/files/home"
-        launcher:
-          ssh:
-            host: "retropikzel.madhacker.biz"
-            port: 8022
-            credentialsId: agent_ssh
-            launchTimeoutSeconds: 60
-            maxNumRetries: 3
-            retryWaitTime: 30
-            sshHostKeyVerificationStrategy:
-              manuallyTrustedKeyVerificationStrategy:
-                requireInitialManualTrust: false
   authorizationStrategy:
     projectMatrix:
       entries:
