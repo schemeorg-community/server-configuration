@@ -40,8 +40,8 @@ jenkins:
                 requireInitialManualTrust: false
     - permanent:
         mode: NORMAL
-        name: "Debian 3"
-        labelString: "debian-x86_64 linux linux-x86_64 agent2"
+        name: "Debian Raspberry Pi"
+        labelString: "debian-arm linux linux-arm agent3"
         numExecutors: 16
         remoteFS: "/home/jenkins/agent"
         launcher:
