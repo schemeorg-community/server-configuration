@@ -5,7 +5,7 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "Debian 1"
-        labelString: "debian-x86_64 linux linux-x86_64 agent1"
+        labelString: "debian-x86_64 linux linux-x86_64 agent1 docker docker-x86-64"
         numExecutors: 16
         remoteFS: "/home/jenkins/agent"
         launcher:
@@ -23,7 +23,7 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "Debian 2"
-        labelString: "debian-x86_64 linux linux-x86_64 agent2"
+        labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64"
         numExecutors: 16
         remoteFS: "/home/jenkins/agent"
         launcher:
