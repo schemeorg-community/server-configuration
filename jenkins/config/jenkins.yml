@@ -59,7 +59,7 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "macOS High Sierra"
-        labelString: "macos agent4"
+        labelString: "macos macos-high-sierra agent4"
         numExecutors: 16
         remoteFS: "/Users/jenkins/agent"
         launcher:
