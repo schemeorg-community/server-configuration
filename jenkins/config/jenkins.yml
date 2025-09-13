@@ -96,6 +96,12 @@ jenkins:
           - "Job/Read"
           - "Overall/Read"
   securityRealm:
+    #local:
+      #allowsSignup: false
+      #users:
+        #- id: admin
+          #name: admin
+          #password: "${readFile:/secrets/adminpassword}"
     github:
       clientID: "${readfile:/secrets/github_oauth_clientid}"
       clientSecret: "${readfile:/secrets/github_oauth_secret}"
