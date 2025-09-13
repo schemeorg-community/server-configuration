@@ -82,6 +82,11 @@ jenkins:
           permissions:
           - "Job/Read"
           - "Overall/Read"
+      # Can be used to login if oauth fails
+      #- user:
+          #name: "admin"
+          #permissions:
+          #- "Overall/Administer"
       - user:
           name: "retropikzel"
           permissions:
@@ -96,6 +101,14 @@ jenkins:
           - "Job/Read"
           - "Overall/Read"
   securityRealm:
+    # Can be used to login if oauth fails
+    # comment out the oauth and uncomment this and user part above
+    #local:
+      #allowsSignup: false
+      #users:
+        #- id: admin
+          #name: admin
+          #password: "${readFile:/secrets/adminpassword}"
     github:
       clientID: "${readfile:/secrets/github_oauth_clientid}"
       clientSecret: "${readfile:/secrets/github_oauth_secret}"
