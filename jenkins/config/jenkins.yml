@@ -61,7 +61,7 @@ jenkins:
         name: "macOS High Sierra"
         labelString: "macos agent4"
         numExecutors: 16
-        remoteFS: "/home/jenkins/agent"
+        remoteFS: "/Users/jenkins/agent"
         launcher:
           ssh:
             host: "retropikzel.madhacker.biz"
