@@ -169,6 +169,23 @@ jobs:
         }
       }
   - script: >
+      folder('arvyy/r7rs_large_work') {
+        displayName: 'r7rs-large reference implementation'
+      }
+  - script: >
+      multibranchPipelineJob('arvyy/r7rs_large_work/test') {
+        displayName: 'Test'
+        branchSources {
+          git {
+              id('github')
+              remote('https://github.com/arvyy/r7rs-work')
+          }
+        }
+        triggers {
+          cron('0 * * * *')
+        }
+      }
+  - script: >
       folder('lassik') {
         displayName: 'lassik'
         properties {
