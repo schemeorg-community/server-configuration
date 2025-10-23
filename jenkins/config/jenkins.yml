@@ -252,7 +252,7 @@ jobs:
         branchSources {
           git {
               id('git')
-              remote('https://gitea.scheme.org/Retropikzel/compile-r7rs.git')
+              remote('https://codeberg.org/retropikzel/compile-r7rs.git')
           }
         }
         orphanedItemStrategy {
