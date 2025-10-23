@@ -9,8 +9,6 @@ services:
     volumes:
       - ./config:/config
       - ./id_rsa:/secrets/id_rsa
-      - ./schemeists_email_username:/secrets/schemeists_email_username
-      - ./schemeists_email_password:/secrets/schemeists_email_password
       - ./adminpassword:/secrets/adminpassword
       - ./github_oauth_clientid:/secrets/github_oauth_clientid
       - ./github_oauth_secret:/secrets/github_oauth_secret
