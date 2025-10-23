@@ -133,12 +133,6 @@ credentials:
                privateKeySource:
                  directEntry:
                    privateKey: "${readFile:/secrets/id_rsa}"
-           - usernamepassword:
-               scope: SYSTEM
-               id: schemeists_email
-               description: "Schemeists email credentials"
-               username: "${readFile:/secrets/schemeists_email_username}"
-               password: "${readFile:/secrets/schemeists_email_password}"
 
 jobs:
   - script: >
