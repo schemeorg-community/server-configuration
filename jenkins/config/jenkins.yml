@@ -306,7 +306,7 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('foreign-c/foreign-c-libraries') {
+      multibranchPipelineJob('foreign_c/foreign-c-libraries') {
         displayName: 'foreign-c-libraries'
         branchSources {
           git {
