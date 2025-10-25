@@ -5,6 +5,7 @@ After=network.target
 [Service]
 WorkingDirectory=/home/jenkins/server-configuration/keycloak
 ExecStart=/home/jenkins/server-configuration/keycloak/start.sh
+User=jenkins
 StandardOutput=syslog
 StandardError=syslog
 
