@@ -1,0 +1,11 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak
+    env_file: keycloak.env
+    command: ["start", "--http-port", "7080", "--https-port", "7443"]
+    volumes:
+      - /opt/keycloak/data:/opt/keycloak/data
+      - /opt/keycloak/providers:/opt/keycloak/providers
+    ports:
+      - 7080:7080
+      - 7443:7443

@@ -1,0 +1,13 @@
+[Unit]
+Description=Jenkins
+After=network.target
+
+[Service]
+WorkingDirectory=/home/jenkins/server-configuration/keycloak
+ExecStart=/home/jenkins/server-configuration/keycloak/start.sh
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=default.target
+
