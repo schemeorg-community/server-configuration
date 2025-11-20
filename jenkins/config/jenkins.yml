@@ -56,24 +56,6 @@ jenkins:
             sshHostKeyVerificationStrategy:
               manuallyTrustedKeyVerificationStrategy:
                 requireInitialManualTrust: false
-    - permanent:
-        mode: NORMAL
-        name: "macOS High Sierra"
-        labelString: "macos macos-high-sierra agent4"
-        numExecutors: 16
-        remoteFS: "/Users/jenkins/agent"
-        launcher:
-          ssh:
-            host: "retropikzel.madhacker.biz"
-            port: 5524
-            JavaPath: /Users/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
-            credentialsId: agent_ssh
-            launchTimeoutSeconds: 60
-            maxNumRetries: 3
-            retryWaitTime: 30
-            sshHostKeyVerificationStrategy:
-              manuallyTrustedKeyVerificationStrategy:
-                requireInitialManualTrust: false
   authorizationStrategy:
     projectMatrix:
       entries:
