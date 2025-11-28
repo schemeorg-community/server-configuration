@@ -259,6 +259,21 @@ jobs:
         }
       }
   - script: >
+      multibranchPipelineJob('retropikzel/foreign-c-libraries') {
+        displayName: 'foreign-c-libraries'
+        branchSources {
+          git {
+              id('git')
+              remote('https://codeberg.org/retropikzel/foreign-c-libraries.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
       folder('foreign_c') {
         displayName: 'foreign-c'
         properties {
@@ -279,21 +294,6 @@ jobs:
           git {
               id('git')
               remote('https://codeberg.org/foreign-c/foreign-c.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('foreign_c/foreign-c-libraries') {
-        displayName: 'foreign-c-libraries'
-        branchSources {
-          git {
-              id('git')
-              remote('https://codeberg.org/foreign-c/foreign-c-libraries.git')
           }
         }
         orphanedItemStrategy {
