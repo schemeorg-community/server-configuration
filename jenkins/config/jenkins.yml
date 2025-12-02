@@ -274,6 +274,21 @@ jobs:
         }
       }
   - script: >
+      multibranchPipelineJob('retropikzel/foreign-c-srfis') {
+        displayName: 'foreign-c-srfis'
+        branchSources {
+          git {
+              id('git')
+              remote('https://codeberg.org/retropikzel/foreign-c-srfis.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
       folder('foreign_c') {
         displayName: 'foreign-c'
         properties {
