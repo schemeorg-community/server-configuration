@@ -289,6 +289,21 @@ jobs:
         }
       }
   - script: >
+      multibranchPipelineJob('retropikzel/r7rs-tests') {
+        displayName: 'r7rs-tests'
+        branchSources {
+          git {
+              id('git')
+              remote('https://codeberg.org/retropikzel/r7rs-tests.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
       folder('foreign_c') {
         displayName: 'foreign-c'
         properties {
