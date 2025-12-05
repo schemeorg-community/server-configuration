@@ -215,6 +215,39 @@ jobs:
         }
       }
   - script: >
+      folder('r7rs_coverage') {
+        displayName: 'r7rs-coverage'
+        properties {
+          authorizationMatrix {
+            entries {
+              user {
+                name('retropikzel')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+              user {
+                name('ecraven')
+                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
+              }
+            }
+          }
+        }
+      }
+  - script: >
+      multibranchPipelineJob('r7rs_coverage/r7rs-coverage') {
+        displayName: 'r7rs-coverage'
+        branchSources {
+          git {
+              id('github')
+              remote('https://github.com/Retropikzel/r7rs-coverage.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
       folder('retropikzel') {
         displayName: 'retropikzel'
         properties {
