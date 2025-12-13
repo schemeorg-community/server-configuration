@@ -277,6 +277,21 @@ jobs:
         }
       }
   - script: >
+      multibranchPipelineJob('retropikzel/test-scheme') {
+        displayName: 'test-scheme'
+        branchSources {
+          git {
+              id('git')
+              remote('https://codeberg.org/retropikzel/test-scheme.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
       multibranchPipelineJob('retropikzel/scheme-libraries') {
         displayName: 'scheme-libraries'
         branchSources {
