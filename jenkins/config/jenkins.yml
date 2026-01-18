@@ -6,7 +6,7 @@ jenkins:
         mode: NORMAL
         name: "Debian 1"
         labelString: "debian-x86_64 linux linux-x86_64 agent1 docker docker-x86_64"
-        numExecutors: 16
+        numExecutors: 2
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
@@ -24,7 +24,7 @@ jenkins:
         mode: NORMAL
         name: "Debian 2"
         labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64"
-        numExecutors: 16
+        numExecutors: 2
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
@@ -40,9 +40,27 @@ jenkins:
                 requireInitialManualTrust: false
     - permanent:
         mode: NORMAL
+        name: "Debian 3"
+        labelString: "debian-x86_64 linux linux-x86_64 agent3 docker docker-x86_64"
+        numExecutors: 2
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          ssh:
+            host: "retropikzel.madhacker.biz"
+            port: 5524
+            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
+    - permanent:
+        mode: NORMAL
         name: "Debian Raspberry Pi"
         labelString: "debian-arm linux-arm agent3"
-        numExecutors: 16
+        numExecutors: 2
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
