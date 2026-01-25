@@ -280,6 +280,21 @@ jobs:
         }
       }
   - script: >
+      multibranchPipelineJob('retropikzel/scheme-venv') {
+        displayName: 'scheme-venv'
+        branchSources {
+          git {
+              id('git')
+              remote('https://codeberg.org/retropikzel/scheme-venv.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
       multibranchPipelineJob('retropikzel/compile-scheme') {
         displayName: 'compile-scheme'
         branchSources {
