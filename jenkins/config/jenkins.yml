@@ -59,7 +59,7 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "Debian Raspberry Pi"
-        labelString: "debian-arm linux-arm agent3"
+        labelString: "debian-arm docker docker-arm linux-arm agent4"
         numExecutors: 2
         remoteFS: "/home/jenkins/agent"
         launcher:
