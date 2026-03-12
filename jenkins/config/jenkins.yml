@@ -295,12 +295,12 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('retropikzel/compile-scheme') {
-        displayName: 'compile-scheme'
+      multibranchPipelineJob('retropikzel/compile-r7rs') {
+        displayName: 'compile-r7rs'
         branchSources {
           git {
               id('git')
-              remote('https://codeberg.org/retropikzel/compile-scheme.git')
+              remote('https://codeberg.org/retropikzel/compile-r7rs.git')
           }
         }
         orphanedItemStrategy {
