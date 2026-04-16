@@ -15,4 +15,3 @@ services:
       - /home/jenkins/jenkins-data:/var/jenkins_home
     ports:
       - 8080:8080
-    restart_policy: on-failure
