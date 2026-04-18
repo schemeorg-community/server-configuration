@@ -494,21 +494,3 @@ jobs:
           }
         }
       }
-  - script: >
-      folder('scheme_containers') {
-        displayName: 'scheme-containers'
-        properties {
-          authorizationMatrix {
-            entries {
-              user {
-                name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
-              }
-              user {
-                name('lassik')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
-              }
-            }
-          }
-        }
-      }
