@@ -424,12 +424,12 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('schemeists/srfi-support-list') {
-        displayName: 'srfi-support-list'
+      multibranchPipelineJob('schemeists/srfi-support-table') {
+        displayName: 'srfi-support-table'
         branchSources {
           git {
               id('git')
-              remote('https://codeberg.org/Schemeists/srfi-support-list.git')
+              remote('https://codeberg.org/Schemeists/srfi-support-table.git')
           }
         }
         orphanedItemStrategy {
