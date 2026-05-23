@@ -41,8 +41,8 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "Guix 1"
-        labelString: "guix linux podman x86_64"
-        numExecutors: 2
+        labelString: "guix linux podman x86_64 benchmarking-only"
+        numExecutors: 1
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
