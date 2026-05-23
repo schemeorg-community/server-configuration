@@ -438,6 +438,21 @@ jobs:
         }
       }
   - script: >
+      multibranchPipelineJob('schemeists/benchmarks') {
+        displayName: 'benchmarks'
+        branchSources {
+          git {
+              id('git')
+              remote('https://codeberg.org/Schemeists/benchmarks.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
       folder('jenkins') {
         displayName: 'jenkins'
         properties {
