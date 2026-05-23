@@ -41,8 +41,8 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "Guix 1"
-        labelString: "guix linux podman x86_64"
-        numExecutors: 2
+        labelString: "guix linux podman x86_64 benchmarking-only"
+        numExecutors: 1
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
@@ -429,6 +429,21 @@ jobs:
           git {
               id('git')
               remote('https://codeberg.org/Schemeists/srfi-support-table.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
+      multibranchPipelineJob('schemeists/benchmarks') {
+        displayName: 'benchmarks'
+        branchSources {
+          git {
+              id('git')
+              remote('https://codeberg.org/Schemeists/benchmarks.git')
           }
         }
         orphanedItemStrategy {
