@@ -453,6 +453,21 @@ jobs:
         }
       }
   - script: >
+      multibranchPipelineJob('schemeists/apt-packages') {
+        displayName: 'apt-packages'
+        branchSources {
+          git {
+              id('git')
+              remote('https://codeberg.org/Schemeists/apt-packages.git')
+          }
+        }
+        orphanedItemStrategy {
+          discardOldItems {
+              numToKeep(5)
+          }
+        }
+      }
+  - script: >
       folder('jenkins') {
         displayName: 'jenkins'
         properties {
