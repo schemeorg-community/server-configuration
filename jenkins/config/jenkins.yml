@@ -5,7 +5,7 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "Debian 1"
-        labelString: "debian-x86_64 linux linux-x86_64 agent1 docker docker-x86_64"
+        labelString: "debian-x86_64 linux linux-x86_64 agent1 docker docker-x86_64 x86-64"
         numExecutors: 2
         remoteFS: "/home/jenkins/agent"
         launcher:
@@ -23,7 +23,7 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "Debian 2"
-        labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64"
+        labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64 x86-64"
         numExecutors: 2
         remoteFS: "/home/jenkins/agent"
         launcher:
@@ -40,8 +40,8 @@ jenkins:
                 requireInitialManualTrust: false
     - permanent:
         mode: NORMAL
-        name: "Guix 1"
-        labelString: "guix linux podman x86_64 benchmarking-only"
+        name: "Debian 3"
+        labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64 x86-64"
         numExecutors: 1
         remoteFS: "/home/jenkins/agent"
         launcher:
@@ -58,7 +58,7 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "Debian Raspberry Pi"
-        labelString: "debian-arm docker docker-arm linux-arm agent4"
+        labelString: "debian-arm docker docker-arm linux-arm agent4 arm"
         numExecutors: 2
         remoteFS: "/home/jenkins/agent"
         launcher:
