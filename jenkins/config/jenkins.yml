@@ -42,7 +42,7 @@ jenkins:
         mode: NORMAL
         name: "Debian 3"
         labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64 x86-64"
-        numExecutors: 1
+        numExecutors: 2
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
