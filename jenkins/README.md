@@ -53,49 +53,36 @@ under entries.
 update the new configuration. Restarting Jenkins with "systemctl restart
 jenkins" works.
 
-## Building job using curl
+## Building job using webhook
 
-<pre>
-curl -X POST https://${USERNAME}:${TOKEN}@jenkins.scheme.org/job/$DIRECTORY/job/$JOBNAME/job/$BRANCH/build?delay=0sec
-</pre>
+[Generic Webhook Trigger](https://plugins.jenkins.io/generic-webhook-trigger/)
+plugin is installed.
+
+- Get API Token from Jenkins.
+  - Go to https://jenkins.scheme.org -> Top right menu -> Security -> Add new token.
+- The webhook url is: https://jenkins.scheme.org/generic-webhook-trigger/invoke
+- Add webhook trigger into your Jenkinsfile
 
 
-So for example to build foreign-c:
+<pre><code>
+pipeline {
+    agent { any }
 
-<pre>
-curl -X POST https://$USERNAME:$TOKEN@jenkins.scheme.org/job/retropikzel/job/foreign-c/job/master/build?delay=0sec
-</pre>
-
-You can get the link also from the **Build now** button on the job webpage.
-Right click and **copy link**.
-
-To get token login and go to "Security" settings of your user menu.
-
-### Sourcehut example
-
-This is example for how to start build automatically in Jenkins when code is
-pushed to git. It's for Sourcehut but should give a general idea about how to
-do it Github/Gitlab/BitBucket and such.
-
-Add new secret file in path ${HOME}/netrc-scheme-jenkins with content:
-
-<pre>
-machine jenkins.scheme.org
-username $USERNAME
-password $TOKEN
-</pre>
-
-Then add this .build.yml into your repository:
-
-<pre>
-image: alpine/edge
-secrets:
- - $SECRETS\_ID
- tasks:
-     - trigger-jenkins-build: |
-         branch=$(echo "$GIT\_REF" | awk '{split($0,a,"/"); print(a[3])}')
-         curl --netrc-file ${HOME}/netrc-scheme-jenkins -X POST https://${USERNAME}:${TOKEN}@jenkins.scheme.org/job/$DIRECTORY/job/$JOBNAME/job/$BRANCH/build?delay=0sec
-</pre>
+    triggers {
+      GenericTrigger(
+        genericVariables: [[key: 'ref', value: '$.ref']],
+        causeString: 'Triggered on $ref',
+        printContributedVariables: true,
+        printPostContent: true,
+        silentResponse: false,
+        shouldNotFlatten: false,
+        regexpFilterText: '$ref',
+        regexpFilterExpression: 'refs/heads/' + BRANCH_NAME
+      )
+    }
+    ...
+}
+</pre></code>
 
 ## Installed plugins
 
