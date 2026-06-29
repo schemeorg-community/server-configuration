@@ -59,7 +59,7 @@ jenkins" works.
 plugin is installed.
 
 - Get API Token from Jenkins.
-  - Go to your https://jenkins.scheme.org -> Top right menu -> Security -> Add new token.
+  - Go to https://jenkins.scheme.org -> Top right menu -> Security -> Add new token.
 - The webhook url is: https://jenkins.scheme.org/generic-webhook-trigger/invoke
 - Add webhook trigger into your Jenkinsfile
 
