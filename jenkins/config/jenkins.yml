@@ -247,51 +247,6 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('retropikzel/scheme-venv') {
-        displayName: 'scheme-venv'
-        branchSources {
-          git {
-              id('git')
-              remote('https://codeberg.org/retropikzel/scheme-venv.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('retropikzel/compile-r7rs') {
-        displayName: 'compile-r7rs'
-        branchSources {
-          git {
-              id('git')
-              remote('https://codeberg.org/retropikzel/compile-r7rs.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('retropikzel/test-scheme') {
-        displayName: 'test-scheme'
-        branchSources {
-          git {
-              id('git')
-              remote('https://codeberg.org/retropikzel/test-scheme.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
       multibranchPipelineJob('retropikzel/scheme-libraries') {
         displayName: 'scheme-libraries'
         branchSources {
@@ -328,21 +283,6 @@ jobs:
           git {
               id('git')
               remote('https://codeberg.org/retropikzel/foreign-c-srfis.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('retropikzel/r7rs-tests') {
-        displayName: 'r7rs-tests'
-        branchSources {
-          git {
-              id('git')
-              remote('https://codeberg.org/retropikzel/r7rs-tests.git')
           }
         }
         orphanedItemStrategy {
@@ -460,87 +400,6 @@ jobs:
           git {
               id('git')
               remote('https://codeberg.org/Schemeists/apt-packages.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      folder('jenkins') {
-        displayName: 'jenkins'
-        properties {
-          authorizationMatrix {
-            entries {
-              user {
-                name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
-              }
-              user {
-                name('lassik')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
-              }
-            }
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('jenkins/auto-maintenance') {
-        displayName: 'auto-maintenance'
-        branchSources {
-          git {
-              id('git')
-              remote('https://gitea.scheme.org/Jenkins/jenkins-automaintenance.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      folder('rinne') {
-        displayName: 'rinne'
-        properties {
-          authorizationMatrix {
-            entries {
-              user {
-                name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
-              }
-              user {
-                name('lassik')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
-              }
-            }
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('rinne/snow-fort-guix-channel') {
-        displayName: 'snow-fort-guix-channel'
-        branchSources {
-          git {
-              id('git')
-              remote('https://gitea.scheme.org/rinne/snow-fort-guix-channel.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('rinne/snow-fort-windows-installer') {
-        displayName: 'snow-fort-windows-installer'
-        branchSources {
-          git {
-              id('git')
-              remote('https://gitea.scheme.org/rinne/snow-fort-windows-installer.git')
           }
         }
         orphanedItemStrategy {
