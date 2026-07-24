@@ -379,12 +379,12 @@ jobs:
         }
       }
   - script: >
-      multibranchPipelineJob('schemeists/benchmarks') {
-        displayName: 'benchmarks'
+      multibranchPipelineJob('schemeists/snow-testing') {
+        displayName: 'snow-testing'
         branchSources {
           git {
               id('git')
-              remote('https://codeberg.org/Schemeists/benchmarks.git')
+              remote('https://codeberg.org/Schemeists/snow-testing.git')
           }
         }
         orphanedItemStrategy {
