@@ -6,7 +6,7 @@ jenkins:
         mode: NORMAL
         name: "Debian 1"
         labelString: "debian-x86_64 linux linux-x86_64 agent1 docker docker-x86_64 x86-64"
-        numExecutors: 2
+        numExecutors: 3
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
@@ -24,7 +24,7 @@ jenkins:
         mode: NORMAL
         name: "Debian 2"
         labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64 x86-64"
-        numExecutors: 2
+        numExecutors: 3
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
@@ -42,7 +42,7 @@ jenkins:
         mode: NORMAL
         name: "Debian 3"
         labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64 x86-64"
-        numExecutors: 2
+        numExecutors: 3
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
@@ -385,21 +385,6 @@ jobs:
           git {
               id('git')
               remote('https://codeberg.org/Schemeists/snowplow.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('schemeists/apt-packages') {
-        displayName: 'apt-packages'
-        branchSources {
-          git {
-              id('git')
-              remote('https://codeberg.org/Schemeists/apt-packages.git')
           }
         }
         orphanedItemStrategy {
