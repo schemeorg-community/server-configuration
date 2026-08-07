@@ -5,8 +5,8 @@ jenkins:
     - permanent:
         mode: NORMAL
         name: "Debian 1"
-        labelString: "debian-x86_64 linux linux-x86_64 agent1 docker docker-x86_64 x86-64"
-        numExecutors: 3
+        labelString: "debian-x86_64 linux linux-x86_64 agent1 docker docker-x86_64 x86-64 parallel"
+        numExecutors: 4
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
@@ -15,8 +15,8 @@ jenkins:
             JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
             credentialsId: agent_ssh
             launchTimeoutSeconds: 60
-            maxNumRetries: 3
-            retryWaitTime: 30
+            maxNumRetries: 10
+            retryWaitTime: 60
             sshHostKeyVerificationStrategy:
               manuallyTrustedKeyVerificationStrategy:
                 requireInitialManualTrust: false
@@ -24,7 +24,7 @@ jenkins:
         mode: NORMAL
         name: "Debian 2"
         labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64 x86-64"
-        numExecutors: 3
+        numExecutors: 2
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
@@ -33,16 +33,16 @@ jenkins:
             JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
             credentialsId: agent_ssh
             launchTimeoutSeconds: 60
-            maxNumRetries: 3
-            retryWaitTime: 30
+            maxNumRetries: 10
+            retryWaitTime: 60
             sshHostKeyVerificationStrategy:
               manuallyTrustedKeyVerificationStrategy:
                 requireInitialManualTrust: false
     - permanent:
         mode: NORMAL
         name: "Debian 3"
-        labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64 x86-64"
-        numExecutors: 3
+        labelString: "debian-x86_64 linux linux-x86_64 agent3 docker docker-x86_64 x86-64 parallel"
+        numExecutors: 4
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
@@ -51,8 +51,8 @@ jenkins:
             JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
             credentialsId: agent_ssh
             launchTimeoutSeconds: 60
-            maxNumRetries: 3
-            retryWaitTime: 30
+            maxNumRetries: 10
+            retryWaitTime: 60
             sshHostKeyVerificationStrategy:
               manuallyTrustedKeyVerificationStrategy:
                 requireInitialManualTrust: false
@@ -69,8 +69,26 @@ jenkins:
             JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
             credentialsId: agent_ssh
             launchTimeoutSeconds: 60
-            maxNumRetries: 3
-            retryWaitTime: 30
+            maxNumRetries: 10
+            retryWaitTime: 60
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
+    - permanent:
+        mode: NORMAL
+        name: "Alpine 1"
+        labelString: "alpine-x86_64 linux linux-x86_64 agent5 docker docker-x86_64 x86-64 parallel"
+        numExecutors: 4
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          ssh:
+            host: "retropikzel.madhacker.biz"
+            port: 5525
+            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 10
+            retryWaitTime: 60
             sshHostKeyVerificationStrategy:
               manuallyTrustedKeyVerificationStrategy:
                 requireInitialManualTrust: false
@@ -312,35 +330,6 @@ jobs:
           git {
               id('git')
               remote('https://codeberg.org/foreign-c/foreign-c.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      folder('r7rs_coverage') {
-        displayName: 'r7rs-coverage'
-        properties {
-          authorizationMatrix {
-            entries {
-              user {
-                name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
-              }
-            }
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('r7rs_coverage/r7rs-coverage') {
-        displayName: 'r7rs-coverage'
-        branchSources {
-          git {
-              id('git')
-              remote('https://github.com/Retropikzel/r7rs-coverage.git')
           }
         }
         orphanedItemStrategy {
