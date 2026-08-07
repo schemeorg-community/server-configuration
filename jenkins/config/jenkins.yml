@@ -84,7 +84,6 @@ jenkins:
           ssh:
             host: "retropikzel.madhacker.biz"
             port: 5525
-            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
             credentialsId: agent_ssh
             launchTimeoutSeconds: 60
             maxNumRetries: 10
