@@ -176,7 +176,7 @@ jobs:
         branchSources {
           git {
               id('github')
-              remote('https://github.com/schemeorg-community/index.scheme.org')
+              remote('https://github.com/schemeorg-community/scheme-index-site')
           }
         }
         orphanedItemStrategy {
