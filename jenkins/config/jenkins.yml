@@ -2,7 +2,7 @@ jenkins:
   systemMessage: "Scheme Jenkins Readme: https://github.com/schemeorg-community/server-configuration/tree/master/jenkins"
   numExecutors: 0
   nodes:
-      - permanent:
+    - permanent:
         mode: NORMAL
         name: "agent1"
         labelString: "docker"
