@@ -19,6 +19,95 @@ jenkins:
             sshHostKeyVerificationStrategy:
               manuallyTrustedKeyVerificationStrategy:
                 requireInitialManualTrust: false
+    - permanent:
+        mode: NORMAL
+        name: "Debian 1"
+        labelString: "debian-x86_64 linux linux-x86_64 agent1 docker docker-x86_64 x86-64 parallel"
+        numExecutors: 4
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          ssh:
+            host: "retropikzel.madhacker.biz"
+            port: 5521
+            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 10
+            retryWaitTime: 60
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
+    - permanent:
+        mode: NORMAL
+        name: "Debian 2"
+        labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64 x86-64"
+        numExecutors: 2
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          ssh:
+            host: "retropikzel.madhacker.biz"
+            port: 5522
+            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 10
+            retryWaitTime: 60
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
+    - permanent:
+        mode: NORMAL
+        name: "Debian 3"
+        labelString: "debian-x86_64 linux linux-x86_64 agent3 docker docker-x86_64 x86-64 parallel"
+        numExecutors: 4
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          ssh:
+            host: "retropikzel.madhacker.biz"
+            port: 5524
+            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 10
+            retryWaitTime: 60
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
+    - permanent:
+        mode: NORMAL
+        name: "Debian Raspberry Pi"
+        labelString: "debian-arm docker docker-arm linux-arm agent4 arm"
+        numExecutors: 2
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          ssh:
+            host: "retropikzel.madhacker.biz"
+            port: 5523
+            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 10
+            retryWaitTime: 60
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
+    - permanent:
+        mode: NORMAL
+        name: "Alpine 1"
+        labelString: "alpine-x86_64 linux linux-x86_64 agent5 docker docker-x86_64 x86-64 parallel"
+        numExecutors: 4
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          ssh:
+            host: "retropikzel.madhacker.biz"
+            port: 5525
+            credentialsId: agent_ssh
+            launchTimeoutSeconds: 60
+            maxNumRetries: 10
+            retryWaitTime: 60
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false
   authorizationStrategy:
     projectMatrix:
       entries:
@@ -32,6 +121,10 @@ jenkins:
           #name: "admin"
           #permissions:
           #- "Overall/Administer"
+      - user:
+          name: "retropikzel"
+          permissions:
+          - "Overall/Administer"
       - user:
           name: "lassik"
           permissions:
