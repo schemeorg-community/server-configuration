@@ -4,90 +4,18 @@ jenkins:
   nodes:
     - permanent:
         mode: NORMAL
-        name: "Debian 1"
-        labelString: "debian-x86_64 linux linux-x86_64 agent1 docker docker-x86_64 x86-64 parallel"
-        numExecutors: 4
+        name: "agent1"
+        labelString: "docker"
+        numExecutors: 8
         remoteFS: "/home/jenkins/agent"
         launcher:
           ssh:
-            host: "retropikzel.madhacker.biz"
-            port: 5521
-            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
+            host: "jenkins-agent"
+            port: 22
             credentialsId: agent_ssh
             launchTimeoutSeconds: 60
-            maxNumRetries: 10
-            retryWaitTime: 60
-            sshHostKeyVerificationStrategy:
-              manuallyTrustedKeyVerificationStrategy:
-                requireInitialManualTrust: false
-    - permanent:
-        mode: NORMAL
-        name: "Debian 2"
-        labelString: "debian-x86_64 linux linux-x86_64 agent2 docker docker-x86_64 x86-64"
-        numExecutors: 2
-        remoteFS: "/home/jenkins/agent"
-        launcher:
-          ssh:
-            host: "retropikzel.madhacker.biz"
-            port: 5522
-            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
-            credentialsId: agent_ssh
-            launchTimeoutSeconds: 60
-            maxNumRetries: 10
-            retryWaitTime: 60
-            sshHostKeyVerificationStrategy:
-              manuallyTrustedKeyVerificationStrategy:
-                requireInitialManualTrust: false
-    - permanent:
-        mode: NORMAL
-        name: "Debian 3"
-        labelString: "debian-x86_64 linux linux-x86_64 agent3 docker docker-x86_64 x86-64 parallel"
-        numExecutors: 4
-        remoteFS: "/home/jenkins/agent"
-        launcher:
-          ssh:
-            host: "retropikzel.madhacker.biz"
-            port: 5524
-            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
-            credentialsId: agent_ssh
-            launchTimeoutSeconds: 60
-            maxNumRetries: 10
-            retryWaitTime: 60
-            sshHostKeyVerificationStrategy:
-              manuallyTrustedKeyVerificationStrategy:
-                requireInitialManualTrust: false
-    - permanent:
-        mode: NORMAL
-        name: "Debian Raspberry Pi"
-        labelString: "debian-arm docker docker-arm linux-arm agent4 arm"
-        numExecutors: 2
-        remoteFS: "/home/jenkins/agent"
-        launcher:
-          ssh:
-            host: "retropikzel.madhacker.biz"
-            port: 5523
-            JavaPath: /home/jenkins/.sdkman/candidates/java/21.0.4-tem/bin/java
-            credentialsId: agent_ssh
-            launchTimeoutSeconds: 60
-            maxNumRetries: 10
-            retryWaitTime: 60
-            sshHostKeyVerificationStrategy:
-              manuallyTrustedKeyVerificationStrategy:
-                requireInitialManualTrust: false
-    - permanent:
-        mode: NORMAL
-        name: "Alpine 1"
-        labelString: "alpine-x86_64 linux linux-x86_64 agent5 docker docker-x86_64 x86-64 parallel"
-        numExecutors: 4
-        remoteFS: "/home/jenkins/agent"
-        launcher:
-          ssh:
-            host: "retropikzel.madhacker.biz"
-            port: 5525
-            credentialsId: agent_ssh
-            launchTimeoutSeconds: 60
-            maxNumRetries: 10
-            retryWaitTime: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
             sshHostKeyVerificationStrategy:
               manuallyTrustedKeyVerificationStrategy:
                 requireInitialManualTrust: false
@@ -213,94 +141,6 @@ jobs:
                 permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
               }
             }
-          }
-        }
-      }
-  - script: >
-      folder('retropikzel') {
-        displayName: 'retropikzel'
-        properties {
-          authorizationMatrix {
-            entries {
-              user {
-                name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
-              }
-            }
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('retropikzel/foreign-c') {
-        displayName: 'foreign-c'
-        branchSources {
-          git {
-              id('git')
-              remote('https://codeberg.org/foreign-c/foreign-c.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      folder('schemeists') {
-        displayName: 'Schemeists'
-        properties {
-          authorizationMatrix {
-            entries {
-              user {
-                name('retropikzel')
-                permissions([ 'Credentials/Create', 'Credentials/Delete', 'Credentials/Update', 'Credentials/View', 'Job/Build', 'Job/Cancel' ])
-              }
-            }
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('schemeists/r7rs-srfi') {
-        displayName: 'r7rs-srfi'
-        branchSources {
-          git {
-              id('github')
-              remote('https://github.com/srfi-explorations/r7rs-srfi.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('schemeists/srfi-support-table') {
-        displayName: 'srfi-support-table'
-        branchSources {
-          git {
-              id('git')
-              remote('https://codeberg.org/Schemeists/srfi-support-table.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
-          }
-        }
-      }
-  - script: >
-      multibranchPipelineJob('schemeists/snowplow') {
-        displayName: 'snowplow'
-        branchSources {
-          git {
-              id('git')
-              remote('https://codeberg.org/Schemeists/snowplow.git')
-          }
-        }
-        orphanedItemStrategy {
-          discardOldItems {
-              numToKeep(5)
           }
         }
       }
